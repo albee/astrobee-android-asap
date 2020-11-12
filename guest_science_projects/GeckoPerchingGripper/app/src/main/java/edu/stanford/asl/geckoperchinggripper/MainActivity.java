@@ -18,15 +18,71 @@
 
 package edu.stanford.asl.geckoperchinggripper;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+import org.ros.android.RosActivity;
+import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMainExecutor;
+
+import java.net.URI;
+
+public class MainActivity extends RosActivity {
+    // IP Address ROS Master
+    private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
+
+    // ROS - Android Node
+    private GeckoGripperStatusNode geckoGripperStatusNode = null;
+
+    boolean isNodeExecuting = false;
+
+    /*
+     * Handler and Runnable for permanent interface updating
+     */
+    Handler handler;
+
+    public MainActivity() {
+        super("Battery Monitor", "Battery Monitor Service", ROS_MASTER_URI);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshUI();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Stopping service and handler
+        nodeMainExecutorService.stopSelf();
+        handler.removeCallbacksAndMessages(null);
+
+        // Log.i("LOG", "ONDESTROY FINISHED!");
+    }
+
+    @Override
+    protected void init(NodeMainExecutor nodeMainExecutor) {
+        geckoGripperStatusNode = new GeckoGripperStatusNode();
+
+        // Setting configurations for ROS-Android Node
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic("hlp");
+        nodeConfiguration.setMasterUri(getMasterUri());
+
+        nodeMainExecutor.execute(geckoGripperStatusNode, nodeConfiguration);
+
+        // Log.i("LOG", "NODE EXECUTING!");
+        isNodeExecuting = true;
     }
 }

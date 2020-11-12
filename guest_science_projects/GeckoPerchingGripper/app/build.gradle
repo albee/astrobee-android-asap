@@ -17,12 +17,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+	checkReleaseBuilds false
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+
+    compile('org.ros.rosjava_core:rosjava:[0.2,0.3)') {
+        exclude group: 'xml-apis'
+        exclude group: 'junit'
+    }
+    compile('org.ros.android_core:android_10:[0.2,0.3)') {
+        exclude group: 'xml-apis'
+        exclude group: 'junit'
+    }
+
+    compile files('libs/ff_msgs-0.0.0.jar')
+    compile 'org.ros.rosjava_messages:sensor_msgs:1.12.5'
+
+    compile 'com.android.support:appcompat-v7:25.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

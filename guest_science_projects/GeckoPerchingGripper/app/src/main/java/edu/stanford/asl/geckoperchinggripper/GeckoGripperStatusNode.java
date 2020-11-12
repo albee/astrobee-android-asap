@@ -1,5 +1,4 @@
 
-
 /* Copyright (c) 2017, United States Government, as represented by the
  * Administrator of the National Aeronautics and Space Administration.
  *
@@ -27,21 +26,24 @@ import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
 import android.util.Log;
 
-import ff_msgs.AckStatus;
-import ff_msgs.AckStamped;
-import ff_msgs.CommandArg;
-import ff_msgs.CommandConstants;
-import ff_msgs.CommandStamped;
-import std_msgs.Header;
+import sensor_msgs.JointState; 
+// import std_msgs.Header;
 
-package edu.stanford.asl.geckoperchinggripper.types.GeckoGripperState;
+import edu.stanford.asl.geckoperchinggripper.types.GeckoGripperState;
+
 
 public class GeckoGripperStatusNode extends AbstractNodeMain {
+
     public static GeckoGripperStatusNode instance = null;
 
     GeckoGripperState gripperState;
     Subscriber<JointState> mSubscriber;
     Publisher<JointState> mPublisher;
+
+    @Override
+    public GraphName getDefaultNodeName() {
+        return GraphName.of("battery_status_monitor");
+    }
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
@@ -64,89 +66,8 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         instance = this;
     }
 
-    public void sendMessage(String cmd, float data) {
-        if (mPublisher == null) {
-            return;
-        }
-
-        sensor_msgs.JointState gpg_cmd = mPublisher.newMessage();
-        std_msgs.Header hdr = mMsgFac.newFromType(Header._TYPE);
-        Time myTime = new Time();
-
-        // TODO(acauligi): what should go here?
-        myTime.secs = 1487370000;
-        myTime.nsecs = 0;
-        hdr.setStamp(myTime);
-
-        gpg_cmd.setHeader(hdr);
-
-        String prefix_ = "top_aft_";
-
-        // set first value of name 
-        java.util.List<std_msgs.String> nList 
-            = new java.util.ArrayList<std_msgs.String>();
-        nList.add(prefix_ + cmd);
-        gpg_cmd.setName(nList);
-
-        // set first value of position
-        java.util.List<std_msgs.Float64> pList
-            = new java.util.ArrayList<std_msgs.Float64>();
-        pList.add(data);
-        gpg_cmd.setPosition(pList);
-
-        mPublisher.publish(gpg_cmd);
+    public static GeckoGripperStatusNode getInstance() {
+        return instance;
     }
 
-    /**
-     * Method that updates the information about the gecko perching gripp
-     *
-     * @param jointState Java Object for sensor_msg/JointState ROS message
-     * @return
-     */
-    private GeckoGripperState updateGripperState(JointState jointState) {
-        GeckoGripperState gripperState = new GeckoGripperState();
-
-        // TODO(acauligi): determine how data is unpacked from jointState
-        // gripperState.setLastStatusReadTime(jointState.getSerialNumber());
-        // gripperState.setErrorStatus();
-        // gripperState.setAdhesiveEngage();
-        // gripperState.setWristLock();
-        // gripperState.setAutomaticModeEnable();
-        // gripperState.setExperimentInProgress();
-        // gripperState.setOverTemperatureFlag();
-        // gripperState.setFileIsOpen();
-        // gripperState.setExpIdx();
-        // gripperState.setDelay();
-        return gripperState;
-
-        // guestsciencedata datamsg = mmessagefactory.newfromtype(guestsciencedata._type);
-        // header hdr = mmessagefactory.newfromtype(header._type);
-
-        // hdr.setstamp(mnodeconfig.gettimeprovider().getcurrenttime());
-        // datamsg.setheader(hdr);
-
-        // datamsg.setapkname(apkfullname);
-
-        // if (msg.what == messagetype.string.toint()) {
-        //     datamsg.setdatatype(guestsciencedata.string);
-        // } else if (msg.what == messagetype.json.toint()) {
-        //     datamsg.setdatatype(guestsciencedata.json);
-        // } else if (msg.what == messagetype.binary.toint()) {
-        //     datamsg.setdatatype(guestsciencedata.binary);
-        // } else {
-        //     mlogger.error(log_tag, "message type in guest science message is unknown so the message " +
-        //             "will not be sent to the ground.");
-        //     return;
-        // }
-
-        // datamsg.settopic(topic);
-
-        // // if there isn't data, don't copy it over as it will crash
-        // if (data.length != 0) {
-        //     channelbuffer databuff = channelbuffers.wrappedbuffer(byteorder.little_endian, data);
-        //     datamsg.setdata(databuff);
-        // }
-        // mdatapublisher.publish(datamsg);
-    }
-}
 }
