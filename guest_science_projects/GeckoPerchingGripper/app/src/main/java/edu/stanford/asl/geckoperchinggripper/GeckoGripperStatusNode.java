@@ -18,16 +18,18 @@
 
 package edu.stanford.asl.geckoperchinggripper;
 
-import org.ros.message.MessageListener;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
+import org.ros.message.MessageListener;
+import org.ros.message.Time;
 import android.util.Log;
 
 import sensor_msgs.JointState; 
-// import std_msgs.Header;
+import std_msgs.Header;
+import std_msgs.String;
 
 import edu.stanford.asl.geckoperchinggripper.types.GeckoGripperState;
 
@@ -70,4 +72,93 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         return instance;
     }
 
+    /*
+    public void sendMessage(String cmd, float data) {
+        if (mPublisher == null) {
+            return;
+        }
+
+        sensor_msgs.JointState gpg_cmd = mPublisher.newMessage();
+        // std_msgs.Header hdr = mMsgFac.newFromType(Header._TYPE);
+        Time myTime = new Time();
+
+        // TODO(acauligi): what should go here?
+        myTime.secs = 1487370000;
+        myTime.nsecs = 0;
+        gpg_cmd.getHeader().setStamp(myTime);
+        // gpg_cmd.setHeader(hdr);
+
+        String prefix_ = "top_aft_";
+
+        // set first value of name
+        java.util.List<std_msgs.String> nList
+            = new java.util.ArrayList<std_msgs.String>();
+
+        std_msgs.String new_str_msg = std_msgs.String();
+        new_str_msg.setData(prefix_ + cmd);
+        nList.add(new_str_msg);
+
+        gpg_cmd.setName(nList);
+
+        // set first value of position
+        java.util.List<std_msgs.Float64> pList
+            = new java.util.ArrayList<std_msgs.Float64>();
+        pList.add(data);
+        gpg_cmd.setPosition(pList);
+
+        mPublisher.publish(gpg_cmd);
+    }
+    */
+
+    /**
+     * Method that updates the information about the gecko perching gripp
+     *
+     * @param jointState Java Object for sensor_msg/JointState ROS message
+     * @return
+     */
+    private GeckoGripperState updateGripperState(JointState jointState) {
+        GeckoGripperState gripperState = new GeckoGripperState();
+
+        // TODO(acauligi): determine how data is unpacked from jointState
+        // gripperState.setLastStatusReadTime(jointState.getSerialNumber());
+        // gripperState.setErrorStatus();
+        // gripperState.setAdhesiveEngage();
+        // gripperState.setWristLock();
+        // gripperState.setAutomaticModeEnable();
+        // gripperState.setExperimentInProgress();
+        // gripperState.setOverTemperatureFlag();
+        // gripperState.setFileIsOpen();
+        // gripperState.setExpIdx();
+        // gripperState.setDelay();
+        return gripperState;
+
+        // guestsciencedata datamsg = mmessagefactory.newfromtype(guestsciencedata._type);
+        // header hdr = mmessagefactory.newfromtype(header._type);
+
+        // hdr.setstamp(mnodeconfig.gettimeprovider().getcurrenttime());
+        // datamsg.setheader(hdr);
+
+        // datamsg.setapkname(apkfullname);
+
+        // if (msg.what == messagetype.string.toint()) {
+        //     datamsg.setdatatype(guestsciencedata.string);
+        // } else if (msg.what == messagetype.json.toint()) {
+        //     datamsg.setdatatype(guestsciencedata.json);
+        // } else if (msg.what == messagetype.binary.toint()) {
+        //     datamsg.setdatatype(guestsciencedata.binary);
+        // } else {
+        //     mlogger.error(log_tag, "message type in guest science message is unknown so the message " +
+        //             "will not be sent to the ground.");
+        //     return;
+        // }
+
+        // datamsg.settopic(topic);
+
+        // // if there isn't data, don't copy it over as it will crash
+        // if (data.length != 0) {
+        //     channelbuffer databuff = channelbuffers.wrappedbuffer(byteorder.little_endian, data);
+        //     datamsg.setdata(databuff);
+        // }
+        // mdatapublisher.publish(datamsg);
+    }
 }

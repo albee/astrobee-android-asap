@@ -24,6 +24,9 @@ import android.os.Handler;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
@@ -58,7 +61,6 @@ public class MainActivity extends RosActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        refreshUI();
     }
 
     @Override
