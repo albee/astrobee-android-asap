@@ -44,9 +44,6 @@ public class StartGeckoService extends StartGuestScienceService {
         /* Inform the Guest Science Manager (GSM) and the Ground Data System (GDS)
          * that this app received a command. */
         sendReceivedCustomCommand("info");
-        /* Inform the Guest Science Manager (GSM) and the Ground Data System (GDS)
-         * that this app received a command. */
-        sendReceivedCustomCommand("info");
 
         try {
             // Transform the String command into a JSON object so we can read it.
@@ -64,78 +61,78 @@ public class StartGeckoService extends StartGuestScienceService {
             switch (sCommand) {
                 case "gecko_gripper_open":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_close":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_engage":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_disengage":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_lock":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_unlock":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_enable_auto":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_disable_auto":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_toggle_auto":
                     // TODO(acauligi): return "cmd not implemented"
                     break;
                 case "gecko_gripper_mark_gripper":
                     float IDX = (float) jCommand.get("IDX");
-                    mSimpleNode.sendMessage(sCommand, IDX);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, IDX);
                     break;
                 case "gecko_gripper_set_delay":
                     float DL = (float) jCommand.get("DL");
-                    mSimpleNode.sendMessage(sCommand, DL);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, DL);
                     break;
                 case "gecko_gripper_open_exp":
                     float IDX = (float) jCommand.get("IDX");
-                    mSimpleNode.sendMessage(sCommand, IDX);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, IDX);
                     break;
                 case "gecko_gripper_next_record":
                     float SKIP = (float) jCommand.get("SKIP");
-                    mSimpleNode.sendMessage(sCommand, SKIP);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, SKIP);
                     break;
                 case "gecko_gripper_seek_record":
                     float RN = (float) jCommand.get("RN");
-                    mSimpleNode.sendMessage(sCommand, RN);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, RN);
                     break;
                 case "gecko_gripper_close_exp":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_status":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_record":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_exp":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 case "gecko_gripper_delay":
                     float data = 0x00;
-                    mSimpleNode.sendMessage(sCommand, data);
+                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
                     break;
                 default:
                     // Inform GS Manager and GDS, then stop execution.
@@ -182,24 +179,11 @@ public class StartGeckoService extends StartGuestScienceService {
         api = ApiCommandImplementation.getInstance();
 
         GeckoGripperStatusNode geckoGripperNode = new GeckoGripperStatusNode();
-        // microphoneNode.publishSound(ps);
-        // mSimpleNode = new SimpleNode();
-        // mSimpleNode.setListener(new SimpleNode.OnMessageListener() {
-        //     @Override
-        //     public void onMessage(final String msg) {
-        //         mMainHandler.post(new Runnable() {
-        //             @Override
-        //             public void run() {
-        //                 mRecvText.setText(msg);
-        //             }
-        //         });
-        //     }
-        // });
 
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
         nodeConfiguration.setMasterUri(getMasterUri());
 
-        node.execute(mSimpleNode, nodeConfiguration);
+        node.execute(geckoGripperNode.mPublisher, nodeConfiguration);
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
