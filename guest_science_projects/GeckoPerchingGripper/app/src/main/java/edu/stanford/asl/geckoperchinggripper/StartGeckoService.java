@@ -18,15 +18,21 @@
 
 package edu.stanford.asl.geckoperchinggripper;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.content.Intent;
 
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
+import org.ros.node.topic.Publisher;
+
+import sensor_msgs.JointState;
+import std_msgs.String;
 
 import gov.nasa.arc.astrobee.Result;
 import gov.nasa.arc.astrobee.android.gs.MessageType;
@@ -39,100 +45,115 @@ public class StartGeckoService extends StartGuestScienceService {
      *
      * @param command
      */
+    private GeckoGripperStatusNode gecko_gripper_node;
+
     @Override
-    public void onGuestScienceCustomCmd(String command) {
+    public void onGuestScienceCustomCmd(java.lang.String command) {
         /* Inform the Guest Science Manager (GSM) and the Ground Data System (GDS)
          * that this app received a command. */
         sendReceivedCustomCommand("info");
 
         try {
-            // Transform the String command into a JSON object so we can read it.
-            JSONObject jCommand = new JSONObject(command);
+            JSONObject obj = new JSONObject(command);
+            java.lang.String commandStr = obj.getString("name");
 
-            // Get the name of the command we received. See commands.xml files in res folder.
-            String sCommand = jCommand.getString("name");
-
-            // JSON object that will contain the data we will send back to the GSM and GDS
-            JSONObject jResult = new JSONObject();
+            JSONObject jResponse = new JSONObject();
 
             // This variable will contain the result of the last successful or unsuccessful movement
             Result result;
 
-            switch (sCommand) {
+            java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+
+
+            sensor_msgs.JointState msg = gecko_gripper_node.mPublisher.newMessage();
+
+
+            switch (commandStr) {
                 case "gecko_gripper_open":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_open");
+                    jResponse.put("Summary", "perching_gecko_gripper_open");
                     break;
                 case "gecko_gripper_close":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_close");
+                    jResponse.put("Summary", "perching_gecko_gripper_close");
                     break;
                 case "gecko_gripper_engage":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_engage");
+                    jResponse.put("Summary", "perching_gecko_gripper_engage");
                     break;
                 case "gecko_gripper_disengage":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_disengage");
+                    jResponse.put("Summary", "perching_gecko_gripper_disengage");
                     break;
                 case "gecko_gripper_lock":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_lock");
+                    jResponse.put("Summary", "perching_gecko_gripper_lock");
                     break;
                 case "gecko_gripper_unlock":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_unlock");
+                    jResponse.put("Summary", "perching_gecko_gripper_unlock");
                     break;
                 case "gecko_gripper_enable_auto":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_enable_auto");
+                    jResponse.put("Summary", "perching_gecko_gripper_enable_auto");
                     break;
                 case "gecko_gripper_disable_auto":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_disable_auto");
+                    jResponse.put("Summary", "perching_gecko_gripper_disable_auto");
                     break;
                 case "gecko_gripper_toggle_auto":
                     // TODO(acauligi): return "cmd not implemented"
+                    msg_name.add("perching_gecko_gripper_toggle_auto");
+                    jResponse.put("Summary", "perching_gecko_gripper_toggle_auto");
                     break;
                 case "gecko_gripper_mark_gripper":
-                    float IDX = (float) jCommand.get("IDX");
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, IDX);
+                    // float IDX = (float) jCommand.get("IDX");
+                    msg_name.add("perching_gecko_gripper_mark_gripper");
+                    jResponse.put("Summary", "perching_gecko_gripper_mark_gripper");
                     break;
                 case "gecko_gripper_set_delay":
-                    float DL = (float) jCommand.get("DL");
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, DL);
+                    // float DL = (float) jCommand.get("DL");
+                    msg_name.add("perching_gecko_gripper_set_delay");
+                    jResponse.put("Summary", "perching_gecko_gripper_set_delay");
                     break;
                 case "gecko_gripper_open_exp":
-                    float IDX = (float) jCommand.get("IDX");
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, IDX);
+                    // float IDX = (float) jCommand.get("IDX");
+                    msg_name.add("perching_gecko_gripper_open_exp");
+                    jResponse.put("Summary", "perching_gecko_gripper_open_exp");
                     break;
                 case "gecko_gripper_next_record":
-                    float SKIP = (float) jCommand.get("SKIP");
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, SKIP);
+                    // float SKIP = (float) jCommand.get("SKIP");
+                    msg_name.add("perching_gecko_gripper_next_record");
+                    jResponse.put("Summary", "perching_gecko_gripper_next_record");
                     break;
                 case "gecko_gripper_seek_record":
-                    float RN = (float) jCommand.get("RN");
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, RN);
+                    // float RN = (float) jCommand.get("RN");
+                    msg_name.add("perching_gecko_gripper_seek_record");
+                    jResponse.put("Summary", "perching_gecko_gripper_seek_record");
                     break;
                 case "gecko_gripper_close_exp":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    // float data = 0x00;
+                    msg_name.add("perching_gecko_gripper_close_exp");
+                    jResponse.put("Summary", "perching_gecko_gripper_close_exp");
                     break;
                 case "gecko_gripper_status":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    msg_name.add("perching_gecko_gripper_status");
+                    jResponse.put("Summary", "perching_gecko_gripper_status");
                     break;
                 case "gecko_gripper_record":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    // float data = 0x00;
+                    msg_name.add("perching_gecko_record");
+                    jResponse.put("Summary", "perching_gecko_gripper_record");
                     break;
                 case "gecko_gripper_exp":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    // float data = 0x00;
+                    msg_name.add("perching_gecko_gripper_exp");
+                    jResponse.put("Summary", "perching_gecko_gripper_exp");
                     break;
                 case "gecko_gripper_delay":
-                    float data = 0x00;
-                    geckoGripperNode.mPublisher.sendMessage(sCommand, data);
+                    // float data = 0x00;
+                    msg_name.add("perching_gecko_gripper_delay");
+                    jResponse.put("Summary", "perching_gecko_gripper_delay");
                     break;
                 default:
                     // Inform GS Manager and GDS, then stop execution.
@@ -140,26 +161,10 @@ public class StartGeckoService extends StartGuestScienceService {
                     return;
             }
 
-            if (result == null) {
-                // There were no points to loop
-                jResult.put("Summary", new JSONObject()
-                        .put("Status", "ERROR")
-                        .put("Message", "Trajectory was not defined"));
-            } else if (!result.hasSucceeded()) {
-                // If a goal point failed.
-                jResult.put("Summary", new JSONObject()
-                        .put("Status", result.getStatus())
-                        .put("Message", result.getMessage()));
-            } else {
-                // Success!
-                jResult.put("Summary", new JSONObject()
-                        .put("Status", result.getStatus())
-                        .put("Message", "DONE!"));
-            }
+            msg.setName(msg_name);
+            gecko_gripper_node.mPublisher.publish(msg);
 
-            // Send data to the GS manager to be shown on the Ground Data System.
-            sendData(MessageType.JSON, "data", jResult.toString());
-
+            sendData(MessageType.JSON, "data", jResponse.toString());
         } catch (JSONException e) {
             // Send an error message to the GSM and GDS
             sendData(MessageType.JSON, "data", "ERROR parsing JSON");
@@ -175,15 +180,9 @@ public class StartGeckoService extends StartGuestScienceService {
      */
     @Override
     public void onGuestScienceStart() {
-        // Get a unique instance of the Astrobee API in order to command the robot.
-        api = ApiCommandImplementation.getInstance();
-
-        GeckoGripperStatusNode geckoGripperNode = new GeckoGripperStatusNode();
-
-        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(getRosHostname());
-        nodeConfiguration.setMasterUri(getMasterUri());
-
-        node.execute(geckoGripperNode.mPublisher, nodeConfiguration);
+        // Start the interface
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
@@ -196,9 +195,6 @@ public class StartGeckoService extends StartGuestScienceService {
      */
     @Override
     public void onGuestScienceStop() {
-        // Stop the API
-        api.shutdownFactory();
-
         // Inform the GS manager and the GDS that this app stopped.
         sendStopped("info");
 

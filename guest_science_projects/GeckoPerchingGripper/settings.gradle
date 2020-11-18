@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':guest_science_library'
 rootProject.name='GeckoPerchingGripper'

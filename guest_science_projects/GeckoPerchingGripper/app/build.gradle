@@ -27,6 +27,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
 
+    implementation project(':guest_science_library')
+
     implementation('org.ros.rosjava_core:rosjava:[0.2,0.3)') {
         exclude group: 'xml-apis'
         exclude group: 'junit'

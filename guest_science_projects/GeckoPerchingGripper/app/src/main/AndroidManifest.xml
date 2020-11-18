@@ -12,6 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" 
-        tools:replace="android:theme,android:icon"
-        />
+        tools:replace="android:theme,android:icon">
+        <activity android:screenOrientation="landscape"
+            android:name="edu.stanford.asl.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name=".StartBatteryService" android:exported="true">
+            <meta-data android:name="Start Service" android:value="true" />
+        </service>
+      </application>
 </manifest>
