@@ -4,10 +4,10 @@
     <primary>true</primary> <!-- Required -->
     <commands>
         <command
-            name="Command1"
-            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
+            name="gecko_gripper_open"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_open&quot;}" />
         <command
-            name="Command2"
-            syntax="{&quot;name&quot;: &quot;command2&quot;}" />
+            name="gecko_gripper_close"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_close&quot;}" />
     </commands>
 </apkInfo>

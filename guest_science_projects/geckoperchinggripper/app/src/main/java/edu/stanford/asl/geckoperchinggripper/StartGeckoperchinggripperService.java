@@ -50,12 +50,14 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
      * This function is called when the GS manager starts your apk.
      * Put all of your start up code in here.
      */
-    private GeckoGripperStatusNode gecko_gripper_node;
+    private GeckoGripperStatusNode gecko_gripper_node = null;
 
     @Override
     public void onGuestScienceStart() {
         // Get a unique instance of the Astrobee API in order to command the robot.
         // api = ApiCommandImplementation.getInstance();
+
+        gecko_gripper_node = new GeckoGripperStatusNode();
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");

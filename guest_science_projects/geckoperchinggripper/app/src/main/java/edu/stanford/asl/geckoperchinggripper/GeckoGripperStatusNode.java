@@ -45,7 +45,7 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("battery_status_monitor");
+        return GraphName.of("gecko_perching_gripper");
     }
 
     @Override
