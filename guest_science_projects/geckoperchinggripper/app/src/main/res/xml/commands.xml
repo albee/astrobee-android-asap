@@ -9,5 +9,56 @@
         <command
             name="gecko_gripper_close"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_close&quot;}" />
+        <command
+            name="gecko_gripper_engage"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_engage&quot;}" />
+        <command
+            name="gecko_gripper_disengage"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_disengage&quot;}" />
+        <command
+            name="gecko_gripper_lock"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_lock&quot;}" />
+        <command
+            name="gecko_gripper_unlock"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_unlock&quot;}" />
+        <command
+            name="gecko_gripper_enable_auto"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_enable_auto&quot;}" />
+        <command
+            name="gecko_gripper_disable_auto"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_disable_auto&quot;}" />
+        <command
+            name="gecko_gripper_toggle_auto"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_toggle_auto&quot;}" />
+        <command
+            name="gecko_gripper_mark_gripper"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;}" />
+        <command
+            name="gecko_gripper_set_delay"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;}" />
+        <command
+            name="gecko_gripper_open_exp"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;}" />
+        <command
+            name="gecko_gripper_next_record"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_next_record&quot;}" />
+        <command
+            name="gecko_gripper_seek_record"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_seek_record&quot;}" />
+        <command
+            name="gecko_gripper_close_exp"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_close_exp&quot;}" />
+        <command
+            name="gecko_gripper_status"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_status&quot;}" />
+        <command
+            name="gecko_gripper_record"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_record&quot;}" />
+        <command
+            name="gecko_gripper_exp"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_exp&quot;}" />
+        <command
+            name="gecko_gripper_delay"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_delay&quot;}" />
     </commands>
 </apkInfo>

@@ -29,10 +29,12 @@ import android.content.Intent;
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
+import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.topic.Publisher;
 
 import sensor_msgs.JointState;
 import std_msgs.String;
+import java.net.URI;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
@@ -50,14 +52,26 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
      * This function is called when the GS manager starts your apk.
      * Put all of your start up code in here.
      */
+    NodeMainExecutor nodeMainExecutor;
     private GeckoGripperStatusNode gecko_gripper_node = null;
+
+    // IP Address ROS Master and Hostname
+    private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
+    private static final java.lang.String ROS_HOSTNAME = "hlp";
 
     @Override
     public void onGuestScienceStart() {
         // Get a unique instance of the Astrobee API in order to command the robot.
         // api = ApiCommandImplementation.getInstance();
 
+        // Setting configurations for ROS-Android Node
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(ROS_HOSTNAME);
+        nodeConfiguration.setMasterUri(ROS_MASTER_URI);
+
         gecko_gripper_node = new GeckoGripperStatusNode();
+        
+        nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
+        nodeMainExecutor.execute(gecko_gripper_node, nodeConfiguration);
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
@@ -108,90 +122,52 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             switch (sCommand) {
                 // You may handle your commands here
                 case "gecko_gripper_open":
-                    msg_name.add("perching_gecko_gripper_open");
-                    // jResult.put("Summary", "perching_gecko_gripper_open");
                     break;
                 case "gecko_gripper_close":
-                    msg_name.add("perching_gecko_gripper_close");
-                    // jResult.put("Summary", "perching_gecko_gripper_close");
                     break;
                 case "gecko_gripper_engage":
-                    msg_name.add("perching_gecko_gripper_engage");
-                    // jResult.put("Summary", "perching_gecko_gripper_engage");
                     break;
                 case "gecko_gripper_disengage":
-                    msg_name.add("perching_gecko_gripper_disengage");
-                    // jResult.put("Summary", "perching_gecko_gripper_disengage");
                     break;
                 case "gecko_gripper_lock":
-                    msg_name.add("perching_gecko_gripper_lock");
-                    // jResult.put("Summary", "perching_gecko_gripper_lock");
                     break;
                 case "gecko_gripper_unlock":
-                    msg_name.add("perching_gecko_gripper_unlock");
-                    // jResult.put("Summary", "perching_gecko_gripper_unlock");
                     break;
                 case "gecko_gripper_enable_auto":
-                    msg_name.add("perching_gecko_gripper_enable_auto");
-                    // jResult.put("Summary", "perching_gecko_gripper_enable_auto");
                     break;
                 case "gecko_gripper_disable_auto":
-                    msg_name.add("perching_gecko_gripper_disable_auto");
-                    // jResult.put("Summary", "perching_gecko_gripper_disable_auto");
                     break;
                 case "gecko_gripper_toggle_auto":
                     // TODO(acauligi): return "cmd not implemented"
-                    msg_name.add("perching_gecko_gripper_toggle_auto");
-                    // jResult.put("Summary", "perching_gecko_gripper_toggle_auto");
                     break;
                 case "gecko_gripper_mark_gripper":
                     // float IDX = (float) jCommand.get("IDX");
-                    msg_name.add("perching_gecko_gripper_mark_gripper");
-                    // jResult.put("Summary", "perching_gecko_gripper_mark_gripper");
                     break;
                 case "gecko_gripper_set_delay":
                     // float DL = (float) jCommand.get("DL");
-                    msg_name.add("perching_gecko_gripper_set_delay");
-                    // jResult.put("Summary", "perching_gecko_gripper_set_delay");
                     break;
                 case "gecko_gripper_open_exp":
                     // float IDX = (float) jCommand.get("IDX");
-                    msg_name.add("perching_gecko_gripper_open_exp");
-                    // jResult.put("Summary", "perching_gecko_gripper_open_exp");
                     break;
                 case "gecko_gripper_next_record":
                     // float SKIP = (float) jCommand.get("SKIP");
-                    msg_name.add("perching_gecko_gripper_next_record");
-                    // jResult.put("Summary", "perching_gecko_gripper_next_record");
                     break;
                 case "gecko_gripper_seek_record":
                     // float RN = (float) jCommand.get("RN");
-                    msg_name.add("perching_gecko_gripper_seek_record");
-                    // jResult.put("Summary", "perching_gecko_gripper_seek_record");
                     break;
                 case "gecko_gripper_close_exp":
                     // float data = 0x00;
-                    msg_name.add("perching_gecko_gripper_close_exp");
-                    // jResult.put("Summary", "perching_gecko_gripper_close_exp");
                     break;
                 case "gecko_gripper_status":
-                    msg_name.add("perching_gecko_gripper_status");
-                    // jResult.put("Summary", "perching_gecko_gripper_status");
                     break;
                 case "gecko_gripper_record":
                     // float data = 0x00;
-                    msg_name.add("perching_gecko_record");
-                    // jResult.put("Summary", "perching_gecko_gripper_record");
                     break;
                 case "gecko_gripper_exp":
                     // float data = 0x00;
-                    msg_name.add("perching_gecko_gripper_exp");
-                    // jResult.put("Summary", "perching_gecko_gripper_exp");
                     break;
                 case "gecko_gripper_delay":
                     // float data = 0x00;
-                    msg_name.add("perching_gecko_gripper_delay");
-                    // jResult.put("Summary", "perching_gecko_gripper_delay");
                     break;
 
                 default:
@@ -201,6 +177,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         .put("Message", "Unrecognized command"));
             }
 
+            jResult.put("Summary", sCommand);
+            msg_name.add(sCommand);
             msg.setName(msg_name);
             gecko_gripper_node.mPublisher.publish(msg);
 
@@ -208,9 +186,11 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             sendData(MessageType.JSON, "data", jResult.toString());
         } catch (JSONException e) {
             // Send an error message to the GSM and GDS
+            e.printStackTrace();
             sendData(MessageType.JSON, "data", "ERROR parsing JSON");
         } catch (Exception ex) {
             // Send an error message to the GSM and GDS
+            ex.printStackTrace();
             sendData(MessageType.JSON, "data", "Unrecognized ERROR");
         }
     }
