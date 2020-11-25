@@ -119,6 +119,9 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
             sensor_msgs.JointState msg = gecko_gripper_node.mPublisher.newMessage();
 
+            double[] msg_pos = new double[1];
+            msg_pos[0] = 0.;
+
             switch (sCommand) {
                 // You may handle your commands here
                 case "gecko_gripper_open":
@@ -142,32 +145,37 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     break;
                 case "gecko_gripper_mark_gripper":
                     // float IDX = (float) jCommand.get("IDX");
+                    float IDX = 0;
+                    msg_pos[0] = IDX;
                     break;
                 case "gecko_gripper_set_delay":
-                    // float DL = (float) jCommand.get("DL");
+                    double delay = 250.;
+                    msg_pos[0] = delay;
                     break;
                 case "gecko_gripper_open_exp":
                     // float IDX = (float) jCommand.get("IDX");
+                    double idx = 0.;
+                    msg_pos[0] = idx;
                     break;
                 case "gecko_gripper_next_record":
                     // float SKIP = (float) jCommand.get("SKIP");
+                    double skip = 0.;
+                    msg_pos[0] = skip;
                     break;
                 case "gecko_gripper_seek_record":
                     // float RN = (float) jCommand.get("RN");
+                    double rn = 0.;
+                    msg_pos[0] = rn;
                     break;
                 case "gecko_gripper_close_exp":
-                    // float data = 0x00;
                     break;
                 case "gecko_gripper_status":
                     break;
                 case "gecko_gripper_record":
-                    // float data = 0x00;
                     break;
                 case "gecko_gripper_exp":
-                    // float data = 0x00;
                     break;
                 case "gecko_gripper_delay":
-                    // float data = 0x00;
                     break;
 
                 default:
@@ -180,6 +188,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             jResult.put("Summary", sCommand);
             msg_name.add(sCommand);
             msg.setName(msg_name);
+            msg.setPosition(msg_pos);
             gecko_gripper_node.mPublisher.publish(msg);
 
             // Send data to the GS manager to be shown on the Ground Data System.
