@@ -35,6 +35,7 @@ public class GeckoGripperState implements Serializable {
     private boolean fileIsOpen;
     private int expIdx;
     private int delay;
+    private boolean validData;
 
     public GeckoGripperState() {
         lastStatusReadTime = -1;
@@ -47,6 +48,7 @@ public class GeckoGripperState implements Serializable {
         fileIsOpen = false;
         expIdx = -1;
         delay = -1;
+        validData = false;
     }
 
     public JSONObject toJSON() throws JSONException {
@@ -143,5 +145,13 @@ public class GeckoGripperState implements Serializable {
 
     public void setDelay(int delay) {
         this.delay = delay;
+    }
+
+    public void setValidity(boolean validData) {
+        this.validData = validData;
+    }
+
+    public boolean isDataValid() {
+        return this.validData; 
     }
 }

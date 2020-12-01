@@ -32,19 +32,19 @@
             syntax="{&quot;name&quot;: &quot;gecko_gripper_toggle_auto&quot;}" />
         <command
             name="gecko_gripper_mark_gripper"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;}" />
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
         <command
             name="gecko_gripper_set_delay"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;}" />
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;250&quot;}" />
         <command
             name="gecko_gripper_open_exp"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;}" />
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
         <command
             name="gecko_gripper_next_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_next_record&quot;}" />
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_next_record&quot;, &quot;SKIP&quot;: &quot;0&quot;}" />
         <command
             name="gecko_gripper_seek_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_seek_record&quot;}" />
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_seek_record&quot;, &quot;RN&quot;: &quot;0&quot;}" />
         <command
             name="gecko_gripper_close_exp"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_close_exp&quot;}" />

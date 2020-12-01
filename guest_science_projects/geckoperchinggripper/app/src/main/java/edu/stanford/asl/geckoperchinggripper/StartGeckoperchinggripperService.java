@@ -144,28 +144,19 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     // TODO(acauligi): return "cmd not implemented"
                     break;
                 case "gecko_gripper_mark_gripper":
-                    // float IDX = (float) jCommand.get("IDX");
-                    float IDX = 0;
-                    msg_pos[0] = IDX;
+                    msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
                     break;
                 case "gecko_gripper_set_delay":
-                    double delay = 250.;
-                    msg_pos[0] = delay;
+                    msg_pos[0] = Float.parseFloat(jCommand.getString("DL"));
                     break;
                 case "gecko_gripper_open_exp":
-                    // float IDX = (float) jCommand.get("IDX");
-                    double idx = 0.;
-                    msg_pos[0] = idx;
+                    msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
                     break;
                 case "gecko_gripper_next_record":
-                    // float SKIP = (float) jCommand.get("SKIP");
-                    double skip = 0.;
-                    msg_pos[0] = skip;
+                    msg_pos[0] = Float.parseFloat(jCommand.getString("SKIP"));
                     break;
                 case "gecko_gripper_seek_record":
-                    // float RN = (float) jCommand.get("RN");
-                    double rn = 0.;
-                    msg_pos[0] = rn;
+                    msg_pos[0] = Float.parseFloat(jCommand.getString("RN"));
                     break;
                 case "gecko_gripper_close_exp":
                     break;
@@ -183,6 +174,11 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
+            }
+
+            if (gecko_gripper_node.gripperState.isDataValid()) {
+              JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
+              sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
             }
 
             jResult.put("Summary", sCommand);
