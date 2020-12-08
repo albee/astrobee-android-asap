@@ -176,9 +176,10 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         .put("Message", "Unrecognized command"));
             }
 
-            if (gecko_gripper_node.gripperState.isDataValid()) {
+            if (gecko_gripper_node.gripperState.getNewStatusReceived() && gecko_gripper_node.gripperState.isDataValid()) {
               JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
               sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
+              gecko_gripper_node.gripperState.setNewStatusReceived(false);    // clear new status received flag
             }
 
             jResult.put("Summary", sCommand);

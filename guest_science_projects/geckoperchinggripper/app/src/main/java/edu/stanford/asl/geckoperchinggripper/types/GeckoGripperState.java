@@ -33,9 +33,11 @@ public class GeckoGripperState implements Serializable {
     private boolean experimentInProgress;
     private boolean overtemperatureFlag;
     private boolean fileIsOpen;
-    private int expIdx;
-    private int delay;
+    private short expIdx;
+    private short delay;
     private boolean validData;
+    private int lastStatus;
+    private boolean newStatusReceived;
 
     public GeckoGripperState() {
         lastStatusReadTime = -1;
@@ -43,31 +45,43 @@ public class GeckoGripperState implements Serializable {
         adhesiveEngage = false;
         wristLock = false;
         automaticModeEnable = false;
+        fileIsOpen = false;
         experimentInProgress = false;
         overtemperatureFlag = false;
-        fileIsOpen = false;
         expIdx = -1;
         delay = -1;
         validData = false;
+        lastStatus = 0x0000;
+        newStatusReceived = false;
     }
 
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put("Last Status Read Time", lastStatusReadTime)
+                .put("Validity", validData)
                 .put("Error Status", errorStatus)
                 .put("Adhesive Engage", adhesiveEngage)
                 .put("Wrist Lock", wristLock)
                 .put("Automatic Mode Enable", automaticModeEnable)
+                .put("File is Open", fileIsOpen)
                 .put("Experiment in Progress", experimentInProgress)
                 .put("Overtemperature Flag", overtemperatureFlag)
-                .put("File is Open", fileIsOpen)
                 .put("Experiment Idx", expIdx)
                 .put("Delay", delay);
+
         return json;
     }
 
     public int getLastStatusReadTime() {
         return lastStatusReadTime;
+    }
+
+    public boolean getNewStatusReceived() {
+        return newStatusReceived;
+    }
+
+    public void setNewStatusReceived(boolean newStatusReceived) {
+        this.newStatusReceived = newStatusReceived;
     }
 
     public void setLastStatusReadTime(int lastStatusReadTime) {
@@ -121,6 +135,7 @@ public class GeckoGripperState implements Serializable {
     public void setOverTemperatureFlag(boolean overtemperatureFlag) {
         // no temperature sensor on gripper control board
         this.overtemperatureFlag = false;
+        this.overtemperatureFlag = overtemperatureFlag;
     }
 
     public boolean getFileIsOpen() {
@@ -135,15 +150,15 @@ public class GeckoGripperState implements Serializable {
         return expIdx;
     }
 
-    public void setExpIdx(int expIdx) {
+    public void setExpIdx(short expIdx) {
         this.expIdx = expIdx;
     }
 
-    public int getDelay() {
+    public short getDelay() {
         return delay;
     }
 
-    public void setDelay(int delay) {
+    public void setDelay(short delay) {
         this.delay = delay;
     }
 
@@ -153,5 +168,16 @@ public class GeckoGripperState implements Serializable {
 
     public boolean isDataValid() {
         return this.validData; 
+    }
+
+    public void updateStatus(int newStatus) {
+      if (this.newStatusReceived) {
+        return;
+      } else if (newStatus != this.lastStatus) {
+        this.newStatusReceived = true;
+        this.lastStatus = newStatus;
+      } else {
+        this.newStatusReceived = false;
+      }
     }
 }
