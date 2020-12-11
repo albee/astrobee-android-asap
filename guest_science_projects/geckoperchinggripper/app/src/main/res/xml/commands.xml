@@ -34,8 +34,23 @@
             name="gecko_gripper_mark_gripper"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
         <command
+            name="gecko_gripper_mark_gripper_350"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;350&quot;}" />
+        <command
+            name="gecko_gripper_mark_gripper_450"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;450&quot;}" />
+        <command
+            name="gecko_gripper_mark_gripper_500"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;500&quot;}" />
+        <command
             name="gecko_gripper_set_delay"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;250&quot;}" />
+        <command
+            name="gecko_gripper_set_delay_150"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;150&quot;}" />
+        <command
+            name="gecko_gripper_set_delay_350"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;350&quot;}" />
         <command
             name="gecko_gripper_open_exp"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;, &quot;IDX&quot;: &quot;0&quot;}" />

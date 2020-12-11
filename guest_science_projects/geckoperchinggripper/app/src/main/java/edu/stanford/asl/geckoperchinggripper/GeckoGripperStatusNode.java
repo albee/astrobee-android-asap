@@ -91,8 +91,8 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
           return gripperState;
         }
 
-        double errorStatus = position[1];
-        double lastStatusReadTime = position[2];
+        int errorStatus = (int)position[1];
+        int lastStatusReadTime = (int)position[2];
         boolean  overtemperatureFlag = (position[3] != 0);
         boolean experimentInProgress = (position[4] != 0);
         boolean fileIsOpen = (position[5] != 0);
@@ -126,6 +126,8 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         }
         gripperState.updateNewStatusReceived(newStatusReceived);
 
+        gripperState.setErrorStatus(errorStatus);
+        gripperState.setLastStatusReadTime(lastStatusReadTime);
         gripperState.setOverTemperatureFlag(overtemperatureFlag);
         gripperState.setExperimentInProgress(experimentInProgress);
         gripperState.setFileIsOpen(fileIsOpen);

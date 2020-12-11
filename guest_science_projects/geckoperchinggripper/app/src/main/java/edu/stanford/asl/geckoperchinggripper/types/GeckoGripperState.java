@@ -55,17 +55,15 @@ public class GeckoGripperState implements Serializable {
 
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("Last Status Read Time", lastStatusReadTime)
-                .put("Validity", validData)
-                .put("Error Status", errorStatus)
+        json.put("Error Status", errorStatus)
                 .put("Adhesive Engage", adhesiveEngage)
                 .put("Wrist Lock", wristLock)
                 .put("Automatic Mode Enable", automaticModeEnable)
                 .put("File is Open", fileIsOpen)
                 .put("Experiment in Progress", experimentInProgress)
-                .put("Overtemperature Flag", overtemperatureFlag)
                 .put("Experiment Idx", expIdx)
-                .put("Delay", delay);
+                .put("Delay", delay)
+                .put("Last Status Read Time", lastStatusReadTime);
 
         return json;
     }
