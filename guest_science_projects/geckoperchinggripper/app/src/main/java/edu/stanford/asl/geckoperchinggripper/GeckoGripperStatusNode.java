@@ -61,7 +61,7 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
                 sensor_msgs.JointState._TYPE);
 
         mSubscriber = connectedNode.newSubscriber(
-                "joint_states", JointState._TYPE);
+                "gecko_states", JointState._TYPE);
         mSubscriber.addMessageListener(new MessageListener<JointState>() {
             @Override
             public void onNewMessage(JointState jointState) {
@@ -82,84 +82,58 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
 
         // TODO(acauligi): determine how data is unpacked from jointState
         double[] position = jointState.getPosition();
-        int gpg_n_bytes = 6;
+        int gpg_n_bytes = 35;
 
-        byte[] byte_data;
-        byte_data = ByteBuffer.allocate(Double.BYTES).putDouble(position[7]).array();
-
-        // Check if leading bytes in header
-        if (byte_data[7] == (byte)0xff && byte_data[6] == (byte)0xff && byte_data[5] == (byte)0xfd) {
-          gripperState.setValidity(true);
-        } else {
-          // Bad data
-          gripperState.setValidity(false);
-          return gripperState;
-        }
-
-        // Unpack rest of header bytes
-        byte ID = byte_data[4]; // 0x00 for status packet, 0x01 for science packet
-        byte ERR_L = byte_data[3];
-        byte ERR_H = byte_data[2];
-        byte TIME_L = byte_data[1];
-        byte TIME_H = byte_data[0];
-
-        boolean overtemperatureFlag = false;
-        boolean experimentInProgress = false;
-        boolean fileIsOpen = false;
-        boolean automaticModeEnable = false;
-        boolean wristLock = false;
-        boolean adhesiveEngage = false;
-
-        if (ID == (byte)0x01) {
+        boolean readSD = (position[0] != 0);
+        if (readSD) {
           // science packet
           // Android app doesn't support reading science data
+          return gripperState;
+        }
+
+        double errorStatus = position[1];
+        double lastStatusReadTime = position[2];
+        boolean  overtemperatureFlag = (position[3] != 0);
+        boolean experimentInProgress = (position[4] != 0);
+        boolean fileIsOpen = (position[5] != 0);
+        boolean automaticModeEnable = (position[6] != 0);
+        boolean wristLock = (position[7] != 0);
+        boolean adhesiveEngage = (position[8] != 0);
+        int delay = (int)position[9];
+        int expIdx = (int)position[10];
+
+        if (overtemperatureFlag) {
+          // overtemperatureFlag should always be true
           gripperState.setValidity(false);
           return gripperState;
         }
 
-        // Start reading data bytes
-        byte_data = ByteBuffer.allocate(Double.BYTES).putDouble(position[8]).array();
+        boolean newStatusReceived = false;
+        if (overtemperatureFlag != gripperState.getOvertemperatureFlag()) {
+          newStatusReceived = true;
+        } else if (experimentInProgress != gripperState.getExperimentInProgress()) {
+          newStatusReceived = true;
+        } else if (fileIsOpen != gripperState.getFileIsOpen()) {
+          newStatusReceived = true;
+        } else if (wristLock != gripperState.getWristLock()) {
+          newStatusReceived = true;
+        } else if (adhesiveEngage != gripperState.getAdhesiveEngage()) {
+          newStatusReceived = true;
+        } else if (delay != gripperState.getDelay()) {
+          newStatusReceived = true;
+        } else if (expIdx != gripperState.getExpIdx()) {
+          newStatusReceived = true;
+        }
+        gripperState.updateNewStatusReceived(newStatusReceived);
 
-        // TODO(acauligi): how to make reading bytes be endian-agnostic?
-        byte STATUS_H = (byte)byte_data[7];
-        byte STATUS_L = (byte)byte_data[6];
-        byte DL_H = (byte)byte_data[5];
-        byte DL_L = (byte)byte_data[4];
-        byte IDX_H = (byte)byte_data[3];
-        byte IDX_L = (byte)byte_data[2];
-
-        int newStatus = (STATUS_H << 8) | STATUS_L;
-        gripperState.updateStatus(newStatus);
-
-        byte mask = (byte)0x80;
-        overtemperatureFlag = (STATUS_H & mask) != 0;
         gripperState.setOverTemperatureFlag(overtemperatureFlag);
-
-        mask = (byte)0x01;
-        experimentInProgress = (STATUS_H & mask) != 0;
         gripperState.setExperimentInProgress(experimentInProgress);
-
-        mask = (byte)0x20;
-        fileIsOpen = (STATUS_L & mask) != 0;
         gripperState.setFileIsOpen(fileIsOpen);
-
-        mask = (byte)0x08;
-        automaticModeEnable = (STATUS_L & mask) != 0;
         gripperState.setAutomaticModeEnable(automaticModeEnable);
-
-        mask = (byte)0x02;
-        wristLock = (STATUS_L & mask) != 0;
         gripperState.setWristLock(wristLock);
-
-        mask = (byte)0x01;
-        adhesiveEngage = (STATUS_L & mask) != 0;
         gripperState.setAdhesiveEngage(adhesiveEngage);
-
-        short expIdx = (short)(((int)IDX_H << 8) | (int)IDX_L);
-        gripperState.setExpIdx(expIdx);
-
-        short delay = (short)(((int)DL_H << 8) | (int)DL_L);
         gripperState.setDelay(delay);
+        gripperState.setExpIdx(expIdx);
 
         gripperState.setValidity(true);
         return gripperState;

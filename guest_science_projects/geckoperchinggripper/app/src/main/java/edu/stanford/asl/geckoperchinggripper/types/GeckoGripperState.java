@@ -33,10 +33,9 @@ public class GeckoGripperState implements Serializable {
     private boolean experimentInProgress;
     private boolean overtemperatureFlag;
     private boolean fileIsOpen;
-    private short expIdx;
-    private short delay;
+    private int expIdx;
+    private int delay;
     private boolean validData;
-    private int lastStatus;
     private boolean newStatusReceived;
 
     public GeckoGripperState() {
@@ -51,7 +50,6 @@ public class GeckoGripperState implements Serializable {
         expIdx = -1;
         delay = -1;
         validData = false;
-        lastStatus = 0x0000;
         newStatusReceived = false;
     }
 
@@ -128,7 +126,7 @@ public class GeckoGripperState implements Serializable {
         this.experimentInProgress = experimentInProgress;
     }
 
-    public boolean getOverTemperatureFlag() {
+    public boolean getOvertemperatureFlag() {
         return overtemperatureFlag;
     }
 
@@ -150,15 +148,15 @@ public class GeckoGripperState implements Serializable {
         return expIdx;
     }
 
-    public void setExpIdx(short expIdx) {
+    public void setExpIdx(int expIdx) {
         this.expIdx = expIdx;
     }
 
-    public short getDelay() {
+    public int getDelay() {
         return delay;
     }
 
-    public void setDelay(short delay) {
+    public void setDelay(int delay) {
         this.delay = delay;
     }
 
@@ -170,14 +168,10 @@ public class GeckoGripperState implements Serializable {
         return this.validData; 
     }
 
-    public void updateStatus(int newStatus) {
+    public void updateNewStatusReceived(boolean newStatusReceived) {
       if (this.newStatusReceived) {
         return;
-      } else if (newStatus != this.lastStatus) {
-        this.newStatusReceived = true;
-        this.lastStatus = newStatus;
-      } else {
-        this.newStatusReceived = false;
       }
+      this.newStatusReceived = newStatusReceived;
     }
 }
