@@ -168,18 +168,17 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     break;
                 case "gecko_gripper_delay":
                     break;
+                case "gecko_gripper_print_status":
+                    JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
+                    sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
+                    gecko_gripper_node.gripperState.setNewStatusReceived(false);    // clear new status received flag
+                    break;
 
                 default:
                     // Inform GS Manager and GDS, then stop execution.
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
-            }
-
-            if (gecko_gripper_node.gripperState.isDataValid()) {
-              JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
-              sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
-              gecko_gripper_node.gripperState.setNewStatusReceived(false);    // clear new status received flag
             }
 
             jResult.put("Summary", sCommand);

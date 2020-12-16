@@ -75,5 +75,8 @@
         <command
             name="gecko_gripper_delay"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_delay&quot;}" />
+        <command
+            name="gecko_gripper_print_status"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_print_status&quot;}" />
     </commands>
 </apkInfo>

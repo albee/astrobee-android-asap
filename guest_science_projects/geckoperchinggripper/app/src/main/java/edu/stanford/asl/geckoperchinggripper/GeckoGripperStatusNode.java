@@ -126,7 +126,10 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         }
         gripperState.updateNewStatusReceived(newStatusReceived);
 
-        gripperState.setErrorStatus(errorStatus);
+        if (errorStatus == 0) {
+          // Only clear errorStatus
+          gripperState.setErrorStatus(errorStatus);
+        }
         gripperState.setLastStatusReadTime(lastStatusReadTime);
         gripperState.setOverTemperatureFlag(overtemperatureFlag);
         gripperState.setExperimentInProgress(experimentInProgress);

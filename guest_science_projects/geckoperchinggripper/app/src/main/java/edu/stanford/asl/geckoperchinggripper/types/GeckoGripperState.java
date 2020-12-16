@@ -55,7 +55,40 @@ public class GeckoGripperState implements Serializable {
 
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
-        json.put("Error Status", errorStatus)
+        String errorString = "No error";
+        if (this.errorStatus == 0x01) {
+          errorString = "Result error";
+        } else if (this.errorStatus == 0x02) {
+          errorString = "Instruction error";
+        } else if (this.errorStatus == 0x03) {
+          errorString = "CRC error";
+        } else if (this.errorStatus == 0x04) {
+          errorString = "Data range error";
+        } else if (this.errorStatus == 0x05) {
+          errorString = "Data len error";
+        } else if (this.errorStatus == 0x06) {
+          errorString = "Data lim error";
+        } else if (this.errorStatus == 0x07) {
+          errorString = "Access error";
+        } else if (this.errorStatus == 0x08) {
+          errorString = "Instr read error";
+        } else if (this.errorStatus == 0x09) {
+          errorString = "Instr write error";
+        } else if (this.errorStatus == 0x0A) {
+          errorString = "Instr TOF init";
+        } else if (this.errorStatus == 0x0B) {
+          errorString = "Instr TOF read";
+        } else if (this.errorStatus == 0x0C) {
+          errorString = "Instr SD init";
+        } else if (this.errorStatus == 0x0D) {
+          errorString = "Instr SD open";
+        } else if (this.errorStatus == 0x0E) {
+          errorString = "Instr SD write";
+        } else if (this.errorStatus == 0x0F) {
+          errorString = "Instr SD read";
+        }
+
+        json.put("Error Status", errorString)
                 .put("Adhesive Engage", adhesiveEngage)
                 .put("Wrist Lock", wristLock)
                 .put("Automatic Mode Enable", automaticModeEnable)
