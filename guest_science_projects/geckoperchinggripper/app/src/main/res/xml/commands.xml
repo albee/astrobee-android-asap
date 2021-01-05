@@ -4,85 +4,67 @@
     <primary>true</primary> <!-- Required -->
     <commands>
         <command
-            name="gecko_gripper_open"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_open&quot;}" />
+            name="print_status"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_print_status&quot;}" />
         <command
-            name="gecko_gripper_close"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_close&quot;}" />
+            name="reset_gripper"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_reset_gripper&quot;}" />
         <command
-            name="gecko_gripper_engage"
+            name="engage"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_engage&quot;}" />
         <command
-            name="gecko_gripper_disengage"
+            name="disengage"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_disengage&quot;}" />
         <command
-            name="gecko_gripper_lock"
+            name="lock"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_lock&quot;}" />
         <command
-            name="gecko_gripper_unlock"
+            name="unlock"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_unlock&quot;}" />
         <command
-            name="gecko_gripper_enable_auto"
+            name="enable_auto"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_enable_auto&quot;}" />
         <command
-            name="gecko_gripper_disable_auto"
+            name="disable_auto"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_disable_auto&quot;}" />
         <command
-            name="gecko_gripper_toggle_auto"
+            name="toggle_auto"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_toggle_auto&quot;}" />
         <command
-            name="gecko_gripper_mark_gripper"
+            name="mark_gripper"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
         <command
-            name="gecko_gripper_mark_gripper_350"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;350&quot;}" />
-        <command
-            name="gecko_gripper_mark_gripper_450"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;450&quot;}" />
-        <command
-            name="gecko_gripper_mark_gripper_550"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;550&quot;}" />
-        <command
-            name="gecko_gripper_mark_gripper_650"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;650&quot;}" />
-        <command
-            name="gecko_gripper_mark_gripper_750"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;750&quot;}" />
-        <command
-            name="gecko_gripper_set_delay"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;250&quot;}" />
-        <command
-            name="gecko_gripper_set_delay_150"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;150&quot;}" />
-        <command
-            name="gecko_gripper_set_delay_350"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;350&quot;}" />
-        <command
-            name="gecko_gripper_open_exp"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
-        <command
-            name="gecko_gripper_next_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_next_record&quot;, &quot;SKIP&quot;: &quot;0&quot;}" />
-        <command
-            name="gecko_gripper_seek_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_seek_record&quot;, &quot;RN&quot;: &quot;0&quot;}" />
-        <command
-            name="gecko_gripper_close_exp"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_close_exp&quot;}" />
-        <command
-            name="gecko_gripper_status"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_status&quot;}" />
-        <command
-            name="gecko_gripper_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_record&quot;}" />
-        <command
-            name="gecko_gripper_exp"
+            name="query_exp"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_exp&quot;}" />
         <command
-            name="gecko_gripper_delay"
+            name="set_delay"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_delay&quot;, &quot;DL&quot;: &quot;250&quot;}" />
+        <command
+            name="query_delay"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_delay&quot;}" />
         <command
-            name="gecko_gripper_print_status"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_print_status&quot;}" />
+            name="close_exp"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_close_exp&quot;}" />
+        <command
+            name="open"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_open&quot;}" />
+        <command
+            name="close"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_close&quot;}" />
+        <command
+            name="status"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_status&quot;}" />
+        <command
+            name="record"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_record&quot;}" />
+        <command
+            name="open_exp"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
+        <command
+            name="next_record"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_next_record&quot;, &quot;SKIP&quot;: &quot;0&quot;}" />
+        <command
+            name="seek_record"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_seek_record&quot;, &quot;RN&quot;: &quot;0&quot;}" />
     </commands>
 </apkInfo>

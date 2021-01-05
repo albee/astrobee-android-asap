@@ -169,9 +169,59 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_delay":
                     break;
                 case "gecko_gripper_print_status":
+                    // Make sure to query delay and exp idx each
+                    // time status is printed (by default)
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_delay");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_exp");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
+
                     JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
                     sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
                     gecko_gripper_node.gripperState.setNewStatusReceived(false);    // clear new status received flag
+                    break;
+                case "gecko_gripper_reset_gripper":
+                    // After perching experiment, resets gripper
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_disable_auto");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_disengage");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_unlock");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_delay");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
+                    msg_name.add("gecko_gripper_exp");
+                    msg.setName(msg_name);
+                    msg.setPosition(msg_pos);
+                    gecko_gripper_node.mPublisher.publish(msg);
+
+                    msg_name.clear();
                     break;
 
                 default:
