@@ -34,6 +34,7 @@ import java.util.Random;
 import java.io.File;
 import java.io.IOException;
 
+import ff_msgs.ControlActionFeedback;
 import sensor_msgs.JointState; 
 import std_msgs.Header;
 import std_msgs.String;
@@ -43,10 +44,14 @@ import edu.stanford.asl.geckoperchinggripper.types.GeckoGripperState;
 public class GeckoGripperStatusNode extends AbstractNodeMain {
 
     public static GeckoGripperStatusNode instance = null;
+    public static float errorPosition;
+    public static boolean feedbackPerchingEnable = false;
+    public static float errorTol = 0.18;
 
     GeckoGripperState gripperState;
     Publisher<JointState> mPublisher;
     Subscriber<JointState> mSubscriber;
+    Subscriber<ControlActionFeedback> actionSubscriber;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -67,6 +72,33 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
             public void onNewMessage(JointState jointState) {
                 gripperState = updateGripperState(jointState);
                 instance = GeckoGripperStatusNode.this;
+            }
+        }, 10);
+
+        actionSubscriber = connectedNode.newSubscriber(
+                "/gnc/control/feedback", ControlActionFeedback._TYPE);
+        actionSubscriber.addMessageListener(new MessageListener<ControlActionFeedback>() {
+            @Override
+            public void onNewMessage(ControlActionFeedback feedback) {
+                errorPosition = feedback.getErrorPosition();
+                if (feedbackPerchingEnable && java.lang.Math.abs(errorPosition) >= errorTol) {
+                  // TODO(acauligi): send command to engage & lock first time in this logic
+                  // TODO(acauligi): add ability to configure 0.18cm tolerance (set_feedback_err)
+                  sensor_msgs.JointState msg = mPublisher.newMessage();
+                  java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+                  double[] msg_pos = new double[1];
+                  msg_pos[0] = 0.;
+
+                  msg_name.add("gecko_gripper_engage");
+                  msg_name.add("gecko_gripper_lock");
+
+                  msg.setName(msg_name);
+                  msg.setPosition(msg_pos);
+                  mPublisher.publish(msg);
+
+                  feedbackPerchingEnable = false;
+                  Log.i("LOG", "ControlActionFeedback: Cmd to engage & lock gripper sent");
+                }
             }
         }, 10);
 

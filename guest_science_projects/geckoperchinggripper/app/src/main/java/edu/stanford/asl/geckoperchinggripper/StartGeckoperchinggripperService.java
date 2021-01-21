@@ -125,48 +125,69 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             switch (sCommand) {
                 // You may handle your commands here
                 case "gecko_gripper_open":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_close":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_engage":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_disengage":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_lock":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_unlock":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_enable_auto":
+                    if (!gecko_gripper_node.feedbackPerchingEnable) {
+                      msg_name.add(sCommand);
+                    }
                     break;
                 case "gecko_gripper_disable_auto":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_toggle_auto":
                     // TODO(acauligi): return "cmd not implemented"
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_mark_gripper":
+                    msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
                     break;
                 case "gecko_gripper_set_delay":
+                    msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("DL"));
                     break;
                 case "gecko_gripper_open_exp":
+                    msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
                     break;
                 case "gecko_gripper_next_record":
+                    msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("SKIP"));
                     break;
                 case "gecko_gripper_seek_record":
+                    msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("RN"));
                     break;
                 case "gecko_gripper_close_exp":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_status":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_record":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_exp":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_delay":
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_print_status":
                     // Make sure to query delay and exp idx each
@@ -174,6 +195,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add("gecko_gripper_delay");
                     msg_name.add("gecko_gripper_exp");
 
+                    // TODO(acauligi): Call handler: executes after a certain amount of seconds
+                    // TODO(acauligi): Immediately issue "querying status" print statement to let user know things aren't hanging
                     JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
                     sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
                     gecko_gripper_node.gripperState.setNewStatusReceived(false);    // clear new status received flag
@@ -186,6 +209,19 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add("gecko_gripper_delay");
                     msg_name.add("gecko_gripper_exp");
                     break;
+                case "gecko_gripper_enable_auto_feedback":
+                    gecko_gripper_node.feedbackPerchingEnable = true;
+                    msg_name.add("gecko_gripper_disable_auto");
+                    msg_name.add("gecko_gripper_disengage");
+                    msg_name.add("gecko_gripper_unlock");
+                    break;
+                case "gecko_gripper_disable_auto_feedback":
+                    gecko_gripper_node.feedbackPerchingEnable = false;
+                    break;
+                case "gecko_gripper_set_feedback_tol":
+                    gecko_gripper_node.errorTol = 0.01*Float.parseFloat(jCommand.getString("TOL"));
+                    gecko_gripper_node.feedbackPerchingEnable = false;
+                    break;
 
                 default:
                     // Inform GS Manager and GDS, then stop execution.
@@ -194,11 +230,12 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         .put("Message", "Unrecognized command"));
             }
 
-            jResult.put("Summary", sCommand);
-            msg_name.add(sCommand);
-            msg.setName(msg_name);
-            msg.setPosition(msg_pos);
-            gecko_gripper_node.mPublisher.publish(msg);
+            if (msg_name.size() > 0) {
+              jResult.put("Summary", sCommand);
+              msg.setName(msg_name);
+              msg.setPosition(msg_pos);
+              gecko_gripper_node.mPublisher.publish(msg);
+            }
 
             // Send data to the GS manager to be shown on the Ground Data System.
             sendData(MessageType.JSON, "data", jResult.toString());

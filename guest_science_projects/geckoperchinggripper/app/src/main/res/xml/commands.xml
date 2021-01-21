@@ -28,6 +28,15 @@
             name="disable_auto"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_disable_auto&quot;}" />
         <command
+            name="enable_auto_feedback"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_enable_auto_feedback&quot;}" />
+        <command
+            name="disable_auto_feedback"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_disable_auto_feedback&quot;}" />
+        <command
+            name="set_feedback_tol_cm"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_set_feedback_tol&quot;, &quot;TOL&quot;: &quot;18&quot;}" />
+        <command
             name="toggle_auto"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_toggle_auto&quot;}" />
         <command
@@ -54,17 +63,5 @@
         <command
             name="status"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_status&quot;}" />
-        <command
-            name="record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_record&quot;}" />
-        <command
-            name="open_exp"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_open_exp&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
-        <command
-            name="next_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_next_record&quot;, &quot;SKIP&quot;: &quot;0&quot;}" />
-        <command
-            name="seek_record"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_seek_record&quot;, &quot;RN&quot;: &quot;0&quot;}" />
     </commands>
 </apkInfo>
