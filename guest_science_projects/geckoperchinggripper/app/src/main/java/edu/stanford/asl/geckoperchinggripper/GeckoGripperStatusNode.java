@@ -44,9 +44,9 @@ import edu.stanford.asl.geckoperchinggripper.types.GeckoGripperState;
 public class GeckoGripperStatusNode extends AbstractNodeMain {
 
     public static GeckoGripperStatusNode instance = null;
-    public static float errorPosition;
+    public static double errorPosition;
     public static boolean feedbackPerchingEnable = false;
-    public static float errorTol = 0.18;
+    public static double errorTol = 0.18;
 
     GeckoGripperState gripperState;
     Publisher<JointState> mPublisher;
@@ -80,7 +80,7 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         actionSubscriber.addMessageListener(new MessageListener<ControlActionFeedback>() {
             @Override
             public void onNewMessage(ControlActionFeedback feedback) {
-                errorPosition = feedback.getErrorPosition();
+                errorPosition = feedback.getFeedback().getErrorPosition();
                 if (feedbackPerchingEnable && java.lang.Math.abs(errorPosition) >= errorTol) {
                   // TODO(acauligi): send command to engage & lock first time in this logic
                   // TODO(acauligi): add ability to configure 0.18cm tolerance (set_feedback_err)

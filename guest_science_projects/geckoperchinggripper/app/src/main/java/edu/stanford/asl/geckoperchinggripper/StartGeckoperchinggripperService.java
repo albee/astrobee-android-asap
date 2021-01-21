@@ -219,7 +219,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     gecko_gripper_node.feedbackPerchingEnable = false;
                     break;
                 case "gecko_gripper_set_feedback_tol":
-                    gecko_gripper_node.errorTol = 0.01*Float.parseFloat(jCommand.getString("TOL"));
+                    gecko_gripper_node.errorTol = 0.01*Double.parseDouble(jCommand.getString("TOL"));
                     gecko_gripper_node.feedbackPerchingEnable = false;
                     break;
 
