@@ -22,6 +22,9 @@
             name="unlock"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_unlock&quot;}" />
         <command
+            name="engage_lock"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_engage_lock&quot;}" />
+        <command
             name="enable_auto"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_enable_auto&quot;}" />
         <command
@@ -37,10 +40,7 @@
             name="set_feedback_tol_cm"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_set_feedback_tol&quot;, &quot;TOL&quot;: &quot;18&quot;}" />
         <command
-            name="toggle_auto"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_toggle_auto&quot;}" />
-        <command
-            name="mark_gripper"
+            name="record_exp"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_mark_gripper&quot;, &quot;IDX&quot;: &quot;0&quot;}" />
         <command
             name="query_exp"
@@ -54,12 +54,6 @@
         <command
             name="close_exp"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_close_exp&quot;}" />
-        <command
-            name="open"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_open&quot;}" />
-        <command
-            name="close"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_close&quot;}" />
         <command
             name="status"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_status&quot;}" />

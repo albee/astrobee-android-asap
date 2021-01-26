@@ -46,7 +46,7 @@ import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
 public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
     // The API implementation
-    // private ApiCommandImplementation api = null;
+    private ApiCommandImplementation api = null;
 
      /**
      * This function is called when the GS manager starts your apk.
@@ -55,6 +55,19 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     NodeMainExecutor nodeMainExecutor;
     private GeckoGripperStatusNode gecko_gripper_node = null;
 
+    /*
+     * Handler and Runnable for permanent interface updating
+     */
+    // Handler handler;
+
+    // private Runnable refresh = new Runnable() {
+    //     @Override
+    //     public void run() {
+    //         handler.postDelayed(refresh, 2000);
+    //         refreshGripper();
+    //     }
+    // };
+
     // IP Address ROS Master and Hostname
     private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
     private static final java.lang.String ROS_HOSTNAME = "hlp";
@@ -62,7 +75,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     @Override
     public void onGuestScienceStart() {
         // Get a unique instance of the Astrobee API in order to command the robot.
-        // api = ApiCommandImplementation.getInstance();
+        api = ApiCommandImplementation.getInstance();
 
         // Setting configurations for ROS-Android Node
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(ROS_HOSTNAME);
@@ -72,6 +85,9 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
         
         nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         nodeMainExecutor.execute(gecko_gripper_node, nodeConfiguration);
+
+        // Handler for interface updating
+        // this.handler = new Handler();
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
@@ -85,7 +101,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     @Override
     public void onGuestScienceStop() {
         // Stop the API
-        // api.shutdownFactory();
+        api.shutdownFactory();
 
         // Inform the GS manager and the GDS that this app stopped.
         sendStopped("info");
@@ -142,6 +158,10 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_unlock":
                     msg_name.add(sCommand);
                     break;
+                case "gecko_gripper_engage_lock":
+                    msg_name.add("gecko_gripper_engage");
+                    msg_name.add("gecko_gripper_lock");
+                    break;
                 case "gecko_gripper_enable_auto":
                     if (!gecko_gripper_node.feedbackPerchingEnable) {
                       msg_name.add(sCommand);
@@ -157,13 +177,25 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_mark_gripper":
                     msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
+
+                    gecko_gripper_node.queryExp = true;
+                    gecko_gripper_node.queryExpStamp = System.currentTimeMillis();
+
                     break;
                 case "gecko_gripper_set_delay":
                     msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("DL"));
+
+                    gecko_gripper_node.queryDelay = true;
+                    gecko_gripper_node.queryDelayStamp = System.currentTimeMillis();
+
                     break;
                 case "gecko_gripper_open_exp":
                     msg_name.add(sCommand);
+
+                    gecko_gripper_node.queryExp = true;
+                    gecko_gripper_node.queryExpStamp = System.currentTimeMillis();
+
                     msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
                     break;
                 case "gecko_gripper_next_record":
@@ -249,4 +281,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             sendData(MessageType.JSON, "data", "Unrecognized ERROR");
         }
     }
+
+    // public void refreshGripper() {
+    //   continue;
+    // }
 }

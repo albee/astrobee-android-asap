@@ -48,6 +48,11 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
     public static boolean feedbackPerchingEnable = false;
     public static double errorTol = 0.18;
 
+    public static boolean queryDelay = false;
+    public static long queryDelayStamp = 0;
+    public static boolean queryExp = false;
+    public static long queryExpStamp = 0;
+
     GeckoGripperState gripperState;
     Publisher<JointState> mPublisher;
     Subscriber<JointState> mSubscriber;
@@ -72,6 +77,36 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
             public void onNewMessage(JointState jointState) {
                 gripperState = updateGripperState(jointState);
                 instance = GeckoGripperStatusNode.this;
+
+                if (queryDelay && System.currentTimeMillis() - queryDelayStamp > 20) {
+                  sensor_msgs.JointState msg = mPublisher.newMessage();
+                  java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+                  double[] msg_pos = new double[1];
+                  msg_pos[0] = 0.;
+
+                  msg_name.add("gecko_gripper_delay");
+
+                  msg.setName(msg_name);
+                  msg.setPosition(msg_pos);
+                  mPublisher.publish(msg);
+
+                  queryDelay = false;
+                }
+
+                if (queryExp && System.currentTimeMillis() - queryExpStamp > 20) {
+                  sensor_msgs.JointState msg = mPublisher.newMessage();
+                  java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+                  double[] msg_pos = new double[1];
+                  msg_pos[0] = 0.;
+
+                  msg_name.add("gecko_gripper_exp");
+
+                  msg.setName(msg_name);
+                  msg.setPosition(msg_pos);
+                  mPublisher.publish(msg);
+
+                  queryExp = false;
+                }
             }
         }, 10);
 
