@@ -58,15 +58,17 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     /*
      * Handler and Runnable for permanent interface updating
      */
-    // Handler handler;
+    public final long QUERY_WAIT_MS = 300;
+    Handler handler;
 
-    // private Runnable refresh = new Runnable() {
-    //     @Override
-    //     public void run() {
-    //         handler.postDelayed(refresh, 2000);
-    //         refreshGripper();
-    //     }
-    // };
+    private Runnable refresh = new Runnable() {
+        @Override
+        public void run() {
+            sendQueryMsg();
+
+            handler.postDelayed(refresh, QUERY_WAIT_MS);
+        }
+    };
 
     // IP Address ROS Master and Hostname
     private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
@@ -82,12 +84,12 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
         nodeConfiguration.setMasterUri(ROS_MASTER_URI);
 
         gecko_gripper_node = new GeckoGripperStatusNode();
-        
+
         nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         nodeMainExecutor.execute(gecko_gripper_node, nodeConfiguration);
 
         // Handler for interface updating
-        // this.handler = new Handler();
+        this.handler = new Handler();
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
@@ -102,6 +104,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     public void onGuestScienceStop() {
         // Stop the API
         api.shutdownFactory();
+
+        handler.removeCallbacksAndMessages(null);
 
         // Inform the GS manager and the GDS that this app stopped.
         sendStopped("info");
@@ -178,23 +182,16 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
 
-                    gecko_gripper_node.queryExp = true;
-                    gecko_gripper_node.queryExpStamp = System.currentTimeMillis();
-
                     break;
                 case "gecko_gripper_set_delay":
                     msg_name.add(sCommand);
                     msg_pos[0] = Float.parseFloat(jCommand.getString("DL"));
 
-                    gecko_gripper_node.queryDelay = true;
-                    gecko_gripper_node.queryDelayStamp = System.currentTimeMillis();
+                    handler.postDelayed(refresh, QUERY_WAIT_MS);
 
                     break;
                 case "gecko_gripper_open_exp":
                     msg_name.add(sCommand);
-
-                    gecko_gripper_node.queryExp = true;
-                    gecko_gripper_node.queryExpStamp = System.currentTimeMillis();
 
                     msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
                     break;
@@ -226,12 +223,12 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     // time status is printed (by default)
                     msg_name.add("gecko_gripper_delay");
                     msg_name.add("gecko_gripper_exp");
+                    handler.postDelay(refresh, 200, "print_status");
 
                     // TODO(acauligi): Call handler: executes after a certain amount of seconds
                     // TODO(acauligi): Immediately issue "querying status" print statement to let user know things aren't hanging
                     JSONObject jsonGripperState= gecko_gripper_node.gripperState.toJSON();
                     sendData(MessageType.JSON, "gripper state", jsonGripperState.toString());
-                    gecko_gripper_node.gripperState.setNewStatusReceived(false);    // clear new status received flag
                     break;
                 case "gecko_gripper_reset_gripper":
                     // After perching experiment, resets gripper
@@ -282,7 +279,19 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
         }
     }
 
-    // public void refreshGripper() {
-    //   continue;
-    // }
+    public void sendQueryMsg() {
+      sensor_msgs.JointState msg = gecko_gripper_node.mPublisher.newMessage();
+      java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+      double[] msg_pos = new double[2];
+      msg_pos[0] = 0.;
+      msg_pos[1] = 0.;
+
+      msg_name.add("gecko_gripper_delay");
+      msg_name.add("gecko_gripper_exp");
+
+      msg.setName(msg_name);
+      msg.setPosition(msg_pos);
+      gecko_gripper_node.mPublisher.publish(msg);
+      return;
+    }
 }
