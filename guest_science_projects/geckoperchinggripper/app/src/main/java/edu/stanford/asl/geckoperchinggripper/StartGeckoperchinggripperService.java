@@ -38,6 +38,9 @@ import java.net.URI;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
+import gov.nasa.arc.astrobee.PendingResult;
+import gov.nasa.arc.astrobee.Result;
+import gov.nasa.arc.astrobee.Robot;
 
 /**
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee
@@ -58,9 +61,9 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     /*
      * Handler and Runnable for permanent interface updating
      */
-    public final long QUERY_WAIT_MS   = 300;
-    public final long STATUS_WAIT_MS  = 300;
-    public final long FILE_WAIT_MS    = 500;
+    public final long QUERY_WAIT_MS   = 1000;
+    public final long STATUS_WAIT_MS  = 1000;
+    public final long FILE_WAIT_MS    = 1500;
     Handler handler;
 
     private Runnable queryRefresh = new Runnable() {
@@ -174,36 +177,51 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_engage":
                     msg_name.add(sCommand);
 
-                    handler.postDelayed(statusRefresh, 300);
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_disengage":
                     msg_name.add(sCommand);
 
-                    handler.postDelayed(statusRefresh, 300);
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_lock":
                     msg_name.add(sCommand);
-                    handler.postDelayed(statusRefresh, 300);
+
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_unlock":
                     msg_name.add(sCommand);
-                    handler.postDelayed(statusRefresh, 300);
+
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_engage_lock":
                     msg_name.add("gecko_gripper_engage");
                     msg_name.add("gecko_gripper_lock");
+
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_enable_auto":
                     if (!gecko_gripper_node.feedbackPerchingEnable) {
                       msg_name.add(sCommand);
+                      handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     }
                     break;
                 case "gecko_gripper_disable_auto":
                     msg_name.add(sCommand);
+
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_toggle_auto":
-                    // TODO(acauligi): return "cmd not implemented"
-                    msg_name.add(sCommand);
+                    try {
+                      JSONObject toggleAutoJson = new JSONObject();
+                      toggleAutoJson.put("ERROR ", "toggle_auto not implemented!");
+                      sendData(MessageType.JSON, "Toggle Auto", toggleAutoJson.toString());
+                    } catch (JSONException e) {
+                        // Send an error message to the GSM and GDS
+                        e.printStackTrace();
+                        sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+                    }
+
                     break;
                 case "gecko_gripper_mark_gripper":
                     msg_name.add(sCommand);
@@ -257,11 +275,19 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add("gecko_gripper_delay");
                     msg_name.add("gecko_gripper_exp");
 
-                    handler.postDelay(statusRefresh, STATUS_WAIT_MS);
+                    handler.postDelayed(allRefresh, STATUS_WAIT_MS);
 
-                    jResult.put("Summary", new JSONObject()
-                        .put("Status", "PENDING")
-                        .put("Message", "Sent gripper status query command"));
+                    try {
+                      JSONObject json = new JSONObject();
+                      json.put("Summary", new JSONObject()
+                          .put("Status", "PENDING")
+                          .put("Message", "Sent gripper status query command"));
+                      sendData(MessageType.JSON, "", json.toString());
+                    } catch (JSONException e) {
+                        // Send an error message to the GSM and GDS
+                        e.printStackTrace();
+                        sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+                    }
                     break;
                 case "gecko_gripper_print_status_now":
                     printAll();
@@ -273,6 +299,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add("gecko_gripper_unlock");
                     msg_name.add("gecko_gripper_delay");
                     msg_name.add("gecko_gripper_exp");
+
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_enable_auto_feedback":
                     gecko_gripper_node.feedbackPerchingEnable = true;
@@ -288,18 +316,21 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     gecko_gripper_node.feedbackPerchingEnable = false;
                     break;
                 case "gecko_gripper_arm_deploy":
-                    // TODO(acauligi): use Astrobee API
-                    JSONObject armDeployResult= new JSONObject();
-                    Result result = api.armDeploy();
+                    // try {
+                    //   JSONObject armDeployResult= new JSONObject();
+                    //   Result result = api.armDeploy();
 
-                    if (result.hasSucceeded()) {
-                      deployResult.put("Summary", new JSONObject()
-                          .put("Status", "Arm deployment succeeded");
-                    } else {
-                      deployResult.put("Summary", new JSONObject()
-                          .put("Status", "Arm deployment failed")
-                    }
-                    sendData(MessageType.JSON, "File status ", armDeployResult.toString());
+                    //   if (result.hasSucceeded()) {
+                    //     armDeployResult.put("Status", "Arm deployment succeeded");
+                    //   } else {
+                    //     armDeployResult.put("Status", "Arm deployment failed");
+                    //   }
+                    //   sendData(MessageType.JSON, "File status ", armDeployResult.toString());
+                    // } catch (JSONException e) {
+                    //     // Send an error message to the GSM and GDS
+                    //     e.printStackTrace();
+                    //     sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+                    // }
 
                     break;
                 case "gecko_gripper_perch_pan_test":
@@ -335,24 +366,49 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     }
 
     public void printAll() {
-      JSONObject jsonGripperState = gecko_gripper_node.gripperState.toJSON();
-      sendData(MessageType.JSON, "Gripper status ", jsonGripperState.toString());
+      try{
+        JSONObject jsonGripperState = gecko_gripper_node.gripperState.toJSON();
+        sendData(MessageType.JSON, "Gripper status ", jsonGripperState.toString());
+      } catch (JSONException e) {
+          // Send an error message to the GSM and GDS
+          e.printStackTrace();
+          sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+      }
     }
 
     public void printBinaryFlags() {
-      JSONObject binaryStatus = new JSONObject();
-      binaryStatus.put("Adhesive Engage", adhesiveEngage)
-                .put("Wrist Lock", wristLock)
-                .put("Automatic Mode Enable", automaticModeEnable)
-                .put("File is Open", fileIsOpen)
-      sendData(MessageType.JSON, "Flags ", binaryStatus.toString());
+      boolean adhesiveEngage = gecko_gripper_node.gripperState.getAdhesiveEngage();
+      boolean wristLock = gecko_gripper_node.gripperState.getWristLock();
+      boolean automaticModeEnable = gecko_gripper_node.gripperState.getAutomaticModeEnable();
+      boolean fileIsOpen = gecko_gripper_node.gripperState.getFileIsOpen();
+
+      try{
+        JSONObject binaryStatus = new JSONObject();
+        binaryStatus.put("Adhesive Engage", adhesiveEngage)
+                  .put("Wrist Lock", wristLock)
+                  .put("Automatic Mode Enable", automaticModeEnable)
+                  .put("File is Open", fileIsOpen);
+        sendData(MessageType.JSON, "Flags ", binaryStatus.toString());
+      } catch (JSONException e) {
+          // Send an error message to the GSM and GDS
+          e.printStackTrace();
+          sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+      }
     }
 
     public void printFileStatus() {
-      JSONObject jsonFileState = new JSONObject();
-      jsonFileState.put("File is Open: ", fileIsOpen)
-                .put("Experiment Idx: ", expIdx);
-      sendData(MessageType.JSON, "File status ", jsonFileState.toString());
+      boolean fileIsOpen = gecko_gripper_node.gripperState.getFileIsOpen();
+      int expIdx = gecko_gripper_node.gripperState.getExpIdx();
+
+      try{
+        JSONObject json = new JSONObject();
+        json.put("File is Open", fileIsOpen).put("Experiment Idx", expIdx);
+        sendData(MessageType.JSON, "File status ", json.toString());
+      } catch (JSONException e) {
+          // Send an error message to the GSM and GDS
+          e.printStackTrace();
+          sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+      }
     }
 
     public void sendQueryMsg() {

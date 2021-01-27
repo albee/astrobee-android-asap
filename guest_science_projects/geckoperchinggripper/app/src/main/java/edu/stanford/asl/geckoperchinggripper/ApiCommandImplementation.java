@@ -318,7 +318,8 @@ public class ApiCommandImplementation {
     }
     
     public void perchPanTest() {
-        float panAngles[4];
+        float panAngles[];
+        panAngles = new float[4];
         panAngles[0] = 45f;
         panAngles[1] = 0f;
         panAngles[2] = -45f;
@@ -326,19 +327,19 @@ public class ApiCommandImplementation {
 
         int ctr = 0;
 
-        while (ctr < 4) {
-          PendingResult pendingResult = robot.armPanAndTilt(panAngles[ctr], 0f, Action.PAN); 
-          Result result = getCommandResult(pendingResult, true, -1);
-          if (result.hasSucceeded()) {
-            ctr++;
-          }
-        }
+        // while (ctr < 4) {
+        //   PendingResult pendingResult = robot.armPanAndTilt(panAngles[ctr], 0f, Action.PAN);
+        //   Result result = getCommandResult(pendingResult, true, -1);
+        //   if (result.hasSucceeded()) {
+        //     ctr++;
+        //   }
+        // }
     }
     
-    public Result armDeploy() {
-        PendingResult pendingResult = robot.armPanAndTilt(0f, 0f, Action.BOTH); 
-        return getCommandResult(pendingResult, true, -1);
-    }
+    // public Result armDeploy() {
+    //     PendingResult pendingResult = robot.armPanAndTilt(0f, 0f, Action.BOTH);
+    //     return getCommandResult(pendingResult, true, -1);
+    // }
 
     /**
      * An optional method used to print command execution results on the Android log
