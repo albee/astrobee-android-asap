@@ -7,6 +7,9 @@
             name="print_status"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_print_status&quot;}" />
         <command
+            name="print_status_now"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_print_status_now&quot;}" />
+        <command
             name="reset_gripper"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_reset_gripper&quot;}" />
         <command
@@ -55,7 +58,10 @@
             name="close_exp"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_close_exp&quot;}" />
         <command
-            name="status"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_status&quot;}" />
+            name="arm_deploy"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_arm_deploy&quot;}" />
+        <command
+            name="perch_pan_test"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_perch_pan_test&quot;}" />
     </commands>
 </apkInfo>
