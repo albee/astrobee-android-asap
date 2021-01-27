@@ -316,21 +316,21 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     gecko_gripper_node.feedbackPerchingEnable = false;
                     break;
                 case "gecko_gripper_arm_deploy":
-                    // try {
-                    //   JSONObject armDeployResult= new JSONObject();
-                    //   Result result = api.armDeploy();
+                    try {
+                      JSONObject armDeployResult= new JSONObject();
+                      Result result = api.armDeploy();
 
-                    //   if (result.hasSucceeded()) {
-                    //     armDeployResult.put("Status", "Arm deployment succeeded");
-                    //   } else {
-                    //     armDeployResult.put("Status", "Arm deployment failed");
-                    //   }
-                    //   sendData(MessageType.JSON, "File status ", armDeployResult.toString());
-                    // } catch (JSONException e) {
-                    //     // Send an error message to the GSM and GDS
-                    //     e.printStackTrace();
-                    //     sendData(MessageType.JSON, "data", "ERROR parsing JSON");
-                    // }
+                      if (result.hasSucceeded()) {
+                        armDeployResult.put("Status", "Arm deployment succeeded");
+                      } else {
+                        armDeployResult.put("Status", "Arm deployment failed");
+                      }
+                      sendData(MessageType.JSON, "File status ", armDeployResult.toString());
+                    } catch (JSONException e) {
+                        // Send an error message to the GSM and GDS
+                        e.printStackTrace();
+                        sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+                    }
 
                     break;
                 case "gecko_gripper_perch_pan_test":

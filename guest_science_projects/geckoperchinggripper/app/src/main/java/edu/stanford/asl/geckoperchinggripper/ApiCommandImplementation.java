@@ -35,6 +35,7 @@ import gov.nasa.arc.astrobee.ros.RobotConfiguration;
 import gov.nasa.arc.astrobee.types.PlannerType;
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
+import gov.nasa.arc.astrobee.types.ActionType;
 
 /**
  * A simple API implementation class that provides an easier way to work with the Astrobee API
@@ -316,7 +317,7 @@ public class ApiCommandImplementation {
         PendingResult pendingResult = robot.undock();
         return getCommandResult(pendingResult, true, -1);
     }
-    
+
     public void perchPanTest() {
         float panAngles[];
         panAngles = new float[4];
@@ -327,19 +328,20 @@ public class ApiCommandImplementation {
 
         int ctr = 0;
 
-        // while (ctr < 4) {
-        //   PendingResult pendingResult = robot.armPanAndTilt(panAngles[ctr], 0f, Action.PAN);
-        //   Result result = getCommandResult(pendingResult, true, -1);
-        //   if (result.hasSucceeded()) {
-        //     ctr++;
-        //   }
-        // }
+        while (ctr < 4) {
+          PendingResult pendingResult = robot.armPanAndTilt(panAngles[ctr], 0f, ActionType.PAN);
+          Result result = getCommandResult(pendingResult, true, -1);
+          if (result.hasSucceeded()) {
+            ctr++;
+          }
+        }
     }
     
-    // public Result armDeploy() {
-    //     PendingResult pendingResult = robot.armPanAndTilt(0f, 0f, Action.BOTH);
-    //     return getCommandResult(pendingResult, true, -1);
-    // }
+    public Result armDeploy() {
+        Result undockResult = undock();
+        PendingResult pendingResult = robot.armPanAndTilt(0f, 0f, ActionType.BOTH);
+        return getCommandResult(pendingResult, true, -1);
+    }
 
     /**
      * An optional method used to print command execution results on the Android log
