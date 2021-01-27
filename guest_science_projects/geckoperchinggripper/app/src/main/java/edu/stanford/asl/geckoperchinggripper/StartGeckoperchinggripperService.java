@@ -64,6 +64,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     public final long QUERY_WAIT_MS   = 1000;
     public final long STATUS_WAIT_MS  = 1000;
     public final long FILE_WAIT_MS    = 1500;
+    public final long DL_WAIT_MS      = 1500;
     Handler handler;
 
     private Runnable queryRefresh = new Runnable() {
@@ -91,6 +92,13 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
         @Override
         public void run() {
             printFileStatus();
+        }
+    };
+
+    private Runnable delayRefresh = new Runnable() {
+        @Override
+        public void run() {
+            printDelayStatus();
         }
     };
 
@@ -236,6 +244,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_pos[0] = Float.parseFloat(jCommand.getString("DL"));
 
                     handler.postDelayed(queryRefresh, QUERY_WAIT_MS);
+                    handler.postDelayed(delayRefresh, DL_WAIT_MS);
 
                     break;
                 case "gecko_gripper_open_exp":
@@ -307,6 +316,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add("gecko_gripper_disable_auto");
                     msg_name.add("gecko_gripper_disengage");
                     msg_name.add("gecko_gripper_unlock");
+
+                    handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
                 case "gecko_gripper_disable_auto_feedback":
                     gecko_gripper_node.feedbackPerchingEnable = false;
@@ -314,6 +325,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_set_feedback_tol":
                     gecko_gripper_node.errorTol = 0.01*Double.parseDouble(jCommand.getString("TOL"));
                     gecko_gripper_node.feedbackPerchingEnable = false;
+
+                    jResult.put("Feedback", "Feedback tolerance updated");
                     break;
                 case "gecko_gripper_arm_deploy":
                     try {
@@ -404,6 +417,20 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
         JSONObject json = new JSONObject();
         json.put("File is Open", fileIsOpen).put("Experiment Idx", expIdx);
         sendData(MessageType.JSON, "File status ", json.toString());
+      } catch (JSONException e) {
+          // Send an error message to the GSM and GDS
+          e.printStackTrace();
+          sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+      }
+    }
+
+    public void printDelayStatus() {
+      int DL = gecko_gripper_node.gripperState.getDelay();
+
+      try{
+        JSONObject json = new JSONObject();
+        json.put("Current delay in ms is ", DL);
+        sendData(MessageType.JSON, "DL ", json.toString());
       } catch (JSONException e) {
           // Send an error message to the GSM and GDS
           e.printStackTrace();
