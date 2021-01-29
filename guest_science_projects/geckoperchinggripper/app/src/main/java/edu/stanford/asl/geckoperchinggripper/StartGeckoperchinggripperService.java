@@ -330,15 +330,15 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     break;
                 case "gecko_gripper_arm_deploy":
                     try {
-                      JSONObject armDeployResult= new JSONObject();
-                      Result result = api.armDeploy();
+                      JSONObject armDeployJson= new JSONObject();
+                      Result armDeployResult = api.armDeploy();
 
-                      if (result.hasSucceeded()) {
-                        armDeployResult.put("Status", "Arm deployment succeeded");
+                      if (armDeployResult.hasSucceeded()) {
+                        armDeployJson.put("Status", "Arm deployment succeeded");
                       } else {
-                        armDeployResult.put("Status", "Arm deployment failed");
+                        armDeployJson.put("Status", "Arm deployment failed");
                       }
-                      sendData(MessageType.JSON, "File status ", armDeployResult.toString());
+                      sendData(MessageType.JSON, "Arm deploy ", armDeployJson.toString());
                     } catch (JSONException e) {
                         // Send an error message to the GSM and GDS
                         e.printStackTrace();
@@ -347,8 +347,20 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     break;
                 case "gecko_gripper_perch_pan_test":
-                    // TODO(acauligi): use Astrobee API
-                    api.perchPanTest();
+                    boolean pan_test_succeeded = api.perchPanTest();
+                    JSONObject perchPanResult = new JSONObject();
+                    try {
+                      if (pan_test_succeeded) {
+                        perchPanResult.put("Status", "Perch pan test executed!");
+                      } else {
+                        perchPanResult.put("Status", "Perch pan test failed!");
+                      }
+                      sendData(MessageType.JSON, "Perch pan test ", perchPanResult.toString());
+                    } catch (JSONException e) {
+                        // Send an error message to the GSM and GDS
+                        e.printStackTrace();
+                        sendData(MessageType.JSON, "data", "ERROR parsing JSON");
+                    }
                     break;
 
                 default:
@@ -359,14 +371,10 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
             }
 
             if (msg_name.size() > 0) {
-              jResult.put("Summary", sCommand);
               msg.setName(msg_name);
               msg.setPosition(msg_pos);
               gecko_gripper_node.mPublisher.publish(msg);
             }
-
-            // Send data to the GS manager to be shown on the Ground Data System.
-            sendData(MessageType.JSON, "data", jResult.toString());
         } catch (JSONException e) {
             // Send an error message to the GSM and GDS
             e.printStackTrace();

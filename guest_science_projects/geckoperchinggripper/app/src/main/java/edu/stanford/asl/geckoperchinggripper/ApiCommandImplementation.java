@@ -318,7 +318,7 @@ public class ApiCommandImplementation {
         return getCommandResult(pendingResult, true, -1);
     }
 
-    public void perchPanTest() {
+    public boolean perchPanTest() {
         float panAngles[];
         panAngles = new float[4];
         panAngles[0] = 45f;
@@ -327,18 +327,21 @@ public class ApiCommandImplementation {
         panAngles[3] = 0f;
 
         int ctr = 0;
+        boolean succeeded = true;
 
         while (ctr < 4) {
-          PendingResult pendingResult = robot.armPanAndTilt(panAngles[ctr], 0f, ActionType.PAN);
+          PendingResult pendingResult = robot.armPanAndTilt(panAngles[ctr], 0f, ActionType.BOTH);
           Result result = getCommandResult(pendingResult, true, -1);
-          if (result.hasSucceeded()) {
+
+          succeeded = result.hasSucceeded();
+          if (succeeded) {
             ctr++;
           }
         }
+        return succeeded;
     }
     
     public Result armDeploy() {
-        Result undockResult = undock();
         PendingResult pendingResult = robot.armPanAndTilt(0f, 0f, ActionType.BOTH);
         return getCommandResult(pendingResult, true, -1);
     }
