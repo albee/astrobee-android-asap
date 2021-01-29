@@ -405,10 +405,10 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
       try{
         JSONObject binaryStatus = new JSONObject();
-        binaryStatus.put("Adhesive Engage", adhesiveEngage)
-                  .put("Wrist Lock", wristLock)
-                  .put("Automatic Mode Enable", automaticModeEnable)
-                  .put("File is Open", fileIsOpen);
+        binaryStatus.put("Automatic Mode Enable", automaticModeEnable)
+                    .put("Adhesive Engage", adhesiveEngage)
+                    .put("Wrist Lock", wristLock)
+                    .put("File is Open", fileIsOpen);
         sendData(MessageType.JSON, "Flags ", binaryStatus.toString());
       } catch (JSONException e) {
           // Send an error message to the GSM and GDS

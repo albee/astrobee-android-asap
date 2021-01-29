@@ -88,15 +88,15 @@ public class GeckoGripperState implements Serializable {
           errorString = "Instr SD read";
         }
 
-        json.put("Error Status", errorString)
-                .put("Adhesive Engage", adhesiveEngage)
-                .put("Wrist Lock", wristLock)
-                .put("Automatic Mode Enable", automaticModeEnable)
-                .put("File is Open", fileIsOpen)
-                .put("Experiment in Progress", experimentInProgress)
-                .put("Experiment Idx", expIdx)
-                .put("Delay", delay)
-                .put("Last Status Read Time", lastStatusReadTime);
+        json.put("Automatic Mode Enable", automaticModeEnable)
+            .put("Adhesive Engage", adhesiveEngage)
+            .put("Wrist Lock", wristLock)
+            .put("File is Open", fileIsOpen)
+            .put("Experiment in Progress", experimentInProgress)
+            .put("Experiment Idx", expIdx)
+            .put("Delay", delay)
+            .put("Last Status Read Time", lastStatusReadTime)
+            .put("Error Status", errorString);
 
         return json;
     }
