@@ -39,6 +39,9 @@ import sensor_msgs.JointState;
 import std_msgs.Header;
 import std_msgs.String;
 
+import gov.nasa.arc.astrobee.types.Point;
+import gov.nasa.arc.astrobee.types.Quaternion;
+
 import edu.stanford.asl.geckoperchinggripper.types.GeckoGripperState;
 
 public class GeckoGripperStatusNode extends AbstractNodeMain {
@@ -47,6 +50,11 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
     public static double errorPosition;
     public static boolean feedbackPerchingEnable = false;
     public static double errorTol = 0.18;
+
+    public static Point currentPos;
+    public static Point targetPos;
+    public static Quaternion currentQuat;
+    public static Quaternion targetQuat;
 
     GeckoGripperState gripperState;
     Publisher<JointState> mPublisher;
@@ -101,6 +109,11 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
                 }
             }
         }, 10);
+
+        // currentPos = newMessageFromType(Point._TYPE);
+        // targetPos = newMessageFromType(Point._TYPE);
+        // currentQuat = newMessageFromType(Quaternion._TYPE);
+        // targetQuat = newMessageFromType(Quaternion._TYPE);
 
         instance = this;
     }
@@ -157,5 +170,79 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
 
         gripperState.setValidity(true);
         return gripperState;
+    }
+
+    public void sendSetDelay(double DL) {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_set_delay");
+        msg_pos[0] = DL;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendQueryDelay() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_delay");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendMarkGripper(double IDX) {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_mark_gripper");
+        msg_pos[0] = IDX;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendQueryIdx() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_exp");
+        msg_pos[0] = 0.0; 
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendResetGripper() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+
+        msg_name.add("gecko_gripper_disable_auto");
+        msg_name.add("gecko_gripper_disengage");
+        msg_name.add("gecko_gripper_unlock");
+        msg_name.add("gecko_gripper_delay");
+        msg_name.add("gecko_gripper_exp");
+
+        double[] msg_pos = new double[5];
+        msg_pos[0] = 0.0; 
+        msg_pos[1] = 0.0; 
+        msg_pos[2] = 0.0; 
+        msg_pos[3] = 0.0; 
+        msg_pos[4] = 0.0; 
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
     }
 }

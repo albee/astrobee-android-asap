@@ -35,12 +35,16 @@ import org.ros.node.topic.Publisher;
 import sensor_msgs.JointState;
 import std_msgs.String;
 import java.net.URI;
+import java.lang.Math;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
+import gov.nasa.arc.astrobee.Kinematics;
 import gov.nasa.arc.astrobee.PendingResult;
 import gov.nasa.arc.astrobee.Result;
 import gov.nasa.arc.astrobee.Robot;
+import gov.nasa.arc.astrobee.types.Point;
+import gov.nasa.arc.astrobee.types.Quaternion;
 
 /**
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee
@@ -303,11 +307,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     break;
                 case "gecko_gripper_reset_gripper":
                     // After perching experiment, resets gripper
-                    msg_name.add("gecko_gripper_disable_auto");
-                    msg_name.add("gecko_gripper_disengage");
-                    msg_name.add("gecko_gripper_unlock");
-                    msg_name.add("gecko_gripper_delay");
-                    msg_name.add("gecko_gripper_exp");
+                    gecko_gripper_node.sendResetGripper();
 
                     handler.postDelayed(statusRefresh, STATUS_WAIT_MS);
                     break;
@@ -362,6 +362,145 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         sendData(MessageType.JSON, "data", "ERROR parsing JSON");
                     }
                     break;
+                case "gecko_gripper_perch_auto":
+                    int timeout = 5; 
+                    Kinematics currentKinematics = api.getTrustedRobotKinematics(timeout);
+
+                    gecko_gripper_node.currentPos = currentKinematics.getPosition();
+                    gecko_gripper_node.currentQuat = currentKinematics.getOrientation();
+
+                    double offsetDistance = Double.parseDouble(jCommand.getString("DIST"));
+                    
+                    double DL_ = Double.parseDouble(jCommand.getString("DL"));
+                    double IDX_ = Double.parseDouble(jCommand.getString("IDX"));
+
+                    // TODO(acauligi): check if EKF still valid
+                    gecko_gripper_node.targetQuat = gecko_gripper_node.currentQuat;
+                    gecko_gripper_node.targetPos = gecko_gripper_node.currentPos;
+
+                    java.lang.String axis = jCommand.getString("AX");
+                    switch (axis) {
+                        // You may handle your commands here
+                        case "px":
+                          gecko_gripper_node.targetPos = new Point(
+                            gecko_gripper_node.currentPos.getX() + offsetDistance,
+                            gecko_gripper_node.currentPos.getY(),
+                            gecko_gripper_node.currentPos.getZ());
+                        case "nx":
+                          gecko_gripper_node.targetPos = new Point(
+                            gecko_gripper_node.currentPos.getX() - offsetDistance,
+                            gecko_gripper_node.currentPos.getY(),
+                            gecko_gripper_node.currentPos.getZ());
+                        case "py":
+                          gecko_gripper_node.targetPos = new Point(
+                            gecko_gripper_node.currentPos.getX(),
+                            gecko_gripper_node.currentPos.getY() + offsetDistance,
+                            gecko_gripper_node.currentPos.getZ());
+                        case "ny":
+                          gecko_gripper_node.targetPos = new Point(
+                            gecko_gripper_node.currentPos.getX(),
+                            gecko_gripper_node.currentPos.getY() - offsetDistance,
+                            gecko_gripper_node.currentPos.getZ());
+                        case "pz":
+                          gecko_gripper_node.targetPos = new Point(
+                            gecko_gripper_node.currentPos.getX(),
+                            gecko_gripper_node.currentPos.getY(),
+                            gecko_gripper_node.currentPos.getZ() + offsetDistance);
+                        case "nz":
+                          gecko_gripper_node.targetPos = new Point(
+                            gecko_gripper_node.currentPos.getX(),
+                            gecko_gripper_node.currentPos.getY(),
+                            gecko_gripper_node.currentPos.getZ() - offsetDistance);
+                        default:
+                          // TODO(acauligi): do some default behavior
+                    }
+
+                    // Send command to reset gripper
+                    gecko_gripper_node.sendResetGripper();
+
+                    // 300 ms delay
+                    printBinaryFlags();
+                    gecko_gripper_node.sendSetDelay(DL_);
+
+                    // 10ms delay
+
+                    gecko_gripper_node.sendQueryDelay();
+
+                    // 100ms delay
+
+                    double reportedDL = (double)(gecko_gripper_node.gripperState.getDelay());
+                    if (reportedDL != DL_) {
+                      JSONObject delayFailureJson = new JSONObject();
+                      delayFailureJson.put("Desired DL", DL_) 
+                                    .put("Reported DL", reportedDL);
+                      sendData(MessageType.JSON, "Terminating with DL failure", delayFailureJson.toString());
+                      return;
+                    }
+
+                    printAll();
+                    gecko_gripper_node.sendMarkGripper(IDX_);
+
+                    // 10ms delay
+                    gecko_gripper_node.sendQueryIdx();
+
+                    // 100ms delay
+
+                    double reportedIDX = (double)(gecko_gripper_node.gripperState.getExpIdx());
+                    if (reportedIDX != IDX_) {
+                      JSONObject idxFailureJson = new JSONObject();
+                      idxFailureJson.put("Desired IDX", IDX_) 
+                                    .put("Reported IDX", reportedIDX);
+                      sendData(MessageType.JSON, "Terminating with IDX failure", idxFailureJson.toString());
+                      return;
+                    }
+
+                    printAll();
+
+                    // Send data we are moving to pose
+                    JSONObject perchStartJson = new JSONObject();
+                    perchStartJson.put("Status", "Starting perch maneuver!");
+                    sendData(MessageType.JSON, "Perch Status", perchStartJson.toString());
+
+                    Result result = null;
+                    result = api.moveTo(gecko_gripper_node.targetPos, gecko_gripper_node.targetQuat); 
+                    api.stopAllMotion();
+                    if (!result.hasSucceeded()) {
+                        // If planner does not report position tolerance violation, then perching was unsuccessful 
+                        break;
+                    }
+
+                    currentKinematics = api.getTrustedRobotKinematics(timeout);
+                    Point perchPos = currentKinematics.getPosition();
+
+                    JSONObject perchPosJson = new JSONObject();
+                    perchPosJson.put("Position", perchPos.toString());
+                    sendData(MessageType.JSON, "Final Perch Position", perchPosJson.toString());
+
+                    // TODO(acauligi): Start timer to wait until adhesiveEngage and wristLock are both high or time out with failure
+
+                    printAll();
+
+                    Result result = null;
+                    result = api.moveTo(gecko_gripper_node.currentPos, gecko_gripper_node.CurrentQuat); 
+                    api.stopAllMotion();
+                    if (!result.hasSucceeded()) {
+                        // If planner does not report position tolerance violation, then perching was unsuccessful 
+                        break;
+                    }
+
+                    currentKinematics = api.getTrustedRobotKinematics(timeout);
+                    Point postPerchPos = currentKinematics.getPosition();
+
+                    double postPerchDelta = Math.sqrt(Math.pow(postPerchPos.getX()-perchPos.getX(), 2) + 
+                              Math.pow(postPerchPos.getY()-perchPos.getY(), 2) + 
+                              Math.pow(postPerchPos.getZ()-perchPos.getZ(), 2) + 
+                    );
+                    if (postPerchDelta > 0.2) {
+                      JSONObject graspFailureJson = new JSONObject();
+                      graspFailureJson.put("Status", "Perch verification test failed");
+                      sendData(MessageType.JSON, "Terminating with grasp failure", graspFailureJson.toString());
+                      return;
+                    }
 
                 default:
                     // Inform GS Manager and GDS, then stop execution.

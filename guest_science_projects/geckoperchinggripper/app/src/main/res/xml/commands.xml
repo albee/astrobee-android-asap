@@ -63,5 +63,8 @@
         <command
             name="perch_pan_test"
             syntax="{&quot;name&quot;: &quot;gecko_gripper_perch_pan_test&quot;}" />
+        <command
+            name="perch_auto"
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_perch_auto&quot;, &quot;AX&quot;: &quot;px&quot;, &quot;DIST&quot;: &quot;100&quot;}" />
     </commands>
 </apkInfo>
