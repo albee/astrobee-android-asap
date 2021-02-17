@@ -34,7 +34,10 @@ import org.ros.node.topic.Publisher;
 
 import sensor_msgs.JointState;
 import std_msgs.String;
+
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.lang.Math;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
@@ -74,7 +77,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
     private Runnable queryRefresh = new Runnable() {
         @Override
         public void run() {
-            sendQueryMsg();
+            gecko_gripper_node.sendQueryMsg();
         }
     };
 
@@ -171,7 +174,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
-            
+
             java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
             sensor_msgs.JointState msg = gecko_gripper_node.mPublisher.newMessage();
 
@@ -236,16 +239,14 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     break;
                 case "gecko_gripper_mark_gripper":
-                    msg_name.add(sCommand);
-                    msg_pos[0] = Float.parseFloat(jCommand.getString("IDX"));
+                    gecko_gripper_node.sendMarkGripper(Double.parseDouble(jCommand.getString("IDX")));
 
                     handler.postDelayed(queryRefresh, QUERY_WAIT_MS);
                     handler.postDelayed(fileRefresh, FILE_WAIT_MS);
 
                     break;
                 case "gecko_gripper_set_delay":
-                    msg_name.add(sCommand);
-                    msg_pos[0] = Float.parseFloat(jCommand.getString("DL"));
+                    gecko_gripper_node.sendSetDelay(Double.parseDouble(jCommand.getString("DL")));
 
                     handler.postDelayed(queryRefresh, QUERY_WAIT_MS);
                     handler.postDelayed(delayRefresh, DL_WAIT_MS);
@@ -365,68 +366,117 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_perch_auto":
                     int timeout = 5; 
                     Kinematics currentKinematics = api.getTrustedRobotKinematics(timeout);
+                    if (!currentKinematics) {
+                      // Kinematics can't be trusted
+                      JSONObject kinFailureJson = new JSONObject();
+                      sendData(MessageType.JSON, "EKF kinematics failed", kinFailureJson.toString());
+                      return;
+                    }
 
-                    gecko_gripper_node.currentPos = currentKinematics.getPosition();
-                    gecko_gripper_node.currentQuat = currentKinematics.getOrientation();
+                    gecko_gripper_node.initPos = currentKinematics.getPosition();
+                    gecko_gripper_node.initQuat = currentKinematics.getOrientation();
 
+                    // Parse arguments sent by user
                     double offsetDistance = Double.parseDouble(jCommand.getString("DIST"));
-                    
                     double DL_ = Double.parseDouble(jCommand.getString("DL"));
                     double IDX_ = Double.parseDouble(jCommand.getString("IDX"));
-
-                    // TODO(acauligi): check if EKF still valid
-                    gecko_gripper_node.targetQuat = gecko_gripper_node.currentQuat;
-                    gecko_gripper_node.targetPos = gecko_gripper_node.currentPos;
-
                     java.lang.String axis = jCommand.getString("AX");
+
+                    // Compute target position and orientation
+                    gecko_gripper_node.targetQuat = gecko_gripper_node.initQuat;
                     switch (axis) {
                         // You may handle your commands here
                         case "px":
                           gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.currentPos.getX() + offsetDistance,
-                            gecko_gripper_node.currentPos.getY(),
-                            gecko_gripper_node.currentPos.getZ());
+                            gecko_gripper_node.initPos.getX() + offsetDistance,
+                            gecko_gripper_node.initPos.getY(),
+                            gecko_gripper_node.initPos.getZ());
                         case "nx":
                           gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.currentPos.getX() - offsetDistance,
-                            gecko_gripper_node.currentPos.getY(),
-                            gecko_gripper_node.currentPos.getZ());
+                            gecko_gripper_node.initPos.getX() - offsetDistance,
+                            gecko_gripper_node.initPos.getY(),
+                            gecko_gripper_node.initPos.getZ());
                         case "py":
                           gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.currentPos.getX(),
-                            gecko_gripper_node.currentPos.getY() + offsetDistance,
-                            gecko_gripper_node.currentPos.getZ());
+                            gecko_gripper_node.initPos.getX(),
+                            gecko_gripper_node.initPos.getY() + offsetDistance,
+                            gecko_gripper_node.initPos.getZ());
                         case "ny":
                           gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.currentPos.getX(),
-                            gecko_gripper_node.currentPos.getY() - offsetDistance,
-                            gecko_gripper_node.currentPos.getZ());
+                            gecko_gripper_node.initPos.getX(),
+                            gecko_gripper_node.initPos.getY() - offsetDistance,
+                            gecko_gripper_node.initPos.getZ());
                         case "pz":
                           gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.currentPos.getX(),
-                            gecko_gripper_node.currentPos.getY(),
-                            gecko_gripper_node.currentPos.getZ() + offsetDistance);
+                            gecko_gripper_node.initPos.getX(),
+                            gecko_gripper_node.initPos.getY(),
+                            gecko_gripper_node.initPos.getZ() + offsetDistance);
                         case "nz":
                           gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.currentPos.getX(),
-                            gecko_gripper_node.currentPos.getY(),
-                            gecko_gripper_node.currentPos.getZ() - offsetDistance);
+                            gecko_gripper_node.initPos.getX(),
+                            gecko_gripper_node.initPos.getY(),
+                            gecko_gripper_node.initPos.getZ() - offsetDistance);
                         default:
-                          // TODO(acauligi): do some default behavior
+                          // Inform GS Manager and GDS, then stop execution.
+                          sendData(MessageType.JSON, "data", "ERROR: Unrecognized AXIS");
+                          return;
+
                     }
 
                     // Send command to reset gripper
+                    // TODO(acauligi): Send message that gripper reset command being sent
                     gecko_gripper_node.sendResetGripper();
 
-                    // 300 ms delay
+                    // 300ms delay
+                    long timeoutTime = System.currentTimeMillis() + 300;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+                    }
+
+                    // Do a check to make sure gripper has been reset
+                    if (gecko_gripper_node.gripperState.getAdhesiveEngage() ||
+                        gecko_gripper_node.gripperState.getWristLock() ||
+                        gecko_gripper_node.gripperState.getAutomaticModeEnable()) {
+                      JSONObject resetFailureJson = new JSONObject();
+                      sendData(MessageType.JSON, "Failed to reset gripper", resetFailureJson.toString());
+                      return;
+                    }
                     printBinaryFlags();
+
+                    // Send message to user that delay is being sent
+                    JSONObject setDelayJson = new JSONObject();
+                    setDelayJson.put("DL", DL_);
+                    sendData(MessageType.JSON, "Sending command to set delay", setDelayJson.toString());
                     gecko_gripper_node.sendSetDelay(DL_);
 
-                    // 10ms delay
+                    // 100ms delay
+                    timeoutTime = System.currentTimeMillis() + 100;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+                    }
 
                     gecko_gripper_node.sendQueryDelay();
 
                     // 100ms delay
+                    timeoutTime = System.currentTimeMillis() + 100;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+                    }
 
                     double reportedDL = (double)(gecko_gripper_node.gripperState.getDelay());
                     if (reportedDL != DL_) {
@@ -438,12 +488,35 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     }
 
                     printAll();
+
+                    JSONObject markGripperJson = new JSONObject();
+                    markGripperJson.put("IDX", IDX_);
+                    sendData(MessageType.JSON, "Sending command to record SD file", markGripperJson.toString());
                     gecko_gripper_node.sendMarkGripper(IDX_);
 
-                    // 10ms delay
+                    // 100delay
+                    timeoutTime = System.currentTimeMillis() + 100;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+                    }
+
                     gecko_gripper_node.sendQueryIdx();
 
                     // 100ms delay
+                    timeoutTime = System.currentTimeMillis() + 100;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+                    }
 
                     double reportedIDX = (double)(gecko_gripper_node.gripperState.getExpIdx());
                     if (reportedIDX != IDX_) {
@@ -465,32 +538,67 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     result = api.moveTo(gecko_gripper_node.targetPos, gecko_gripper_node.targetQuat); 
                     api.stopAllMotion();
                     if (!result.hasSucceeded()) {
-                        // If planner does not report position tolerance violation, then perching was unsuccessful 
-                        break;
+                        // If planner does not report position tolerance violation, then perching was unsuccessful
+                        String resultMessage = result.getMessage();
+                        if (resultMessage != "Position tolerance violated") {
+                          // Planner has failed for some other reason i.e. perching has failed
+                          return;
+                        }
+                    } else{
+                        // Planner has succeded, i.e. perching has failed
+                        return;
                     }
 
                     currentKinematics = api.getTrustedRobotKinematics(timeout);
                     Point perchPos = currentKinematics.getPosition();
 
                     JSONObject perchPosJson = new JSONObject();
-                    perchPosJson.put("Position", perchPos.toString());
-                    sendData(MessageType.JSON, "Final Perch Position", perchPosJson.toString());
+                    perchPosJson.put("Final Perch Position", perchPos.toString());
+                    sendData(MessageType.JSON, "Perch Status", perchPosJson.toString());
 
-                    // TODO(acauligi): Start timer to wait until adhesiveEngage and wristLock are both high or time out with failure
+                    // Start timer to wait until adhesiveEngage and wristLock are both high or time out with failure
+                    timeoutTime = System.currentTimeMillis() + 60000;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+
+                      if (gecko_gripper_node.gripperState.getAdhesiveEngage() && gecko_gripper_node.gripperState.getWristLock()) {
+                          break;
+                      }
+                    }
+
+                    if (!gecko_gripper_node.gripperState.getAdhesiveEngage() || !gecko_gripper_node.gripperState.getWristLock()) {
+                      JSONObject perchFailedJson = new JSONObject();
+                      perchFailedJson.put("Adhesive engage", gecko_gripper_node.gripperState.getAdhesiveEngage())
+                                      .put("Wrist lock", gecko_gripper_node.gripperState.getWristLock());
+                      sendData(MessageType.JSON, "Perch Status", perchFailedJson.toString());
+                      return;
+                    }
 
                     printAll();
 
-                    Result result = null;
-                    result = api.moveTo(gecko_gripper_node.currentPos, gecko_gripper_node.CurrentQuat); 
+                    result = api.moveTo(gecko_gripper_node.initPos, gecko_gripper_node.CurrentQuat);   // rename initPos to initPos
                     api.stopAllMotion();
                     if (!result.hasSucceeded()) {
-                        // If planner does not report position tolerance violation, then perching was unsuccessful 
-                        break;
+                        // If planner does not report position tolerance violation, then perching was unsuccessful
+                        String resultMessage = result.getMessage();
+                        if (resultMessage != "Position tolerance violated") {
+                          // Planner has failed for some other reason i.e. perching has failed
+                          return;
+                        }
+                    } else{
+                        // Planner has succeded, i.e. perching has failed
+                        return;
                     }
 
                     currentKinematics = api.getTrustedRobotKinematics(timeout);
                     Point postPerchPos = currentKinematics.getPosition();
 
+                    // We do this in case the plan to move to the initial position fails for some other reason and not because perching succeeded
                     double postPerchDelta = Math.sqrt(Math.pow(postPerchPos.getX()-perchPos.getX(), 2) + 
                               Math.pow(postPerchPos.getY()-perchPos.getY(), 2) + 
                               Math.pow(postPerchPos.getZ()-perchPos.getZ(), 2) + 
@@ -500,6 +608,22 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                       graspFailureJson.put("Status", "Perch verification test failed");
                       sendData(MessageType.JSON, "Terminating with grasp failure", graspFailureJson.toString());
                       return;
+                    }
+
+                      JSONObject graspFailureJson = new JSONObject();
+                      graspFailureJson.put("Status", "Successful perch validated");
+                      sendData(MessageType.JSON, "grasp success", graspFailureJson.toString());
+
+                    gecko_gripper_node.sendCloseExp();
+                    timeoutTime = System.currentTimeMillis() + 50;
+                    while (System.currentTimeMillis() < timeoutTime) {
+                      try {
+                          Thread.sleep(10);
+                      } catch (InterruptedException e) {
+                          Log.e("LOG", "Runtime process was interrupted, terminating");
+                          return;
+                      }
+
                     }
 
                 default:
@@ -583,21 +707,5 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
           e.printStackTrace();
           sendData(MessageType.JSON, "data", "ERROR parsing JSON");
       }
-    }
-
-    public void sendQueryMsg() {
-      sensor_msgs.JointState msg = gecko_gripper_node.mPublisher.newMessage();
-      java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-      double[] msg_pos = new double[2];
-      msg_pos[0] = 0.;
-      msg_pos[1] = 0.;
-
-      msg_name.add("gecko_gripper_delay");
-      msg_name.add("gecko_gripper_exp");
-
-      msg.setName(msg_name);
-      msg.setPosition(msg_pos);
-      gecko_gripper_node.mPublisher.publish(msg);
-      return;
     }
 }

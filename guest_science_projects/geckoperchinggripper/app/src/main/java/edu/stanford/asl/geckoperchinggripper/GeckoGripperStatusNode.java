@@ -51,9 +51,9 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
     public static boolean feedbackPerchingEnable = false;
     public static double errorTol = 0.18;
 
-    public static Point currentPos;
+    public static Point initPos;
     public static Point targetPos;
-    public static Quaternion currentQuat;
+    public static Quaternion initQuat;
     public static Quaternion targetQuat;
 
     GeckoGripperState gripperState;
@@ -109,11 +109,6 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
                 }
             }
         }, 10);
-
-        // currentPos = newMessageFromType(Point._TYPE);
-        // targetPos = newMessageFromType(Point._TYPE);
-        // currentQuat = newMessageFromType(Quaternion._TYPE);
-        // targetQuat = newMessageFromType(Quaternion._TYPE);
 
         instance = this;
     }
@@ -218,6 +213,21 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
 
         msg_name.add("gecko_gripper_exp");
         msg_pos[0] = 0.0; 
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendQueryMsg() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[2];
+
+        msg_name.add("gecko_gripper_delay");
+        msg_name.add("gecko_gripper_exp");
+        msg_pos[0] = 0.0;
+        msg_pos[1] = 0.0;
 
         msg.setName(msg_name);
         msg.setPosition(msg_pos);
