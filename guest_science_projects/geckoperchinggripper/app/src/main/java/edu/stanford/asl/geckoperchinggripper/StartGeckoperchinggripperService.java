@@ -545,7 +545,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                                     .put("Reported IDX", reportedIDX);
                       sendData(MessageType.JSON, "Exiting", idxFailureJson.toString());
                       gecko_gripper_node.sendCloseExp();
-                      return
+                      return;
                     } else {
                       JSONObject markSucceededJson = new JSONObject();
                       markSucceededJson.put("Gripper Cmd", "Successfully opened file on SD")
@@ -620,7 +620,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     Point perchPos = currentKinematics.getPosition();
 
                     JSONObject perchPosJson = new JSONObject();
-                    perchPosJson.put("Astrobee Cmd", "Successfully completed perch motion)
+                    perchPosJson.put("Astrobee Cmd", "Successfully completed perch motion")
                                 .put("Final Perch Position", perchPos.toString());
                     sendData(MessageType.JSON, "Status", perchPosJson.toString());
 
