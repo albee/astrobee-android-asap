@@ -413,16 +413,22 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         gecko_gripper_node.initPos.getX(),
                         gecko_gripper_node.initPos.getY(),
                         gecko_gripper_node.initPos.getZ() + offsetDistance);
-                    } else {
+                    } else if (axis.equals("nz")) {
                       gecko_gripper_node.targetPos = new Point(
                         gecko_gripper_node.initPos.getX(),
                         gecko_gripper_node.initPos.getY(),
                         gecko_gripper_node.initPos.getZ() - offsetDistance);
+                    } else {
+                      JSONObject axisFailureJson = new JSONObject();
+                      axisFailureJson.put("ERROR", "Invalid axis specified. Terminating");
+                      sendData(MessageType.JSON, "Exiting", axisFailureJson.toString());
+                      return;
                     }
 
                     // Send command to reset gripper
                     JSONObject resetGripperJson = new JSONObject();
-                    sendData(MessageType.JSON, "Sending command to reset gripper", resetGripperJson.toString());
+                    resetGripperJson.put("Gripper Cmd", "Sending command to reset gripper");
+                    sendData(MessageType.JSON, "Command", resetGripperJson.toString());
                     gecko_gripper_node.sendResetGripper();
 
                     // 500ms delay
@@ -441,18 +447,21 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         gecko_gripper_node.gripperState.getWristLock() ||
                         gecko_gripper_node.gripperState.getAutomaticModeEnable()) {
                       JSONObject resetFailureJson = new JSONObject();
-                      sendData(MessageType.JSON, "Failed to reset gripper", resetFailureJson.toString());
+                      resetFailureJson.put("ERROR", "Failed to reset gripper");
+                      sendData(MessageType.JSON, "Exiting", resetFailureJson.toString());
                       return;
                     } else { 
                       JSONObject resetSucceededJson = new JSONObject();
-                      sendData(MessageType.JSON, "Gripper has been successfully reset", resetSucceededJson.toString());
+                      resetSucceededJson.put("Gripper Cmd", "Gripper has been successfully reset");
+                      sendData(MessageType.JSON, "Status", resetSucceededJson.toString());
                     }
                     printBinaryFlags();
 
                     // Send message to user that delay is being sent
                     JSONObject setDelayJson = new JSONObject();
-                    setDelayJson.put("DL", DL_);
-                    sendData(MessageType.JSON, "Sending command to set delay", setDelayJson.toString());
+                    setDelayJson.put("Gripper Cmd", "Sending command to set delay")
+                                .put("DL", DL_);
+                    sendData(MessageType.JSON, "Command", setDelayJson.toString());
                     gecko_gripper_node.sendSetDelay(DL_);
 
                     // 500ms delay
@@ -482,21 +491,24 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     double reportedDL = (double)(gecko_gripper_node.gripperState.getDelay());
                     if (reportedDL != DL_) {
                       JSONObject delayFailureJson = new JSONObject();
-                      delayFailureJson.put("Desired DL", DL_) 
+                      delayFailureJson.put("ERROR", "Termianting with DL failure")
+                                    .put("Desired DL", DL_)
                                     .put("Reported DL", reportedDL);
-                      sendData(MessageType.JSON, "Terminating with DL failure", delayFailureJson.toString());
+                      sendData(MessageType.JSON, "Exiting", delayFailureJson.toString());
                       return;
                     } else {
                       JSONObject dlSucceededJson = new JSONObject();
-                      dlSucceededJson.put("DL", DL_);
-                      sendData(MessageType.JSON, "Successfully set delay", dlSucceededJson.toString());
+                      dlSucceededJson.put("Gripper Cmd", "Successfully set delay on gripper")
+                                    .put("DL", DL_);
+                      sendData(MessageType.JSON, "Status", dlSucceededJson.toString());
                     }
 
                     printAll();
 
                     JSONObject markGripperJson = new JSONObject();
-                    markGripperJson.put("IDX", IDX_);
-                    sendData(MessageType.JSON, "Sending command to record SD file", markGripperJson.toString());
+                    markGripperJson.put("Gripper Cmd", "Sending command to record SD file")
+                                  .put("IDX", IDX_);
+                    sendData(MessageType.JSON, "Command", markGripperJson.toString());
                     gecko_gripper_node.sendMarkGripper(IDX_);
 
                     // 500delay
@@ -528,19 +540,22 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     double reportedIDX = (double)(gecko_gripper_node.gripperState.getExpIdx());
                     if (reportedIDX != IDX_) {
                       JSONObject idxFailureJson = new JSONObject();
-                      idxFailureJson.put("Desired IDX", IDX_) 
+                      idxFailureJson.put("ERROR", "Terminating with IDX failure")
+                                    .put("Desired IDX", IDX_)
                                     .put("Reported IDX", reportedIDX);
-                      sendData(MessageType.JSON, "Terminating with IDX failure", idxFailureJson.toString());
+                      sendData(MessageType.JSON, "Exiting", idxFailureJson.toString());
                       gecko_gripper_node.sendCloseExp();
                       return
                     } else {
                       JSONObject markSucceededJson = new JSONObject();
-                      markSucceededJson.put("IDX", IDX_);
-                      sendData(MessageType.JSON, "Successfully opened file on SD card", markSucceededJson.toString());
+                      markSucceededJson.put("Gripper Cmd", "Successfully opened file on SD")
+                                      .put("IDX", IDX_);
+                      sendData(MessageType.JSON, "Status", markSucceededJson.toString());
                     }
                       
                     JSONObject enableAutoJson = new JSONObject();
-                    sendData(MessageType.JSON, "Sending command to enable auto", enableAutoJson.toString());
+                    enableAutoJson.put("Gripper Cmd", "Sending command to enable auto");
+                    sendData(MessageType.JSON, "Command", enableAutoJson.toString());
                     gecko_gripper_node.sendEnableAuto();
 
                     // 500ms delay
@@ -557,20 +572,22 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     if (!gecko_gripper_node.gripperState.getAutomaticModeEnable()) { 
                       JSONObject enableAutoFailedJson = new JSONObject();
-                      sendData(MessageType.JSON, "Enable auto failed, terminating", enableAutoFailedJson.toString());
+                      enableAutoFailedJson.put("ERROR", "Enable auto failed, terminating");
+                      sendData(MessageType.JSON, "Exiting", enableAutoFailedJson.toString());
                       gecko_gripper_node.sendCloseExp();
                       return;
                     } else {
                       JSONObject enableAutoSucceededJson = new JSONObject();
-                      sendData(MessageType.JSON, "Gripper now in automatic mode", enableAutoSucceededJson.toString());
+                      enableAutoSucceededJson.put("Gripper Cmd", "Gripper now in automatic mode");
+                      sendData(MessageType.JSON, "Status", enableAutoSucceededJson.toString());
                     }
 
                     printAll();
 
                     // Send data we are moving to pose
                     JSONObject perchStartJson = new JSONObject();
-                    perchStartJson.put("Status", "Starting perch maneuver!");
-                    sendData(MessageType.JSON, "Perch Status", perchStartJson.toString());
+                    perchStartJson.put("Astrobee Cmd", "Starting perch maneuver!");
+                    sendData(MessageType.JSON, "Command", perchStartJson.toString());
 
                     Result result = null;
                     result = api.moveTo(gecko_gripper_node.targetPos, gecko_gripper_node.targetQuat); 
@@ -585,16 +602,16 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         if (!matchFound) {
                           // Planner has failed for some other reason i.e. perching has failed
                           JSONObject moveToJson = new JSONObject();
-                          moveToJson.put("Status", "Planner failed unexpectedly!");
-                          sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
+                          moveToJson.put("ERROR", "Planner failed unexpectedly!");
+                          sendData(MessageType.JSON, "Exiting", moveToJson.toString());
                           gecko_gripper_node.sendCloseExp();
                           return;
                         }
                     } else{
                         // Planner has succeded, i.e. perching has failed
                         JSONObject moveToJson = new JSONObject();
-                        moveToJson.put("Status", "Planner succeeded unexpectedly!");
-                        sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
+                        moveToJson.put("ERROR", "Planner succeeded when it was not supposed to!");
+                        sendData(MessageType.JSON, "Exiting", moveToJson.toString());
                         gecko_gripper_node.sendCloseExp();
                         return;
                     }
@@ -603,8 +620,9 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     Point perchPos = currentKinematics.getPosition();
 
                     JSONObject perchPosJson = new JSONObject();
-                    perchPosJson.put("Final Perch Position", perchPos.toString());
-                    sendData(MessageType.JSON, "Successfully completed perch motion", perchPosJson.toString());
+                    perchPosJson.put("Astrobee Cmd", "Successfully completed perch motion)
+                                .put("Final Perch Position", perchPos.toString());
+                    sendData(MessageType.JSON, "Status", perchPosJson.toString());
 
                     // Start timer to wait until adhesiveEngage and wristLock are both high or time out with failure
                     timeoutTime = System.currentTimeMillis() + 60000;
@@ -624,9 +642,10 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     if (!gecko_gripper_node.gripperState.getAdhesiveEngage() || !gecko_gripper_node.gripperState.getWristLock()) {
                       JSONObject perchFailedJson = new JSONObject();
-                      perchFailedJson.put("Adhesive engage", gecko_gripper_node.gripperState.getAdhesiveEngage())
+                      perchFailedJson.put("ERROR", "Gripper did not perch. Terminating.")
+                                      .put("Adhesive engage", gecko_gripper_node.gripperState.getAdhesiveEngage())
                                       .put("Wrist lock", gecko_gripper_node.gripperState.getWristLock());
-                      sendData(MessageType.JSON, "Gripper did not perch. Terminating.", perchFailedJson.toString());
+                      sendData(MessageType.JSON, "Exiting", perchFailedJson.toString());
                       gecko_gripper_node.sendCloseExp();
                       return;
                     }
@@ -644,16 +663,16 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         if (!matchFound) {
                           // Planner has failed for some other reason i.e. perching has failed
                           JSONObject moveToJson = new JSONObject();
-                          moveToJson.put("Status", "Planner failed unexpectedly!");
-                          sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
+                          moveToJson.put("ERROR", "Planner failed unexpectedly!");
+                          sendData(MessageType.JSON, "Exiting", moveToJson.toString());
                           gecko_gripper_node.sendCloseExp();
                           return;
                         }
                     } else{
                         // Planner has succeded, i.e. perching has failed
                         JSONObject moveToJson = new JSONObject();
-                        moveToJson.put("Status", "Planner succeeded unexpectedly!");
-                        sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
+                        moveToJson.put("ERROR", "Planner succeeded when it was not supposed to!");
+                        sendData(MessageType.JSON, "Exiting", moveToJson.toString());
                         gecko_gripper_node.sendCloseExp();
                         return;
                     }
@@ -667,15 +686,15 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                               Math.pow(postPerchPos.getZ()-perchPos.getZ(), 2));
                     if (postPerchDelta > 0.2) {
                       JSONObject graspFailureJson = new JSONObject();
-                      graspFailureJson.put("Status", "Perch verification test failed");
-                      sendData(MessageType.JSON, "Terminating with grasp failure", graspFailureJson.toString());
+                      graspFailureJson.put("ERROR", "Perch verification test failed. Terminating");
+                      sendData(MessageType.JSON, "Exiting", graspFailureJson.toString());
                       gecko_gripper_node.sendCloseExp();
                       return;
+                    } else {
+                      JSONObject graspFailureJson = new JSONObject();
+                      graspFailureJson.put("Gripper Status", "Successful perch validated");
+                      sendData(MessageType.JSON, "Status", graspFailureJson.toString());
                     }
-
-                    JSONObject graspFailureJson = new JSONObject();
-                    graspFailureJson.put("Status", "Successful perch validated");
-                    sendData(MessageType.JSON, "grasp success", graspFailureJson.toString());
 
                     gecko_gripper_node.sendCloseExp();
                     timeoutTime = System.currentTimeMillis() + 500;
@@ -694,13 +713,13 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     }
                     if (!gecko_gripper_node.gripperState.getFileIsOpen()) {
                         JSONObject closeFileJson = new JSONObject();
-                        closeFileJson.put("Status", "File on SD card still open! Make sure to close it");
+                        closeFileJson.put("Gripper Status", "File on SD card still open! Make sure to close it");
                         sendData(MessageType.JSON, "Status", closeFileJson.toString());
                     }
 
                     JSONObject doneJson = new JSONObject();
-                    doneJson.put("Status", "Done with automatic perch!");
-                    sendData(MessageType.JSON, "Status", doneJson.toString());
+                    doneJson.put("Astrobee Status", "Done with automatic perch sequence and exiting!");
+                    sendData(MessageType.JSON, "Exiting", doneJson.toString());
 
                 default:
                     // Inform GS Manager and GDS, then stop execution.
