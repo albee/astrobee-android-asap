@@ -684,7 +684,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     double postPerchDelta = Math.sqrt(Math.pow(postPerchPos.getX()-perchPos.getX(), 2) + 
                               Math.pow(postPerchPos.getY()-perchPos.getY(), 2) + 
                               Math.pow(postPerchPos.getZ()-perchPos.getZ(), 2));
-                    if (postPerchDelta > 0.2) {
+                    if (postPerchDelta > 0.1) {
                       JSONObject graspFailureJson = new JSONObject();
                       graspFailureJson.put("ERROR", "Perch verification test failed. Terminating");
                       sendData(MessageType.JSON, "Exiting", graspFailureJson.toString());
@@ -711,7 +711,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         break;
                       }
                     }
-                    if (!gecko_gripper_node.gripperState.getFileIsOpen()) {
+                    if (gecko_gripper_node.gripperState.getFileIsOpen()) {
                         JSONObject closeFileJson = new JSONObject();
                         closeFileJson.put("Gripper Status", "File on SD card still open! Make sure to close it");
                         sendData(MessageType.JSON, "Status", closeFileJson.toString());
