@@ -39,6 +39,8 @@ import std_msgs.String;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.lang.Math;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
@@ -378,48 +380,44 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     gecko_gripper_node.initQuat = currentKinematics.getOrientation();
 
                     // Parse arguments sent by user
-                    double offsetDistance = Double.parseDouble(jCommand.getString("DIST"));
+                    double offsetDistance = Double.parseDouble(jCommand.getString("DIST_CM")) / 100.0;
                     double DL_ = Double.parseDouble(jCommand.getString("DL"));
                     double IDX_ = Double.parseDouble(jCommand.getString("IDX"));
-                    java.lang.String axis = jCommand.getString("AX");
+                    java.lang.String axis = jCommand.getString("AXIS");
 
                     // Compute target position and orientation
                     gecko_gripper_node.targetQuat = gecko_gripper_node.initQuat;
-                    switch (axis) {
-                        // You may handle your commands here
-                        case "px":
-                          gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.initPos.getX() + offsetDistance,
-                            gecko_gripper_node.initPos.getY(),
-                            gecko_gripper_node.initPos.getZ());
-                        case "nx":
-                          gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.initPos.getX() - offsetDistance,
-                            gecko_gripper_node.initPos.getY(),
-                            gecko_gripper_node.initPos.getZ());
-                        case "py":
-                          gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.initPos.getX(),
-                            gecko_gripper_node.initPos.getY() + offsetDistance,
-                            gecko_gripper_node.initPos.getZ());
-                        case "ny":
-                          gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.initPos.getX(),
-                            gecko_gripper_node.initPos.getY() - offsetDistance,
-                            gecko_gripper_node.initPos.getZ());
-                        case "pz":
-                          gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.initPos.getX(),
-                            gecko_gripper_node.initPos.getY(),
-                            gecko_gripper_node.initPos.getZ() + offsetDistance);
-                        case "nz":
-                          gecko_gripper_node.targetPos = new Point(
-                            gecko_gripper_node.initPos.getX(),
-                            gecko_gripper_node.initPos.getY(),
-                            gecko_gripper_node.initPos.getZ() - offsetDistance);
-                        default:
-                          // Inform GS Manager and GDS, then stop execution.
-                          sendData(MessageType.JSON, "data", "ERROR: Unrecognized AXIS");
+
+                    if (axis.equals("px")) {
+                      gecko_gripper_node.targetPos = new Point(
+                        gecko_gripper_node.initPos.getX() + offsetDistance,
+                        gecko_gripper_node.initPos.getY(),
+                        gecko_gripper_node.initPos.getZ());
+                    } else if (axis.equals("nx")) {
+                      gecko_gripper_node.targetPos = new Point(
+                        gecko_gripper_node.initPos.getX() - offsetDistance,
+                        gecko_gripper_node.initPos.getY(),
+                        gecko_gripper_node.initPos.getZ());
+                    } else if (axis.equals("py")) {
+                      gecko_gripper_node.targetPos = new Point(
+                        gecko_gripper_node.initPos.getX(),
+                        gecko_gripper_node.initPos.getY() + offsetDistance,
+                        gecko_gripper_node.initPos.getZ());
+                    } else if (axis.equals("ny")) {
+                      gecko_gripper_node.targetPos = new Point(
+                        gecko_gripper_node.initPos.getX(),
+                        gecko_gripper_node.initPos.getY() - offsetDistance,
+                        gecko_gripper_node.initPos.getZ());
+                    } else if (axis.equals("pz")) {
+                      gecko_gripper_node.targetPos = new Point(
+                        gecko_gripper_node.initPos.getX(),
+                        gecko_gripper_node.initPos.getY(),
+                        gecko_gripper_node.initPos.getZ() + offsetDistance);
+                    } else {
+                      gecko_gripper_node.targetPos = new Point(
+                        gecko_gripper_node.initPos.getX(),
+                        gecko_gripper_node.initPos.getY(),
+                        gecko_gripper_node.initPos.getZ() - offsetDistance);
                     }
 
                     // Send command to reset gripper
@@ -427,8 +425,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     sendData(MessageType.JSON, "Sending command to reset gripper", resetGripperJson.toString());
                     gecko_gripper_node.sendResetGripper();
 
-                    // 300ms delay
-                    long timeoutTime = System.currentTimeMillis() + 300;
+                    // 500ms delay
+                    long timeoutTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < timeoutTime) {
                       try {
                           Thread.sleep(10);
@@ -454,8 +452,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     sendData(MessageType.JSON, "Sending command to set delay", setDelayJson.toString());
                     gecko_gripper_node.sendSetDelay(DL_);
 
-                    // 100ms delay
-                    timeoutTime = System.currentTimeMillis() + 100;
+                    // 500ms delay
+                    timeoutTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < timeoutTime) {
                       try {
                           Thread.sleep(10);
@@ -467,8 +465,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     gecko_gripper_node.sendQueryDelay();
 
-                    // 100ms delay
-                    timeoutTime = System.currentTimeMillis() + 100;
+                    // 500ms delay
+                    timeoutTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < timeoutTime) {
                       try {
                           Thread.sleep(10);
@@ -494,8 +492,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     sendData(MessageType.JSON, "Sending command to record SD file", markGripperJson.toString());
                     gecko_gripper_node.sendMarkGripper(IDX_);
 
-                    // 100delay
-                    timeoutTime = System.currentTimeMillis() + 100;
+                    // 500delay
+                    timeoutTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < timeoutTime) {
                       try {
                           Thread.sleep(10);
@@ -507,8 +505,8 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     gecko_gripper_node.sendQueryIdx();
 
-                    // 100ms delay
-                    timeoutTime = System.currentTimeMillis() + 100;
+                    // 500ms delay
+                    timeoutTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < timeoutTime) {
                       try {
                           Thread.sleep(10);
@@ -540,8 +538,12 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     if (!result.hasSucceeded()) {
                         // If planner does not report position tolerance violation, then perching was unsuccessful
                         java.lang.String resultMessage = result.getMessage();
-                        // if (resultMessage != "Position tolerance violated") {
-                        if (resultMessage.equals("Position tolerance violated")) {
+
+                        Pattern pattern = Pattern.compile("Position tolerance violated", Pattern.CASE_INSENSITIVE);
+                        Matcher matcher = pattern.matcher(resultMessage);
+                        boolean matchFound = matcher.find();
+
+                        if (!matchFound) {
                           // Planner has failed for some other reason i.e. perching has failed
                           JSONObject moveToJson = new JSONObject();
                           moveToJson.put("Status", "Planner failed unexpectedly!");
@@ -593,8 +595,11 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     if (!result.hasSucceeded()) {
                         // If planner does not report position tolerance violation, then perching was unsuccessful
                         java.lang.String resultMessage = result.getMessage();
-                        // if (resultMessage != "Position tolerance violated") {
-                        if (resultMessage.equals("Position tolerance violated")) {
+                        Pattern pattern = Pattern.compile("Position tolerance violated", Pattern.CASE_INSENSITIVE);
+                        Matcher matcher = pattern.matcher(resultMessage);
+                        boolean matchFound = matcher.find();
+
+                        if (!matchFound) {
                           // Planner has failed for some other reason i.e. perching has failed
                           JSONObject moveToJson = new JSONObject();
                           moveToJson.put("Status", "Planner failed unexpectedly!");
@@ -628,7 +633,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                       sendData(MessageType.JSON, "grasp success", graspFailureJson.toString());
 
                     gecko_gripper_node.sendCloseExp();
-                    timeoutTime = System.currentTimeMillis() + 50;
+                    timeoutTime = System.currentTimeMillis() + 500;
                     while (System.currentTimeMillis() < timeoutTime) {
                       try {
                           Thread.sleep(10);

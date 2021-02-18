@@ -65,6 +65,6 @@
             syntax="{&quot;name&quot;: &quot;gecko_gripper_perch_pan_test&quot;}" />
         <command
             name="perch_auto"
-            syntax="{&quot;name&quot;: &quot;gecko_gripper_perch_auto&quot;, &quot;AX&quot;: &quot;px&quot;, &quot;DIST&quot;: &quot;100&quot;}" />
+            syntax="{&quot;name&quot;: &quot;gecko_gripper_perch_auto&quot;, &quot;AXIS&quot;: &quot;px&quot;, &quot;DIST_CM&quot;: &quot;100&quot;, &quot;IDX&quot;: &quot;0&quot;, &quot;DL&quot;: &quot;0&quot;}" />
     </commands>
 </apkInfo>
