@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import android.os.Handler;
 import android.os.Looper;
 import android.content.Intent;
+import android.util.Log;
 
 import org.ros.android.RosActivity;
 import org.ros.node.NodeConfiguration;
@@ -187,7 +188,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_close":
-                    msg_name.add(sCommand);
+                    gecko_gripper_node.sendCloseExp();
                     break;
                 case "gecko_gripper_engage":
                     msg_name.add(sCommand);
@@ -366,7 +367,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                 case "gecko_gripper_perch_auto":
                     int timeout = 5; 
                     Kinematics currentKinematics = api.getTrustedRobotKinematics(timeout);
-                    if (!currentKinematics) {
+                    if (currentKinematics == null) {
                       // Kinematics can't be trusted
                       JSONObject kinFailureJson = new JSONObject();
                       sendData(MessageType.JSON, "EKF kinematics failed", kinFailureJson.toString());
@@ -419,12 +420,11 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                         default:
                           // Inform GS Manager and GDS, then stop execution.
                           sendData(MessageType.JSON, "data", "ERROR: Unrecognized AXIS");
-                          return;
-
                     }
 
                     // Send command to reset gripper
-                    // TODO(acauligi): Send message that gripper reset command being sent
+                    JSONObject resetGripperJson = new JSONObject();
+                    sendData(MessageType.JSON, "Sending command to reset gripper", resetGripperJson.toString());
                     gecko_gripper_node.sendResetGripper();
 
                     // 300ms delay
@@ -539,13 +539,20 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     api.stopAllMotion();
                     if (!result.hasSucceeded()) {
                         // If planner does not report position tolerance violation, then perching was unsuccessful
-                        String resultMessage = result.getMessage();
-                        if (resultMessage != "Position tolerance violated") {
+                        java.lang.String resultMessage = result.getMessage();
+                        // if (resultMessage != "Position tolerance violated") {
+                        if (resultMessage.equals("Position tolerance violated")) {
                           // Planner has failed for some other reason i.e. perching has failed
+                          JSONObject moveToJson = new JSONObject();
+                          moveToJson.put("Status", "Planner failed unexpectedly!");
+                          sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
                           return;
                         }
                     } else{
                         // Planner has succeded, i.e. perching has failed
+                        JSONObject moveToJson = new JSONObject();
+                        moveToJson.put("Status", "Planner succeeded unexpectedly!");
+                        sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
                         return;
                     }
 
@@ -581,17 +588,24 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
 
                     printAll();
 
-                    result = api.moveTo(gecko_gripper_node.initPos, gecko_gripper_node.CurrentQuat);   // rename initPos to initPos
+                    result = api.moveTo(gecko_gripper_node.initPos, gecko_gripper_node.initQuat);
                     api.stopAllMotion();
                     if (!result.hasSucceeded()) {
                         // If planner does not report position tolerance violation, then perching was unsuccessful
-                        String resultMessage = result.getMessage();
-                        if (resultMessage != "Position tolerance violated") {
+                        java.lang.String resultMessage = result.getMessage();
+                        // if (resultMessage != "Position tolerance violated") {
+                        if (resultMessage.equals("Position tolerance violated")) {
                           // Planner has failed for some other reason i.e. perching has failed
+                          JSONObject moveToJson = new JSONObject();
+                          moveToJson.put("Status", "Planner failed unexpectedly!");
+                          sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
                           return;
                         }
                     } else{
                         // Planner has succeded, i.e. perching has failed
+                        JSONObject moveToJson = new JSONObject();
+                        moveToJson.put("Status", "Planner succeeded unexpectedly!");
+                        sendData(MessageType.JSON, "Perch Status", moveToJson.toString());
                         return;
                     }
 
@@ -601,8 +615,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     // We do this in case the plan to move to the initial position fails for some other reason and not because perching succeeded
                     double postPerchDelta = Math.sqrt(Math.pow(postPerchPos.getX()-perchPos.getX(), 2) + 
                               Math.pow(postPerchPos.getY()-perchPos.getY(), 2) + 
-                              Math.pow(postPerchPos.getZ()-perchPos.getZ(), 2) + 
-                    );
+                              Math.pow(postPerchPos.getZ()-perchPos.getZ(), 2));
                     if (postPerchDelta > 0.2) {
                       JSONObject graspFailureJson = new JSONObject();
                       graspFailureJson.put("Status", "Perch verification test failed");
@@ -624,7 +637,19 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                           return;
                       }
 
+                      if (!gecko_gripper_node.gripperState.getFileIsOpen()) {
+                        break;
+                      }
                     }
+                    if (!gecko_gripper_node.gripperState.getFileIsOpen()) {
+                        JSONObject closeFileJson = new JSONObject();
+                        closeFileJson.put("Status", "File on SD card still open!");
+                        sendData(MessageType.JSON, "Status", closeFileJson.toString());
+                    }
+
+                    JSONObject doneJson = new JSONObject();
+                    doneJson.put("Status", "Done with automatic perch!");
+                    sendData(MessageType.JSON, "Status", doneJson.toString());
 
                 default:
                     // Inform GS Manager and GDS, then stop execution.

@@ -205,6 +205,19 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         msg.setPosition(msg_pos);
         mPublisher.publish(msg);
     }
+    
+    public void sendCloseExp() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_close");
+        msg_pos[0] = 0.0; 
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
 
     public void sendQueryIdx() {
         sensor_msgs.JointState msg = mPublisher.newMessage();
