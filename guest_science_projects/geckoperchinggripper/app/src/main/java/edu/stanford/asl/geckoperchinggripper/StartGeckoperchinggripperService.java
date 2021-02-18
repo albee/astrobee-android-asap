@@ -190,7 +190,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_close":
-                    gecko_gripper_node.sendCloseExp();
+                    msg_name.add(sCommand);
                     break;
                 case "gecko_gripper_engage":
                     msg_name.add(sCommand);
@@ -271,7 +271,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     msg_pos[0] = Float.parseFloat(jCommand.getString("RN"));
                     break;
                 case "gecko_gripper_close_exp":
-                    msg_name.add(sCommand);
+                    gecko_gripper_node.sendCloseExp();
 
                     handler.postDelayed(queryRefresh, QUERY_WAIT_MS);
                     handler.postDelayed(fileRefresh, FILE_WAIT_MS);
@@ -610,7 +610,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     } else{
                         // Planner has succeded, i.e. perching has failed
                         JSONObject moveToJson = new JSONObject();
-                        moveToJson.put("ERROR", "Planner succeeded when it was not supposed to!");
+                        moveToJson.put("ERROR", "Perching failed with recovery");
                         sendData(MessageType.JSON, "Exiting", moveToJson.toString());
                         gecko_gripper_node.sendCloseExp();
                         return;
@@ -671,7 +671,7 @@ public class StartGeckoperchinggripperService extends StartGuestScienceService {
                     } else{
                         // Planner has succeded, i.e. perching has failed
                         JSONObject moveToJson = new JSONObject();
-                        moveToJson.put("ERROR", "Planner succeeded when it was not supposed to!");
+                        moveToJson.put("ERROR", "Perching failed with recovery");
                         sendData(MessageType.JSON, "Exiting", moveToJson.toString());
                         gecko_gripper_node.sendCloseExp();
                         return;

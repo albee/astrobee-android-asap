@@ -211,7 +211,7 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
         double[] msg_pos = new double[1];
 
-        msg_name.add("gecko_gripper_close");
+        msg_name.add("gecko_gripper_close_exp");
         msg_pos[0] = 0.0; 
 
         msg.setName(msg_name);
