@@ -212,7 +212,7 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         double[] msg_pos = new double[1];
 
         msg_name.add("gecko_gripper_close_exp");
-        msg_pos[0] = 0.0; 
+        msg_pos[0] = 0.0;
 
         msg.setName(msg_name);
         msg.setPosition(msg_pos);
@@ -225,7 +225,7 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         double[] msg_pos = new double[1];
 
         msg_name.add("gecko_gripper_exp");
-        msg_pos[0] = 0.0; 
+        msg_pos[0] = 0.0;
 
         msg.setName(msg_name);
         msg.setPosition(msg_pos);
@@ -258,11 +258,11 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         msg_name.add("gecko_gripper_exp");
 
         double[] msg_pos = new double[5];
-        msg_pos[0] = 0.0; 
-        msg_pos[1] = 0.0; 
-        msg_pos[2] = 0.0; 
-        msg_pos[3] = 0.0; 
-        msg_pos[4] = 0.0; 
+        msg_pos[0] = 0.0;
+        msg_pos[1] = 0.0;
+        msg_pos[2] = 0.0;
+        msg_pos[3] = 0.0;
+        msg_pos[4] = 0.0;
 
         msg.setName(msg_name);
         msg.setPosition(msg_pos);
@@ -275,7 +275,126 @@ public class GeckoGripperStatusNode extends AbstractNodeMain {
         double[] msg_pos = new double[1];
 
         msg_name.add("gecko_gripper_enable_auto");
-        msg_pos[0] = 0.0; 
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendDisableAuto() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_disable_auto");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendOpenGripper() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_open");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendCloseGripper() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_close");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendGripperEngage() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_engage");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendGripperDisengage() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_disengage");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendGripperLock() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_lock");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendGripperUnlock() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("gecko_gripper_unlock");
+        msg_pos[0] = 0.0;
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendGripperEngageLock() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[2];
+        msg_pos[0] = 0.;
+        msg_pos[1] = 0.;
+
+        msg_name.add("gecko_gripper_engage");
+        msg_name.add("gecko_gripper_lock");
+
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+        mPublisher.publish(msg);
+    }
+
+    public void sendGripperStatus() {
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+        msg_pos[0] = 0.;
+
+        msg_name.add("gecko_gripper_status");
 
         msg.setName(msg_name);
         msg.setPosition(msg_pos);
