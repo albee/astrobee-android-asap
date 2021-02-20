@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<apkInfo>
+    <shortName>roamcommandasap</shortName> <!-- Optional -->
+    <primary>true</primary> <!-- Required -->
+    <commands>
+        <command
+            name="Command1"
+            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
+        <command
+            name="Command2"
+            syntax="{&quot;name&quot;: &quot;command2&quot;}" />
+    </commands>
+</apkInfo>
