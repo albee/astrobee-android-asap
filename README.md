@@ -1,4 +1,20 @@
-# Astrobee Robot Software - Android submodule
+# Astrobee Robot Software - Android submodule (TumbleDock)
+
+## TumbleDock Notes
+
+`guest_science_projects` contains a template for our APK, `roamcommandasap`, and a helpful example, `geckoperchinggripper`.
+
+Our code: `guest_science_projects/roamcommandasap/app/src/main/java/edu/mit/ssl/roamcommandasap`
+
+Helpful example: `guest_science_projects/geckoperchinggripper/app/src/main/java/edu/stanford/asl/geckoperchinggripper`
+
+* main/res/xml/commands.xml: defines commands you want to handle from apk
+* functions in our class:
+  onGuestScienceCommand
+  onGuestScienceStop
+  onGuestScienceStart
+  onGuestScienceCustomCmd
+  most important, uses command input from GDS
 
 ## About
 
