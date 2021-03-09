@@ -84,7 +84,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
-
+            // hello
             switch (sCommand) {
                 // You may handle your commands here
                 default:
