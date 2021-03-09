@@ -20,6 +20,13 @@ package edu.mit.ssl.roamcommandasap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ros.node.DefaultNodeMainExecutor;
+
+import java.net.URI;
+
+import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeMainExecutor;
+import org.ros.node.DefaultNodeMainExecutor;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
@@ -33,14 +40,28 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
     // The API implementation
     private ApiCommandImplementation api = null;
 
-     /**
+    private RoamStatusNode roam_node=null;
+    /**
      * This function is called when the GS manager starts your apk.
      * Put all of your start up code in here.
      */
+    NodeMainExecutor nodeMainExecutor;
+
+
+    private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
+    private static final java.lang.String ROS_HOSTNAME = "hlp";
     @Override
     public void onGuestScienceStart() {
         // Get a unique instance of the Astrobee API in order to command the robot.
         api = ApiCommandImplementation.getInstance();
+
+        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(ROS_HOSTNAME);
+        nodeConfiguration.setMasterUri(ROS_MASTER_URI);
+
+        roam_node = new RoamStatusNode();
+
+        nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
+        nodeMainExecutor.execute(roam_node, nodeConfiguration);
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
@@ -92,6 +113,9 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
+                case "test_publish":
+                    roam_node.sendTestMsg();
+                    break;
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.
