@@ -35,7 +35,7 @@ public class RoamStatusNode extends AbstractNodeMain {
     public GraphName getDefaultNodeName() {
         return GraphName.of("gecko_perching_gripper");
     }
-    
+
     @Override
     public void onStart(ConnectedNode connectedNode){
         mPublisher = connectedNode.newPublisher(

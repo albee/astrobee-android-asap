@@ -4,8 +4,8 @@
     <primary>true</primary> <!-- Required -->
     <commands>
         <command
-            name="Command1"
-            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
+            name="test_command"
+            syntax="{&quot;name&quot;: &quot;test_publish&quot;}" />
         <command
             name="Command2"
             syntax="{&quot;name&quot;: &quot;command2&quot;}" />
