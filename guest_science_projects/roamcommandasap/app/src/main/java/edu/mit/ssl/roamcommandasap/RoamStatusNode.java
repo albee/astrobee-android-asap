@@ -1,8 +1,10 @@
 package edu.mit.ssl.roamcommandasap;
 
+import org.ros.concurrent.CancellableLoop;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
+import org.ros.node.parameter.ParameterTree;
 import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
 import org.ros.message.MessageListener;
@@ -26,6 +28,7 @@ import gov.nasa.arc.astrobee.types.Quaternion;
 
 public class RoamStatusNode extends AbstractNodeMain {
 
+    public static ConnectedNode connectedNode;
 
     public static RoamStatusNode instance = null;
 
@@ -37,17 +40,25 @@ public class RoamStatusNode extends AbstractNodeMain {
     }
 
     @Override
-    public void onStart(ConnectedNode connectedNode){
+    public void onStart(final ConnectedNode connectedNode){
         mPublisher = connectedNode.newPublisher(
                 "joint_goals",
                 sensor_msgs.JointState._TYPE);
         instance = this;
-    }
 
+        //initializes the /roamcommandasap parameter to null on startup to reflect that no commands have run
+        ParameterTree params = connectedNode.getParameterTree();
+        params.set("/roamcommandasap","null");
+
+
+    }
     public static RoamStatusNode getInstance(){
         return instance;
     }
     public void sendTestMsg(){
+        //gets the paramtree associated to the rosmaster (llp) and creates a params object
+        ParameterTree params = connectedNode.getParameterTree();
+
         sensor_msgs.JointState msg = mPublisher.newMessage();
         java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
         double[] msg_pos = new double[1];
@@ -57,8 +68,44 @@ public class RoamStatusNode extends AbstractNodeMain {
         msg.setName(msg_name);
         msg.setPosition(msg_pos);
 
+        params.set("/roamcommand","test");
 
         mPublisher.publish(msg);
+
+
     }
-    
+    public void sendCommand_1(){
+        ParameterTree params = connectedNode.getParameterTree();
+
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("Command -1");
+        msg_pos[0]=0.0;
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+
+        params.set("/roamcommand","-1");
+
+        mPublisher.publish(msg);
+
+    }
+    public void sendCommand1(){
+        ParameterTree params = connectedNode.getParameterTree();
+
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        msg_name.add("Command 1");
+        msg_pos[0]=0.0;
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+
+        params.set("/roamcommand","1");
+
+        mPublisher.publish(msg);
+
+    }
 }

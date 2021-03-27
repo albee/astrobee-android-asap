@@ -7,7 +7,41 @@
             name="test_command"
             syntax="{&quot;name&quot;: &quot;test_publish&quot;}" />
         <command
+            name="Command-1"
+            syntax="{&quot;name&quot;: &quot;command-1&quot;}" />
+        <command
+            name="Command1"
+            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
+        <command
             name="Command2"
             syntax="{&quot;name&quot;: &quot;command2&quot;}" />
+        <command
+            name="Command3"
+            syntax="{&quot;name&quot;: &quot;command3&quot;}" />
+        <command
+            name="Command4"
+            syntax="{&quot;name&quot;: &quot;command4&quot;}" />
+        <command
+            name="Command5"
+            syntax="{&quot;name&quot;: &quot;command5&quot;}" />
+        <command
+            name="Command6"
+            syntax="{&quot;name&quot;: &quot;command6&quot;}" />
+        <command
+            name="Command7"
+            syntax="{&quot;name&quot;: &quot;command7&quot;}" />
+        <command
+            name="Command8"
+            syntax="{&quot;name&quot;: &quot;command8&quot;}" />
+        <command
+            name="Command9"
+            syntax="{&quot;name&quot;: &quot;command9&quot;}" />
+        <command
+            name="Command10"
+            syntax="{&quot;name&quot;: &quot;command10&quot;}" />
+        <command
+            name="Command11"
+            syntax="{&quot;name&quot;: &quot;command11&quot;}" />
+
     </commands>
 </apkInfo>

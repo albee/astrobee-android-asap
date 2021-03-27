@@ -26,7 +26,7 @@ import java.net.URI;
 
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
-import org.ros.node.DefaultNodeMainExecutor;
+import org.ros.node.parameter.ParameterTree;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
@@ -116,6 +116,11 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "test_publish":
                     roam_node.sendTestMsg();
                     break;
+                case "command-1":
+                    roam_node.sendCommand_1();
+                    break;
+                case "command1":
+                    roam_node.sendCommand1();
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.

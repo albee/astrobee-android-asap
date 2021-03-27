@@ -96,7 +96,7 @@ fi
 # -------------------------------------------- Configure emulator network -----------------------------------------------------
 
 if [ ! -z $run_net ]; then
-  sudo gnome-terminal -e "./hlp_setup_net.sh -e -h $HLP_IP -l $LLP_IP -w -1 -t 60"
+  sudo gnome-terminal -e "./hlp_setup_net.sh -e -h $HLP_IP -l $LLP_IP -w -10 -t 60"
 fi
 
 # -------------------------------------------- Start emulator -----------------------------------------------------------------
