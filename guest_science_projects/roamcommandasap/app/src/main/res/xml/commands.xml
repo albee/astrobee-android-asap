@@ -4,9 +4,6 @@
     <primary>true</primary> <!-- Required -->
     <commands>
         <command
-            name="test_command"
-            syntax="{&quot;name&quot;: &quot;test_publish&quot;}" />
-        <command
             name="Command-1"
             syntax="{&quot;name&quot;: &quot;command-1&quot;}" />
         <command
@@ -42,6 +39,9 @@
         <command
             name="Command11"
             syntax="{&quot;name&quot;: &quot;command11&quot;}" />
+        <command
+            name="Reset Param"
+            syntax="{&quot;name&quot;: &quot;reset_param&quot;}" />
 
     </commands>
 </apkInfo>

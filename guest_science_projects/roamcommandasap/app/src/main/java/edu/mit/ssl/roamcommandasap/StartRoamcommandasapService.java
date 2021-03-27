@@ -74,6 +74,9 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
      */
     @Override
     public void onGuestScienceStop() {
+        //set rosparam roamcommand to stopped
+        roam_node.sendStopped();
+
         // Stop the API
         api.shutdownFactory();
 
@@ -113,14 +116,45 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
-                case "test_publish":
-                    roam_node.sendTestMsg();
-                    break;
                 case "command-1":
                     roam_node.sendCommand_1();
                     break;
                 case "command1":
                     roam_node.sendCommand1();
+                    break;
+                case "command2":
+                    roam_node.sendCommand2();
+                    break;
+                case "command3":
+                    roam_node.sendCommand3();
+                    break;
+                case "command4":
+                    roam_node.sendCommand4();
+                    break;
+                case "command5":
+                    roam_node.sendCommand5();
+                    break;
+                case "command6":
+                    roam_node.sendCommand6();
+                    break;
+                case "command7":
+                    roam_node.sendCommand7();
+                    break;
+                case "command8":
+                    roam_node.sendCommand8();
+                    break;
+                case "command9":
+                    roam_node.sendCommand9();
+                    break;
+                case "command10":
+                    roam_node.sendCommand10();
+                    break;
+                case "command11":
+                    roam_node.sendCommand11();
+                    break;
+                case "reset_param":
+                    roam_node.resetParam();
+                    break;
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.
