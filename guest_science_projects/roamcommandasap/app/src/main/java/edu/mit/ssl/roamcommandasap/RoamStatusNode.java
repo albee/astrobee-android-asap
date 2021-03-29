@@ -21,7 +21,6 @@ import java.io.IOException;
 import ff_msgs.ControlActionFeedback;
 import sensor_msgs.JointState;
 import std_msgs.Header;
-import std_msgs.String;
 
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
@@ -60,6 +59,21 @@ public class RoamStatusNode extends AbstractNodeMain {
     }
     public void sendStopped(){ params.set("/roamcommand","stopped"); }
 
+    public void sendCommand(Integer command_number){
+        sensor_msgs.JointState msg = mPublisher.newMessage();
+        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
+        double[] msg_pos = new double[1];
+
+        String cmd="Command"+Integer.toString(command_number);
+
+        msg_name.add(cmd);
+        msg_pos[0]=0.0;
+        msg.setName(msg_name);
+        msg.setPosition(msg_pos);
+
+        params.set("/roamcommand", command_number);
+    }
+
     public void resetParam(){
         sensor_msgs.JointState msg = mPublisher.newMessage();
         java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
@@ -73,197 +87,5 @@ public class RoamStatusNode extends AbstractNodeMain {
         params.set("/roamcommand","none");
 
         mPublisher.publish(msg);
-    }
-    public void sendCommand_1(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command -1");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","-1");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand1(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 1");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","1");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand2(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 2");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","2");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand3(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 3");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","3");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand4(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 4");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","4");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand5(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 5");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","5");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand6(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 6");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","6");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand7(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 7");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","7");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand8(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 8");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","8");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand9(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 9");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","9");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand10(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 10");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","10");
-
-        mPublisher.publish(msg);
-
-    }
-    public void sendCommand11(){
-
-        sensor_msgs.JointState msg = mPublisher.newMessage();
-        java.util.List<java.lang.String> msg_name = new java.util.ArrayList<java.lang.String>();
-        double[] msg_pos = new double[1];
-
-        msg_name.add("Command 11");
-        msg_pos[0]=0.0;
-        msg.setName(msg_name);
-        msg.setPosition(msg_pos);
-
-        params.set("/roamcommand","11");
-
-        mPublisher.publish(msg);
-
     }
 }

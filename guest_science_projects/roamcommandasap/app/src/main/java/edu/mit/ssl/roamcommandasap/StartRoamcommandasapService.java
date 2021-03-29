@@ -117,40 +117,40 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
                 case "command-1":
-                    roam_node.sendCommand_1();
+                    roam_node.sendCommand(-1);
                     break;
                 case "command1":
-                    roam_node.sendCommand1();
+                    roam_node.sendCommand(1);
                     break;
                 case "command2":
-                    roam_node.sendCommand2();
+                    roam_node.sendCommand(2);
                     break;
                 case "command3":
-                    roam_node.sendCommand3();
+                    roam_node.sendCommand(3);
                     break;
                 case "command4":
-                    roam_node.sendCommand4();
+                    roam_node.sendCommand(4);
                     break;
                 case "command5":
-                    roam_node.sendCommand5();
+                    roam_node.sendCommand(5);
                     break;
                 case "command6":
-                    roam_node.sendCommand6();
+                    roam_node.sendCommand(6);
                     break;
                 case "command7":
-                    roam_node.sendCommand7();
+                    roam_node.sendCommand(7);
                     break;
                 case "command8":
-                    roam_node.sendCommand8();
+                    roam_node.sendCommand(8);
                     break;
                 case "command9":
-                    roam_node.sendCommand9();
+                    roam_node.sendCommand(9);
                     break;
                 case "command10":
-                    roam_node.sendCommand10();
+                    roam_node.sendCommand(10);
                     break;
                 case "command11":
-                    roam_node.sendCommand11();
+                    roam_node.sendCommand(11);
                     break;
                 case "reset_param":
                     roam_node.resetParam();
