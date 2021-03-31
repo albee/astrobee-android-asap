@@ -27,7 +27,7 @@ import gov.nasa.arc.astrobee.types.Quaternion;
 
 public class RoamStatusNode extends AbstractNodeMain {
 
-    private ParameterTree params = null;
+    private ParameterTree rosparam = null;
     public static RoamStatusNode instance = null;
     // // An example publisher, not currently needed
     // Publisher<JointState> mPublisher;
@@ -48,9 +48,11 @@ public class RoamStatusNode extends AbstractNodeMain {
       instance = this;
 
       //initializes the /roamcommandasap parameter to null on startup to reflect that no commands have run
-      ParameterTree params1 = connectedNode.getParameterTree();
-      params = params1;
-      params.set("/roamcommand", "started");
+      ParameterTree my_rosparam = connectedNode.getParameterTree();
+      rosparam = my_rosparam;
+      rosparam.set("/td/gds_apk_status", "started");
+      rosparam.set("/td/gds_sim", "hardware");
+      rosparam.set("/td/gds_ground", "false");
     }
 
     public static RoamStatusNode getInstance(){
@@ -72,17 +74,24 @@ public class RoamStatusNode extends AbstractNodeMain {
       // mPublisher.publish(msg);
 
       String cmd="Command"+Integer.toString(command_number);
-      params.set("/roamcommand", command_number);
+      rosparam.set("/td/gds_test_num", command_number);
     }
 
-    public void resetParam(){
-        /* Send out a rosparam for a "reset" command.
-        */
-        params.set("/roamcommand","reset");
+    public void setRole(String role){
+      /* Send out a rosparam for the Astrobee's role.
+      */
+      rosparam.set("/td/role_from_GDS", role);
+    }
+
+    public void setGround(){
+      /* Send out a rosparam for the Astrobee's role.
+      */
+      rosparam.set("/td/gds_ground", "true");
     }
 
     public void sendStopped(){
       /* Send when the APK is stopped.
       */
-      params.set("/roamcommand","stopped"); }
+      rosparam.set("/td/gds_apk_status", "stopped");
+    }
 }

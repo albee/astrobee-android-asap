@@ -11,46 +11,55 @@
       either of these properties, but that makes it harder to use.
       -->
        <command
-            name="Command-1"
+            name="StopTest"
             syntax="{&quot;name&quot;: &quot;command-1&quot;}" />
         <command
-            name="Command1"
+            name="Test1"
             syntax="{&quot;name&quot;: &quot;command1&quot;}" />
         <command
-            name="Command2"
+            name="Test2"
             syntax="{&quot;name&quot;: &quot;command2&quot;}" />
         <command
-            name="Command3"
+            name="Test3"
             syntax="{&quot;name&quot;: &quot;command3&quot;}" />
         <command
-            name="Command4"
+            name="Test4"
             syntax="{&quot;name&quot;: &quot;command4&quot;}" />
         <command
-            name="Command5"
+            name="Test5"
             syntax="{&quot;name&quot;: &quot;command5&quot;}" />
         <command
-            name="Command6"
+            name="Test6"
             syntax="{&quot;name&quot;: &quot;command6&quot;}" />
         <command
-            name="Command7"
+            name="Test7"
             syntax="{&quot;name&quot;: &quot;command7&quot;}" />
         <command
-            name="Command8"
+            name="Test8"
             syntax="{&quot;name&quot;: &quot;command8&quot;}" />
         <command
-            name="Command9"
+            name="Test9"
             syntax="{&quot;name&quot;: &quot;command9&quot;}" />
         <command
-            name="Command10"
+            name="Test10"
             syntax="{&quot;name&quot;: &quot;command10&quot;}" />
         <command
-            name="Command11"
+            name="Test11"
             syntax="{&quot;name&quot;: &quot;command11&quot;}" />
         <command
-            name="Command12"
+            name="Test12"
             syntax="{&quot;name&quot;: &quot;command12&quot;}" />
         <command
-            name="Reset Param"
-            syntax="{&quot;name&quot;: &quot;reset_param&quot;}" />
+            name="SetRoleChaser"
+            syntax="{&quot;name&quot;: &quot;command_set_role_chaser&quot;}" />
+        <command
+            name="SetRoleTarget"
+            syntax="{&quot;name&quot;: &quot;command_set_role_target&quot;}" />
+        <command
+            name="SetRoleFromHardware"
+            syntax="{&quot;name&quot;: &quot;command_set_role_hardware&quot;}" />
+        <command
+            name="SetGround"
+            syntax="{&quot;name&quot;: &quot;command_set_ground&quot;}" />
     </commands>
 </apkInfo>

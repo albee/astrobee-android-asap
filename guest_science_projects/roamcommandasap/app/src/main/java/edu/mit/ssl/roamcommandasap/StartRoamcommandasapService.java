@@ -155,8 +155,17 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "command12":
                     roam_node.sendCommand(12);
                     break;
-                case "reset_param":
-                    roam_node.resetParam();
+                case "command_set_role_chaser":
+                    roam_node.setRole("chaser");
+                    break;
+                case "command_set_role_target":
+                    roam_node.setRole("target");
+                    break;
+                case "command_set_role_hardware":
+                    roam_node.setRole("");
+                    break;
+                case "command_set_ground":
+                    roam_node.setGround();
                     break;
             }
 
