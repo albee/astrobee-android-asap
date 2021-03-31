@@ -3,10 +3,13 @@
     <shortName>roamcommandasap</shortName> <!-- Optional -->
     <primary>true</primary> <!-- Required -->
     <commands>
-      <!-- commands for each individual test. Might add one "modifiable" command.
-      name: name of command in GDS e.g., "Command-1" -->
-      <!-- Note that syntax is JSON. Keep "name" the same, followed by command string. GDS user can edit
-          either of these properties, but that makes it harder to use.-->
+      <!--
+      commands for each individual test. Might add one "modifiable" command.
+      name: name of command in GDS e.g., "Command-1"
+
+      Note that syntax is JSON. Keep "name" the same, followed by command string. GDS user can edit
+      either of these properties, but that makes it harder to use.
+      -->
        <command
             name="Command-1"
             syntax="{&quot;name&quot;: &quot;command-1&quot;}" />
@@ -49,6 +52,5 @@
         <command
             name="Reset Param"
             syntax="{&quot;name&quot;: &quot;reset_param&quot;}" />
-
     </commands>
 </apkInfo>

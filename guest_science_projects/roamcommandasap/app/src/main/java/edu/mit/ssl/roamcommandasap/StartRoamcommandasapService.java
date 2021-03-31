@@ -41,15 +41,15 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
     private ApiCommandImplementation api = null;
 
     private RoamStatusNode roam_node=null;
+
+    NodeMainExecutor nodeMainExecutor;
+    private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
+    private static final java.lang.String ROS_HOSTNAME = "hlp";
+
     /**
      * This function is called when the GS manager starts your apk.
      * Put all of your start up code in here.
      */
-    NodeMainExecutor nodeMainExecutor;
-
-
-    private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
-    private static final java.lang.String ROS_HOSTNAME = "hlp";
     @Override
     public void onGuestScienceStart() {
         // Get a unique instance of the Astrobee API in order to command the robot.
@@ -58,7 +58,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(ROS_HOSTNAME);
         nodeConfiguration.setMasterUri(ROS_MASTER_URI);
 
-        roam_node = new RoamStatusNode();
+        roam_node = new RoamStatusNode();  // this is the custom node used for commanding
 
         nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
         nodeMainExecutor.execute(roam_node, nodeConfiguration);
@@ -151,6 +151,9 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     break;
                 case "command11":
                     roam_node.sendCommand(11);
+                    break;
+                case "command12":
+                    roam_node.sendCommand(12);
                     break;
                 case "reset_param":
                     roam_node.resetParam();
