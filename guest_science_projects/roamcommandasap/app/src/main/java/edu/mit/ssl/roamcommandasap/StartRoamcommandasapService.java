@@ -26,7 +26,7 @@ import java.net.URI;
 
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
-import org.ros.node.DefaultNodeMainExecutor;
+import org.ros.node.parameter.ParameterTree;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
@@ -74,6 +74,9 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
      */
     @Override
     public void onGuestScienceStop() {
+        //set rosparam roamcommand to stopped
+        roam_node.sendStopped();
+
         // Stop the API
         api.shutdownFactory();
 
@@ -105,7 +108,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
-            
+
             switch (sCommand) {
                 // You may handle your commands here
                 default:
@@ -113,8 +116,44 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
-                case "roam_command_asap":
-                    roam_node.sendTestMsg();
+                case "command-1":
+                    roam_node.sendCommand(-1);
+                    break;
+                case "command1":
+                    roam_node.sendCommand(1);
+                    break;
+                case "command2":
+                    roam_node.sendCommand(2);
+                    break;
+                case "command3":
+                    roam_node.sendCommand(3);
+                    break;
+                case "command4":
+                    roam_node.sendCommand(4);
+                    break;
+                case "command5":
+                    roam_node.sendCommand(5);
+                    break;
+                case "command6":
+                    roam_node.sendCommand(6);
+                    break;
+                case "command7":
+                    roam_node.sendCommand(7);
+                    break;
+                case "command8":
+                    roam_node.sendCommand(8);
+                    break;
+                case "command9":
+                    roam_node.sendCommand(9);
+                    break;
+                case "command10":
+                    roam_node.sendCommand(10);
+                    break;
+                case "command11":
+                    roam_node.sendCommand(11);
+                    break;
+                case "reset_param":
+                    roam_node.resetParam();
                     break;
             }
 

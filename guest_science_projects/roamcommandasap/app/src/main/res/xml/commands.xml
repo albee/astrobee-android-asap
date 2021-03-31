@@ -3,13 +3,52 @@
     <shortName>roamcommandasap</shortName> <!-- Optional -->
     <primary>true</primary> <!-- Required -->
     <commands>
-      <!-- run_test 1-20, GDS operator may have different preferences
-        name of command in GDS "test1", display name, list of commands could be too long, will see during testing, might be convenient to have one that can be modified-->
-      <command
-        name="roam_command_asap"
-        syntax="{&quot;name&quot;: &quot;roam_command_asap&quot;}" />  <!-- keep "name" the same, followed by command string -->
-      <command
-        name="fun_command"
-        syntax="{&quot;name&quot;: &quot;fun_command&quot;}" />  <!-- keep "name" the same, followed by command string -->
+      <!-- commands for each individual test. Might add one "modifiable" command.
+      name: name of command in GDS e.g., "Command-1" -->
+      <!-- Note that syntax is JSON. Keep "name" the same, followed by command string. GDS user can edit
+          either of these properties, but that makes it harder to use.-->
+       <command
+            name="Command-1"
+            syntax="{&quot;name&quot;: &quot;command-1&quot;}" />
+        <command
+            name="Command1"
+            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
+        <command
+            name="Command2"
+            syntax="{&quot;name&quot;: &quot;command2&quot;}" />
+        <command
+            name="Command3"
+            syntax="{&quot;name&quot;: &quot;command3&quot;}" />
+        <command
+            name="Command4"
+            syntax="{&quot;name&quot;: &quot;command4&quot;}" />
+        <command
+            name="Command5"
+            syntax="{&quot;name&quot;: &quot;command5&quot;}" />
+        <command
+            name="Command6"
+            syntax="{&quot;name&quot;: &quot;command6&quot;}" />
+        <command
+            name="Command7"
+            syntax="{&quot;name&quot;: &quot;command7&quot;}" />
+        <command
+            name="Command8"
+            syntax="{&quot;name&quot;: &quot;command8&quot;}" />
+        <command
+            name="Command9"
+            syntax="{&quot;name&quot;: &quot;command9&quot;}" />
+        <command
+            name="Command10"
+            syntax="{&quot;name&quot;: &quot;command10&quot;}" />
+        <command
+            name="Command11"
+            syntax="{&quot;name&quot;: &quot;command11&quot;}" />
+        <command
+            name="Command12"
+            syntax="{&quot;name&quot;: &quot;command12&quot;}" />
+        <command
+            name="Reset Param"
+            syntax="{&quot;name&quot;: &quot;reset_param&quot;}" />
+
     </commands>
 </apkInfo>
