@@ -105,7 +105,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
-            // hello
+            
             switch (sCommand) {
                 // You may handle your commands here
                 default:
@@ -113,7 +113,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
-                case "test_publish":
+                case "roam_command_asap":
                     roam_node.sendTestMsg();
                     break;
             }

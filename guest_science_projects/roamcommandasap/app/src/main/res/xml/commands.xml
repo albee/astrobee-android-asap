@@ -3,11 +3,13 @@
     <shortName>roamcommandasap</shortName> <!-- Optional -->
     <primary>true</primary> <!-- Required -->
     <commands>
-        <command
-            name="Command1"
-            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
-        <command
-            name="Command2"
-            syntax="{&quot;name&quot;: &quot;command2&quot;}" />
+      <!-- run_test 1-20, GDS operator may have different preferences
+        name of command in GDS "test1", display name, list of commands could be too long, will see during testing, might be convenient to have one that can be modified-->
+      <command
+        name="roam_command_asap"
+        syntax="{&quot;name&quot;: &quot;roam_command_asap&quot;}" />  <!-- keep "name" the same, followed by command string -->
+      <command
+        name="fun_command"
+        syntax="{&quot;name&quot;: &quot;fun_command&quot;}" />  <!-- keep "name" the same, followed by command string -->
     </commands>
 </apkInfo>
