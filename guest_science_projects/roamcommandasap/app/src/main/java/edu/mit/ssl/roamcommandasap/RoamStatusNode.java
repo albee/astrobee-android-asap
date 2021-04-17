@@ -1,5 +1,6 @@
 package edu.mit.ssl.roamcommandasap;
 
+import org.apache.commons.logging.Log;
 import org.ros.concurrent.CancellableLoop;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -10,7 +11,6 @@ import org.ros.node.topic.Publisher;
 import org.ros.message.MessageListener;
 import org.ros.node.NodeConfiguration;
 import org.ros.message.Time;
-import android.util.Log;
 
 import java.nio.*;
 import java.util.*;
@@ -37,6 +37,11 @@ public class RoamStatusNode extends AbstractNodeMain {
         return GraphName.of("roamcommandasap");
     }
 
+
+    Subscriber<std_msgs.String> mSubscriber;
+
+
+
     @Override
     public void onStart(final ConnectedNode connectedNode){
       /* Called on APK startup. Receives a node via connectedNode.
@@ -53,6 +58,20 @@ public class RoamStatusNode extends AbstractNodeMain {
       rosparam.set("/td/gds_apk_status", "started");
       rosparam.set("/td/gds_sim", "hardware");
       rosparam.set("/td/gds_ground", "false");
+
+      //creates the log object that should send the telemetry down
+      final Log log = connectedNode.getLog();
+      //creating the subscriber for the /td/status rostopic
+      mSubscriber = connectedNode.newSubscriber("td/status", std_msgs.String._TYPE);
+      mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
+            @Override
+            public void onNewMessage(std_msgs.String message) {
+                log.info(message);
+                //rosparam might be useful for debugging
+                //rosparam.set("/td/message_received",true);
+            }
+        });
+
     }
 
     public static RoamStatusNode getInstance(){
