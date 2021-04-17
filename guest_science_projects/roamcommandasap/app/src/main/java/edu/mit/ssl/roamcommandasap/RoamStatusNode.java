@@ -68,7 +68,7 @@ public class RoamStatusNode extends AbstractNodeMain {
             public void onNewMessage(std_msgs.String message) {
                 log.info(message);
                 //rosparam might be useful for debugging
-                //rosparam.set("/td/message_received",true);
+                //rosparam.set("/td/message_received",true); OR rosparam.set("/td/status_message,message.toString()); <- would probably be difficult to decipher
             }
         });
 
