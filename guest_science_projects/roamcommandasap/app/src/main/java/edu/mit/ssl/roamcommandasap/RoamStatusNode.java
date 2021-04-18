@@ -46,8 +46,6 @@ public class RoamStatusNode extends AbstractNodeMain {
 
     Subscriber<std_msgs.String> mSubscriber;
 
-
-
     @Override
     public void onStart(final ConnectedNode connectedNode){
       /* Called on APK startup. Receives a node via connectedNode.
@@ -58,6 +56,7 @@ public class RoamStatusNode extends AbstractNodeMain {
       //         sensor_msgs.JointState._TYPE);
       instance = this;
 
+
       //initializes the /roamcommandasap parameter to null on startup to reflect that no commands have run
       ParameterTree my_rosparam = connectedNode.getParameterTree();
       rosparam = my_rosparam;
@@ -65,10 +64,17 @@ public class RoamStatusNode extends AbstractNodeMain {
       rosparam.set("/td/gds_sim", "hardware");
       rosparam.set("/td/gds_ground", "false");
 
-      //creates the log object that should send the telemetry down
-      final Log log = connectedNode.getLog();
+
       //creating the subscriber for the /td/status rostopic
-      mSubscriber = connectedNode.newSubscriber("td/status", std_msgs.String._TYPE);
+      mSubscriber = connectedNode.newSubscriber("/td/status", std_msgs.String._TYPE);
+      mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
+            @Override
+            public void onNewMessage(std_msgs.String message) {
+                /**rosparam.set("/test_data_sub","entered onNewMessage");
+                rosparam.set("/test_data_sub",message.getData());**/ //used for debugging
+                data=message.getData(); //this should set the data instance field to a java.lang.String message
+            }
+        });
 
     }
 
@@ -76,20 +82,16 @@ public class RoamStatusNode extends AbstractNodeMain {
       return instance;
     }
 
+
     public java.lang.String getData(){
-
-        //reinitializes data to null as to not possibly repeat messages
-        data=null;
-        mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
-            @Override
-            public void onNewMessage(std_msgs.String message) {
-                data=message.getData(); //this should convert the data to a readable java.lang.String
-            }
-        });
-
+        /**rosparam.set("/test_data_sub","entered getData");
+        rosparam.set("/test_data_sub",data);**/ //these are used for debugging
         return data;
 
     }
+    /**public void setMessageTest(java.lang.String message){
+        rosparam.set("/td/message_output",message);
+    }*/ //used for testing the output of the message from the publisher
 
     public void sendCommand(Integer command_number){
       /* Send out a rosparam according to command_number.

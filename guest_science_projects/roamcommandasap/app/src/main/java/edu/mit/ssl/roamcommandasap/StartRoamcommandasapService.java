@@ -167,9 +167,10 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "command_set_ground":
                     roam_node.setGround();
                     break;
-                case "send_Data":
+                case "send_data":
                     java.lang.String message=roam_node.getData();
-                    sendData(MessageType.valueOf(message.toString()),"data",message.toString());
+                    //roam_node.setMessageTest(message); used for testing output of message
+                    sendData(MessageType.JSON,"data",message);
                     break;
             }
 
