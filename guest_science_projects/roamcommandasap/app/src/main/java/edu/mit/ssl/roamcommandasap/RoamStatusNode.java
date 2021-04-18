@@ -22,8 +22,11 @@ import ff_msgs.ControlActionFeedback;
 import sensor_msgs.JointState;
 import std_msgs.Header;
 
+import gov.nasa.arc.astrobee.android.gs.MessageType;
+import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
+import std_msgs.String;
 
 public class RoamStatusNode extends AbstractNodeMain {
 
@@ -31,6 +34,8 @@ public class RoamStatusNode extends AbstractNodeMain {
     public static RoamStatusNode instance = null;
     // // An example publisher, not currently needed
     // Publisher<JointState> mPublisher;
+
+    private java.lang.String data=null;
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -63,19 +68,24 @@ public class RoamStatusNode extends AbstractNodeMain {
       final Log log = connectedNode.getLog();
       //creating the subscriber for the /td/status rostopic
       mSubscriber = connectedNode.newSubscriber("td/status", std_msgs.String._TYPE);
-      mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
-            @Override
-            public void onNewMessage(std_msgs.String message) {
-                log.info(message);
-                //rosparam might be useful for debugging
-                //rosparam.set("/td/message_received",true); OR rosparam.set("/td/status_message,message.toString()); <- would probably be difficult to decipher
-            }
-        });
 
     }
 
     public static RoamStatusNode getInstance(){
       return instance;
+    }
+
+    public java.lang.String getData(){
+        //reinitializes data to null as to not possibly repeat messages
+        data=null;
+        mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
+            @Override
+            public void onNewMessage(std_msgs.String message) {
+                data=message.getData();
+            }
+        });
+        return data;
+
     }
 
     public void sendCommand(Integer command_number){
@@ -92,13 +102,14 @@ public class RoamStatusNode extends AbstractNodeMain {
       // msg.setPosition(msg_pos);
       // mPublisher.publish(msg);
 
-      String cmd="Command"+Integer.toString(command_number);
+      java.lang.String cmd="Command"+Integer.toString(command_number);
       rosparam.set("/td/gds_test_num", command_number);
     }
 
-    public void setRole(String role){
+    public void setRole(java.lang.String role){
       /* Send out a rosparam for the Astrobee's role.
       */
+
       rosparam.set("/td/role_from_GDS", role);
     }
 

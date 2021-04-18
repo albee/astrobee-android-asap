@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 import java.lang.Math;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
+
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
 import gov.nasa.arc.astrobee.Kinematics;
 import gov.nasa.arc.astrobee.PendingResult;

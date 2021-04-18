@@ -167,6 +167,10 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "command_set_ground":
                     roam_node.setGround();
                     break;
+                case "send_Data":
+                    java.lang.String message=roam_node.getData();
+                    sendData(MessageType.valueOf(message.toString()),"data",message.toString());
+                    break;
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.

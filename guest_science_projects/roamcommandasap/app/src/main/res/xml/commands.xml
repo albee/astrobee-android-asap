@@ -61,5 +61,8 @@
         <command
             name="SetGround"
             syntax="{&quot;name&quot;: &quot;command_set_ground&quot;}" />
+        <command
+            name="SendData"
+            syntax="{&quot;name&quot;: &quot;send_data&quot;}" />
     </commands>
 </apkInfo>
