@@ -35,6 +35,7 @@ public class RoamStatusNode extends AbstractNodeMain {
     // // An example publisher, not currently needed
     // Publisher<JointState> mPublisher;
 
+    //data instance field used in the sendData function
     private java.lang.String data=null;
 
     @Override
@@ -76,14 +77,16 @@ public class RoamStatusNode extends AbstractNodeMain {
     }
 
     public java.lang.String getData(){
+
         //reinitializes data to null as to not possibly repeat messages
         data=null;
         mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
             @Override
             public void onNewMessage(std_msgs.String message) {
-                data=message.getData();
+                data=message.getData(); //this should convert the data to a readable java.lang.String
             }
         });
+
         return data;
 
     }
