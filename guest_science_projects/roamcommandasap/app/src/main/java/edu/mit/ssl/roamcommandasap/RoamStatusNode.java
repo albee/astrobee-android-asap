@@ -36,7 +36,7 @@ public class RoamStatusNode extends AbstractNodeMain {
     // Publisher<JointState> mPublisher;
 
     //data instance field used in the sendData function
-    private java.lang.String data=null;
+    private java.lang.String data="";
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -66,13 +66,13 @@ public class RoamStatusNode extends AbstractNodeMain {
 
 
       //creating the subscriber for the /td/status rostopic
-      mSubscriber = connectedNode.newSubscriber("/td/status", std_msgs.String._TYPE);
+      mSubscriber = connectedNode.newSubscriber("/td/test_sub", std_msgs.String._TYPE);
+
       mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
             @Override
             public void onNewMessage(std_msgs.String message) {
-                /**rosparam.set("/test_data_sub","entered onNewMessage");
-                rosparam.set("/test_data_sub",message.getData());**/ //used for debugging
-                data=message.getData(); //this should set the data instance field to a java.lang.String message
+                rosparam.set("/messages",message.getData());
+                setData(message.getData()); //this should set the data instance field to a java.lang.String message
             }
         });
 
@@ -84,14 +84,14 @@ public class RoamStatusNode extends AbstractNodeMain {
 
 
     public java.lang.String getData(){
-        /**rosparam.set("/test_data_sub","entered getData");
-        rosparam.set("/test_data_sub",data);**/ //these are used for debugging
+        // returns the data that's been updated in the addMessageListener function
         return data;
 
     }
-    /**public void setMessageTest(java.lang.String message){
-        rosparam.set("/td/message_output",message);
-    }*/ //used for testing the output of the message from the publisher
+
+    public void setData(java.lang.String str){
+        data=str;
+    }
 
     public void sendCommand(Integer command_number){
       /* Send out a rosparam according to command_number.

@@ -62,7 +62,10 @@
             name="SetGround"
             syntax="{&quot;name&quot;: &quot;command_set_ground&quot;}" />
         <command
-            name="SendData"
+            name="StopDataSend"
+            syntax="{&quot;name&quot;: &quot;stop_data_send&quot;}" />
+        <command
+            name="DataSend"
             syntax="{&quot;name&quot;: &quot;send_data&quot;}" />
     </commands>
 </apkInfo>

@@ -30,17 +30,18 @@ import org.ros.node.parameter.ParameterTree;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
-
 /**
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee
  */
 
 public class StartRoamcommandasapService extends StartGuestScienceService {
 
+
     // The API implementation
     private ApiCommandImplementation api = null;
 
     private RoamStatusNode roam_node=null;
+    private boolean stop=false;
 
     NodeMainExecutor nodeMainExecutor;
     private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
@@ -65,6 +66,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
+
     }
 
     /**
@@ -109,6 +111,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
 
+
             switch (sCommand) {
                 // You may handle your commands here
                 default:
@@ -117,62 +120,84 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
                 case "command-1":
+                    sendData(MessageType.JSON, "data", "StopTest");
                     roam_node.sendCommand(-1);
                     break;
                 case "command1":
+                    sendData(MessageType.JSON, "data", "Test1");
                     roam_node.sendCommand(1);
                     break;
                 case "command2":
+                    sendData(MessageType.JSON, "data", "Test2");
                     roam_node.sendCommand(2);
                     break;
                 case "command3":
+                    sendData(MessageType.JSON, "data", "Test3");
                     roam_node.sendCommand(3);
                     break;
                 case "command4":
+                    sendData(MessageType.JSON, "data", "Test4");
                     roam_node.sendCommand(4);
                     break;
                 case "command5":
+                    sendData(MessageType.JSON, "data", "Test5");
                     roam_node.sendCommand(5);
                     break;
                 case "command6":
+                    sendData(MessageType.JSON, "data", "Test6");
                     roam_node.sendCommand(6);
                     break;
                 case "command7":
+                    sendData(MessageType.JSON, "data", "Test7");
                     roam_node.sendCommand(7);
                     break;
                 case "command8":
+                    sendData(MessageType.JSON, "data", "Test8");
                     roam_node.sendCommand(8);
                     break;
                 case "command9":
+                    sendData(MessageType.JSON, "data", "Test9");
                     roam_node.sendCommand(9);
                     break;
                 case "command10":
+                    sendData(MessageType.JSON, "data", "Test10");
                     roam_node.sendCommand(10);
                     break;
                 case "command11":
+                    sendData(MessageType.JSON, "data", "Test11");
                     roam_node.sendCommand(11);
                     break;
                 case "command12":
+                    sendData(MessageType.JSON, "data", "Test12");
                     roam_node.sendCommand(12);
                     break;
                 case "command_set_role_chaser":
+                    sendData(MessageType.JSON, "data", "SetRoleChaser");
                     roam_node.setRole("chaser");
                     break;
                 case "command_set_role_target":
+                    sendData(MessageType.JSON, "data", "SetRoleTarget");
                     roam_node.setRole("target");
                     break;
                 case "command_set_role_hardware":
+                    sendData(MessageType.JSON, "data", "SetRoleFromHardware");
                     roam_node.setRole("");
                     break;
                 case "command_set_ground":
+                    sendData(MessageType.JSON, "data", "SetGround");
                     roam_node.setGround();
                     break;
                 case "send_data":
                     java.lang.String message=roam_node.getData();
-                    //roam_node.setMessageTest(message); used for testing output of message
                     sendData(MessageType.JSON,"data",message);
                     break;
+
+                case "stop_data_send":
+                    stop=true;
+                    break;
             }
+
+
 
             // Send data to the GS manager to be shown on the Ground Data System.
             sendData(MessageType.JSON, "data", jResult.toString());
@@ -184,4 +209,5 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             sendData(MessageType.JSON, "data", "Unrecognized ERROR");
         }
     }
+
 }
