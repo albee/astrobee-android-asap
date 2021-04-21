@@ -35,13 +35,11 @@ import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
  */
 
 public class StartRoamcommandasapService extends StartGuestScienceService {
-
-
     // The API implementation
     private ApiCommandImplementation api = null;
 
-    private RoamStatusNode roam_node=null;
-    private boolean stop=false;
+    private RoamStatusNode roam_node = null;
+    private boolean stop = false;
 
     NodeMainExecutor nodeMainExecutor;
     private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
@@ -66,7 +64,6 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
-
     }
 
     /**
@@ -101,6 +98,16 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
          * that this app received a command. */
         sendReceivedCustomCommand("info");
 
+        // while (true) {
+        //   sendStarted("info");
+        //   try {
+        //     Thread.sleep(2000);
+        //   }
+        //   catch (Exception e) {
+        //     e.printStackTrace();
+        //   }
+        // }
+
         try {
             // Transform the String command into a JSON object so we can read it.
             JSONObject jCommand = new JSONObject(command);
@@ -111,7 +118,6 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
 
-
             switch (sCommand) {
                 // You may handle your commands here
                 default:
@@ -119,88 +125,65 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
-                case "command-1":
-                    sendData(MessageType.JSON, "data", "StopTest");
+                case "StopTest":
                     roam_node.sendCommand(-1);
                     break;
-                case "command1":
-                    sendData(MessageType.JSON, "data", "Test1");
+                case "Test1":
                     roam_node.sendCommand(1);
                     break;
-                case "command2":
-                    sendData(MessageType.JSON, "data", "Test2");
+                case "Test2":
                     roam_node.sendCommand(2);
                     break;
-                case "command3":
-                    sendData(MessageType.JSON, "data", "Test3");
+                case "Test3":
                     roam_node.sendCommand(3);
                     break;
-                case "command4":
-                    sendData(MessageType.JSON, "data", "Test4");
+                case "Test4":
                     roam_node.sendCommand(4);
                     break;
-                case "command5":
-                    sendData(MessageType.JSON, "data", "Test5");
+                case "Test5":
                     roam_node.sendCommand(5);
                     break;
-                case "command6":
-                    sendData(MessageType.JSON, "data", "Test6");
+                case "Test6":
                     roam_node.sendCommand(6);
                     break;
-                case "command7":
-                    sendData(MessageType.JSON, "data", "Test7");
+                case "Test7":
                     roam_node.sendCommand(7);
                     break;
-                case "command8":
-                    sendData(MessageType.JSON, "data", "Test8");
+                case "Test8":
                     roam_node.sendCommand(8);
                     break;
-                case "command9":
-                    sendData(MessageType.JSON, "data", "Test9");
+                case "Test9":
                     roam_node.sendCommand(9);
                     break;
-                case "command10":
-                    sendData(MessageType.JSON, "data", "Test10");
+                case "Test10":
                     roam_node.sendCommand(10);
                     break;
-                case "command11":
-                    sendData(MessageType.JSON, "data", "Test11");
+                case "Test11":
                     roam_node.sendCommand(11);
                     break;
-                case "command12":
-                    sendData(MessageType.JSON, "data", "Test12");
+                case "Test12":
                     roam_node.sendCommand(12);
                     break;
-                case "command_set_role_chaser":
-                    sendData(MessageType.JSON, "data", "SetRoleChaser");
+                case "SetRoleChaser":
                     roam_node.setRole("chaser");
                     break;
-                case "command_set_role_target":
-                    sendData(MessageType.JSON, "data", "SetRoleTarget");
+                case "SetRoleTarget":
                     roam_node.setRole("target");
                     break;
-                case "command_set_role_hardware":
-                    sendData(MessageType.JSON, "data", "SetRoleFromHardware");
-                    roam_node.setRole("");
+                case "SetRoleFromHardware":
+                    roam_node.setRole("robot_name");
                     break;
-                case "command_set_ground":
-                    sendData(MessageType.JSON, "data", "SetGround");
+                case "SetGround":
                     roam_node.setGround();
                     break;
-                case "send_data":
-                    java.lang.String message=roam_node.getData();
-                    sendData(MessageType.JSON,"data",message);
-                    break;
-
-                case "stop_data_send":
-                    stop=true;
+                case "SetISS":
+                    roam_node.setISS();
                     break;
             }
 
-
-
             // Send data to the GS manager to be shown on the Ground Data System.
-            sendData(MessageType.JSON, "data", jResult.toString());
+            sendData(MessageType.JSON, "command", sCommand);
+            //sendData(MessageType.JSON, "data", jResult.toString());
         } catch (JSONException e) {
             // Send an error message to the GSM and GDS
             sendData(MessageType.JSON, "data", "ERROR parsing JSON");
@@ -210,4 +193,69 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
         }
     }
 
+
+    /*
+    int32   test_number
+    string  test_LUT
+    string  test_tumble_type
+    string  test_control_mode
+    string  test_state_mode
+    int32   dlr_LUT_param
+    bool    chaser_coord_ok
+    bool    target_coord_ok
+    bool    slam_activate
+    bool    traj_gen_dlr_activate
+    bool    uc_bound_activate
+    bool    chaser_regulate_finished
+    bool    target_regulate_finished
+    bool    slam_converged
+    bool    inertia_estimated
+    bool    motion_plan_finished
+    float64 motion_plan_wait_time
+    bool    uc_bound_finished
+    bool    mrpi_finished
+    bool    traj_finished
+    bool    test_finished
+    bool    default_control
+    string  td_control_mode
+    string  td_state_mode
+    string  td_flight_mode
+    bool    casadi_on_target
+    */
+    public void printTDStatus() {
+      String test_number = roam_node.test_number;
+      try{
+        JSONObject binaryStatus = new JSONObject();
+        binaryStatus.put("test_number", test_number);
+                    // .put("test_LUT", test_LUT)
+                    // .put("test_tumble_type", test_tumble_type)
+                    // .put("test_control_mode", test_control_mode)
+                    // .put("test_state_mode", test_state_mode)
+                    // .put("dlr_LUT_param", dlr_LUT_param)
+                    // .put("chaser_coord_ok", chaser_coord_ok)
+                    // .put("target_coord_ok", target_coord_ok)
+                    // .put("slam_activate", slam_activate)
+                    // .put("traj_gen_dlr_activ", traj_gen_dlr_activ)
+                    // .put("uc_bound_activate", uc_bound_activate)
+                    // .put("chaser_regulate_fi", chaser_regulate_fi)
+                    // .put("target_regulate_fi", target_regulate_fi)
+                    // .put("slam_converged", slam_converged)
+                    // .put("inertia_estimated", inertia_estimated)
+                    // .put("motion_plan_finish", motion_plan_finish)
+                    // .put("motion_plan_wait_t", motion_plan_wait_t)
+                    // .put("uc_bound_finished", uc_bound_finished)
+                    // .put("mrpi_finished", mrpi_finished)
+                    // .put("traj_finished", traj_finished)
+                    // .put("test_finished", test_finished)
+                    // .put("default_control", default_control)
+                    // .put("td_control_mode", td_control_mode)
+                    // .put("td_state_mode", td_state_mode)
+                    // .put("td_flight_mode", td_flight_mode)
+                    // .put("casadi_on_target", casadi_on_target);
+      } catch (JSONException e) {
+          // Send an error message to the GSM and GDS
+          e.printStackTrace();
+          sendData(MessageType.JSON, "data", "ERROR parsing TDStatus JSON");
+      }
+    }
 }

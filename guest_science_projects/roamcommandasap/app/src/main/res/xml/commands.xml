@@ -12,60 +12,57 @@
       -->
        <command
             name="StopTest"
-            syntax="{&quot;name&quot;: &quot;command-1&quot;}" />
+            syntax="{&quot;name&quot;: &quot;StopTest&quot;}" />
         <command
             name="Test1"
-            syntax="{&quot;name&quot;: &quot;command1&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test1&quot;}" />
         <command
             name="Test2"
-            syntax="{&quot;name&quot;: &quot;command2&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test2&quot;}" />
         <command
             name="Test3"
-            syntax="{&quot;name&quot;: &quot;command3&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test3&quot;}" />
         <command
             name="Test4"
-            syntax="{&quot;name&quot;: &quot;command4&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test4&quot;}" />
         <command
             name="Test5"
-            syntax="{&quot;name&quot;: &quot;command5&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test5&quot;}" />
         <command
             name="Test6"
-            syntax="{&quot;name&quot;: &quot;command6&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test6&quot;}" />
         <command
             name="Test7"
-            syntax="{&quot;name&quot;: &quot;command7&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test7&quot;}" />
         <command
             name="Test8"
-            syntax="{&quot;name&quot;: &quot;command8&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test8&quot;}" />
         <command
             name="Test9"
-            syntax="{&quot;name&quot;: &quot;command9&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test9&quot;}" />
         <command
             name="Test10"
-            syntax="{&quot;name&quot;: &quot;command10&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test10&quot;}" />
         <command
             name="Test11"
-            syntax="{&quot;name&quot;: &quot;command11&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test11&quot;}" />
         <command
             name="Test12"
-            syntax="{&quot;name&quot;: &quot;command12&quot;}" />
+            syntax="{&quot;name&quot;: &quot;Test12&quot;}" />
         <command
             name="SetRoleChaser"
-            syntax="{&quot;name&quot;: &quot;command_set_role_chaser&quot;}" />
+            syntax="{&quot;name&quot;: &quot;SetRoleChaser&quot;}" />
         <command
             name="SetRoleTarget"
-            syntax="{&quot;name&quot;: &quot;command_set_role_target&quot;}" />
+            syntax="{&quot;name&quot;: &quot;SetRoleTarget&quot;}" />
         <command
             name="SetRoleFromHardware"
-            syntax="{&quot;name&quot;: &quot;command_set_role_hardware&quot;}" />
+            syntax="{&quot;name&quot;: &quot;SetRoleFromHardware&quot;}" />
         <command
             name="SetGround"
-            syntax="{&quot;name&quot;: &quot;command_set_ground&quot;}" />
+            syntax="{&quot;name&quot;: &quot;SetGround&quot;}" />
         <command
-            name="StopDataSend"
-            syntax="{&quot;name&quot;: &quot;stop_data_send&quot;}" />
-        <command
-            name="DataSend"
-            syntax="{&quot;name&quot;: &quot;send_data&quot;}" />
+            name="SetISS"
+            syntax="{&quot;name&quot;: &quot;SetGround&quot;}" />
     </commands>
 </apkInfo>

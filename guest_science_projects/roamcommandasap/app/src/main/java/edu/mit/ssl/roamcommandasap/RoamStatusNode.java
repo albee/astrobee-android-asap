@@ -36,15 +36,15 @@ public class RoamStatusNode extends AbstractNodeMain {
     // Publisher<JointState> mPublisher;
 
     //data instance field used in the sendData function
-    private java.lang.String data="";
+    public java.lang.String test_number = "";
+
+    // td/status subscriber
+    Subscriber<std_msgs.String> mSubscriber;
 
     @Override
     public GraphName getDefaultNodeName() {
         return GraphName.of("roamcommandasap");
     }
-
-
-    Subscriber<std_msgs.String> mSubscriber;
 
     @Override
     public void onStart(final ConnectedNode connectedNode){
@@ -54,43 +54,29 @@ public class RoamStatusNode extends AbstractNodeMain {
       // mPublisher = connectedNode.newPublisher(
       //         "joint_goals",
       //         sensor_msgs.JointState._TYPE);
-      instance = this;
 
-
-      //initializes the /roamcommandasap parameter to null on startup to reflect that no commands have run
+      //initialize parameters
       ParameterTree my_rosparam = connectedNode.getParameterTree();
       rosparam = my_rosparam;
       rosparam.set("/td/gds_apk_status", "started");
       rosparam.set("/td/gds_sim", "hardware");
       rosparam.set("/td/gds_ground", "false");
 
-
       //creating the subscriber for the /td/status rostopic
       mSubscriber = connectedNode.newSubscriber("/td/test_sub", std_msgs.String._TYPE);
-
       mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
-            @Override
-            public void onNewMessage(std_msgs.String message) {
-                rosparam.set("/messages",message.getData());
-                setData(message.getData()); //this should set the data instance field to a java.lang.String message
-            }
-        });
+          @Override
+          public void onNewMessage(std_msgs.String message) {
+              rosparam.set("/debug", message.getData());
+              test_number = message.getData(); //this should set the data instance field to a java.lang.String message
+          }
+      });
 
+      instance = this;
     }
 
     public static RoamStatusNode getInstance(){
       return instance;
-    }
-
-
-    public java.lang.String getData(){
-        // returns the data that's been updated in the addMessageListener function
-        return data;
-
-    }
-
-    public void setData(java.lang.String str){
-        data=str;
     }
 
     public void sendCommand(Integer command_number){
@@ -107,14 +93,13 @@ public class RoamStatusNode extends AbstractNodeMain {
       // msg.setPosition(msg_pos);
       // mPublisher.publish(msg);
 
-      java.lang.String cmd="Command"+Integer.toString(command_number);
+      //java.lang.String cmd="Command"+Integer.toString(command_number);
       rosparam.set("/td/gds_test_num", command_number);
     }
 
     public void setRole(java.lang.String role){
       /* Send out a rosparam for the Astrobee's role.
       */
-
       rosparam.set("/td/role_from_GDS", role);
     }
 
@@ -122,6 +107,12 @@ public class RoamStatusNode extends AbstractNodeMain {
       /* Send out a rosparam for the Astrobee's role.
       */
       rosparam.set("/td/gds_ground", "true");
+    }
+
+    public void setISS(){
+      /* Send out a rosparam for the Astrobee's role.
+      */
+      rosparam.set("/td/gds_ground", "false");
     }
 
     public void sendStopped(){
