@@ -6,6 +6,7 @@ import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
 import org.ros.node.ConnectedNode;
 import org.ros.node.parameter.ParameterTree;
+import org.ros.node.parameter.ParameterListener;
 import org.ros.node.topic.Subscriber;
 import org.ros.node.topic.Publisher;
 import org.ros.message.MessageListener;
@@ -36,7 +37,15 @@ public class RoamStatusNode extends AbstractNodeMain {
     // Publisher<JointState> mPublisher;
 
     //data instance field used in the sendData function
-    public java.lang.String test_number = "";
+    public java.lang.String td_flight_mode = "";
+    public java.lang.String td_control_mode = "";
+    public java.lang.String slam_activate = "";
+    public java.lang.String chaser_regulate_finished = "";
+    public java.lang.String target_regulate_finished = "";
+    public java.lang.String motion_plan_wait_time = "";
+    public java.lang.String motion_plan_finished = "";
+    public java.lang.String default_control = "";
+    public java.lang.String role = "";
 
     // td/status subscriber
     Subscriber<std_msgs.String> mSubscriber;
@@ -56,27 +65,59 @@ public class RoamStatusNode extends AbstractNodeMain {
       //         sensor_msgs.JointState._TYPE);
 
       //initialize parameters
-      ParameterTree my_rosparam = connectedNode.getParameterTree();
-      rosparam = my_rosparam;
+      ParameterTree my_param = connectedNode.getParameterTree();
+      rosparam = my_param;  // need to do this, don't change...
       rosparam.set("/td/gds_apk_status", "started");
       rosparam.set("/td/gds_sim", "hardware");
       rosparam.set("/td/gds_ground", "false");
 
+      // rosparam.addParameterListener("/td/chaser/gds_telem", new ParameterListener() {
+      //   @Override
+      //   public void onNewValue(Object value) {
+      //     List<java.lang.String> gds_telem_string = (List<java.lang.String>)value;
+      //     rosparam.set("/td/gds/debug", gds_telem_string.get(0));
+      //     td_flight_mode = gds_telem_string.get(0);
+      //     td_control_mode = gds_telem_string.get(1);
+      //     slam_activate = gds_telem_string.get(2);
+      //     chaser_regulate_finished = gds_telem_string.get(3);
+      //     target_regulate_finished = gds_telem_string.get(4);
+      //     motion_plan_wait_time = gds_telem_string.get(5);
+      //     motion_plan_finished = gds_telem_string.get(6);
+      //     default_control = gds_telem_string.get(7);
+      //     role = gds_telem_string.get(8);
+      //   }
+      // });
+
       //creating the subscriber for the /td/status rostopic
-      mSubscriber = connectedNode.newSubscriber("/td/test_sub", std_msgs.String._TYPE);
-      mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
-          @Override
-          public void onNewMessage(std_msgs.String message) {
-              rosparam.set("/debug", message.getData());
-              test_number = message.getData(); //this should set the data instance field to a java.lang.String message
-          }
-      });
+      // mSubscriber = connectedNode.newSubscriber("/td/test_sub", std_msgs.String._TYPE);
+      // mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
+      //     @Override
+      //     public void onNewMessage(std_msgs.String message) {
+      //         rosparam.set("/debug", message.getData());
+      //         test_number = message.getData(); //this should set the data instance field to a java.lang.String message
+      //     }
+      // });
 
       instance = this;
     }
 
     public static RoamStatusNode getInstance(){
       return instance;
+    }
+
+    public void updateParams() {
+      List<?> gds_telem = rosparam.getList("/td/chaser/gds_telem");
+      List<java.lang.String> gds_telem_string = (List<java.lang.String>)gds_telem;
+
+      td_flight_mode = gds_telem_string.get(0);
+      td_control_mode = gds_telem_string.get(1);
+      slam_activate = gds_telem_string.get(2);
+      chaser_regulate_finished = gds_telem_string.get(3);
+      target_regulate_finished = gds_telem_string.get(4);
+      motion_plan_wait_time = gds_telem_string.get(5);
+      motion_plan_finished = gds_telem_string.get(6);
+      default_control = gds_telem_string.get(7);
+      role = gds_telem_string.get(8);
     }
 
     public void sendCommand(Integer command_number){

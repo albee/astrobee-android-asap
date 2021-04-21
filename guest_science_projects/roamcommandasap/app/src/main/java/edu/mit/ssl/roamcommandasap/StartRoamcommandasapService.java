@@ -30,6 +30,11 @@ import org.ros.node.parameter.ParameterTree;
 
 import gov.nasa.arc.astrobee.android.gs.MessageType;
 import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
+
+import android.util.Log;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee
  */
@@ -40,10 +45,43 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
     private RoamStatusNode roam_node = null;
     private boolean stop = false;
+    private final AtomicBoolean running = new AtomicBoolean(true);
 
     NodeMainExecutor nodeMainExecutor;
     private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
     private static final java.lang.String ROS_HOSTNAME = "hlp";
+
+    private Runnable r = new Runnable() {
+      @Override
+      public void run() {
+          while(running.get()) {
+            try {
+              TimeUnit.SECONDS.sleep(5);
+            }
+            catch(Exception ex){
+            }
+
+            roam_node.updateParams();
+            try {
+              JSONObject TDStatus = new JSONObject();
+              TDStatus.put("td_flight_mode", roam_node.td_flight_mode);
+              TDStatus.put("td_control_mode", roam_node.td_control_mode);
+              TDStatus.put("slam_activate", roam_node.slam_activate);
+              TDStatus.put("chaser_regulate_finished", roam_node.chaser_regulate_finished);
+              TDStatus.put("target_regulate_finished", roam_node.target_regulate_finished);
+              TDStatus.put("motion_plan_wait_time", roam_node.motion_plan_wait_time);
+              TDStatus.put("motion_plan_finished", roam_node.motion_plan_finished);
+              TDStatus.put("default_control", roam_node.default_control);
+              TDStatus.put("role", roam_node.role);
+              sendData(MessageType.JSON, "TDStatus", TDStatus.toString());
+            } catch (JSONException e) {
+              // Send an error message to the GSM and GDS
+              e.printStackTrace();
+              sendData(MessageType.JSON, "data", "ERROR parsing TDStatus JSON");
+            }
+          }
+        }
+    };
 
     /**
      * This function is called when the GS manager starts your apk.
@@ -64,6 +102,9 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
+
+        // in the background, periodically check for params and do a sendData
+        new Thread(r).start();
     }
 
     /**
@@ -75,6 +116,9 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
     public void onGuestScienceStop() {
         //set rosparam roamcommand to stopped
         roam_node.sendStopped();
+
+        // stop the telemetry down
+        running.set(false);
 
         // Stop the API
         api.shutdownFactory();
@@ -125,9 +169,12 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     jResult.put("Summary", new JSONObject()
                         .put("Status", "ERROR")
                         .put("Message", "Unrecognized command"));
+                // StopTest
                 case "StopTest":
                     roam_node.sendCommand(-1);
                     break;
+
+                // UnitTests
                 case "Test1":
                     roam_node.sendCommand(1);
                     break;
@@ -164,6 +211,120 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "Test12":
                     roam_node.sendCommand(12);
                     break;
+
+                // StandardTests
+                case "Test111":
+                    roam_node.sendCommand(111);
+                    break;
+                case "Test112":
+                    roam_node.sendCommand(112);
+                    break;
+                case "Test113":
+                    roam_node.sendCommand(113);
+                    break;
+                case "Test121":
+                    roam_node.sendCommand(121);
+                    break;
+                case "Test122":
+                    roam_node.sendCommand(122);
+                    break;
+                case "Test123":
+                    roam_node.sendCommand(123);
+                    break;
+                case "Test131":
+                    roam_node.sendCommand(131);
+                    break;
+                case "Test132":
+                    roam_node.sendCommand(132);
+                    break;
+                case "Test133":
+                    roam_node.sendCommand(133);
+                    break;
+                case "Test141":
+                    roam_node.sendCommand(141);
+                    break;
+                case "Test142":
+                    roam_node.sendCommand(142);
+                    break;
+                case "Test143":
+                    roam_node.sendCommand(143);
+                    break;
+
+                case "Test211":
+                    roam_node.sendCommand(211);
+                    break;
+                case "Test212":
+                    roam_node.sendCommand(212);
+                    break;
+                case "Test213":
+                    roam_node.sendCommand(213);
+                    break;
+                case "Test221":
+                    roam_node.sendCommand(221);
+                    break;
+                case "Test222":
+                    roam_node.sendCommand(222);
+                    break;
+                case "Test223":
+                    roam_node.sendCommand(223);
+                    break;
+                case "Test231":
+                    roam_node.sendCommand(231);
+                    break;
+                case "Test232":
+                    roam_node.sendCommand(232);
+                    break;
+                case "Test233":
+                    roam_node.sendCommand(233);
+                    break;
+                case "Test241":
+                    roam_node.sendCommand(241);
+                    break;
+                case "Test242":
+                    roam_node.sendCommand(242);
+                    break;
+                case "Test243":
+                    roam_node.sendCommand(243);
+                    break;
+
+                case "Test311":
+                    roam_node.sendCommand(311);
+                    break;
+                case "Test312":
+                    roam_node.sendCommand(312);
+                    break;
+                case "Test313":
+                    roam_node.sendCommand(313);
+                    break;
+                case "Test321":
+                    roam_node.sendCommand(321);
+                    break;
+                case "Test322":
+                    roam_node.sendCommand(322);
+                    break;
+                case "Test323":
+                    roam_node.sendCommand(323);
+                    break;
+                case "Test331":
+                    roam_node.sendCommand(331);
+                    break;
+                case "Test332":
+                    roam_node.sendCommand(332);
+                    break;
+                case "Test333":
+                    roam_node.sendCommand(333);
+                    break;
+                case "Test341":
+                    roam_node.sendCommand(341);
+                    break;
+                case "Test342":
+                    roam_node.sendCommand(342);
+                    break;
+                case "Test343":
+                    roam_node.sendCommand(343);
+                    break;
+
+                // Role and Scenario Setting
                 case "SetRoleChaser":
                     roam_node.setRole("chaser");
                     break;
@@ -189,73 +350,8 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             sendData(MessageType.JSON, "data", "ERROR parsing JSON");
         } catch (Exception ex) {
             // Send an error message to the GSM and GDS
+            Log.e("edu.mit.ssl.roamcommandasap", "exception", ex);
             sendData(MessageType.JSON, "data", "Unrecognized ERROR");
         }
     }
-
-
-    /*
-    int32   test_number
-    string  test_LUT
-    string  test_tumble_type
-    string  test_control_mode
-    string  test_state_mode
-    int32   dlr_LUT_param
-    bool    chaser_coord_ok
-    bool    target_coord_ok
-    bool    slam_activate
-    bool    traj_gen_dlr_activate
-    bool    uc_bound_activate
-    bool    chaser_regulate_finished
-    bool    target_regulate_finished
-    bool    slam_converged
-    bool    inertia_estimated
-    bool    motion_plan_finished
-    float64 motion_plan_wait_time
-    bool    uc_bound_finished
-    bool    mrpi_finished
-    bool    traj_finished
-    bool    test_finished
-    bool    default_control
-    string  td_control_mode
-    string  td_state_mode
-    string  td_flight_mode
-    bool    casadi_on_target
-    */
-    public void printTDStatus() {
-      String test_number = roam_node.test_number;
-      try{
-        JSONObject binaryStatus = new JSONObject();
-        binaryStatus.put("test_number", test_number);
-                    // .put("test_LUT", test_LUT)
-                    // .put("test_tumble_type", test_tumble_type)
-                    // .put("test_control_mode", test_control_mode)
-                    // .put("test_state_mode", test_state_mode)
-                    // .put("dlr_LUT_param", dlr_LUT_param)
-                    // .put("chaser_coord_ok", chaser_coord_ok)
-                    // .put("target_coord_ok", target_coord_ok)
-                    // .put("slam_activate", slam_activate)
-                    // .put("traj_gen_dlr_activ", traj_gen_dlr_activ)
-                    // .put("uc_bound_activate", uc_bound_activate)
-                    // .put("chaser_regulate_fi", chaser_regulate_fi)
-                    // .put("target_regulate_fi", target_regulate_fi)
-                    // .put("slam_converged", slam_converged)
-                    // .put("inertia_estimated", inertia_estimated)
-                    // .put("motion_plan_finish", motion_plan_finish)
-                    // .put("motion_plan_wait_t", motion_plan_wait_t)
-                    // .put("uc_bound_finished", uc_bound_finished)
-                    // .put("mrpi_finished", mrpi_finished)
-                    // .put("traj_finished", traj_finished)
-                    // .put("test_finished", test_finished)
-                    // .put("default_control", default_control)
-                    // .put("td_control_mode", td_control_mode)
-                    // .put("td_state_mode", td_state_mode)
-                    // .put("td_flight_mode", td_flight_mode)
-                    // .put("casadi_on_target", casadi_on_target);
-      } catch (JSONException e) {
-          // Send an error message to the GSM and GDS
-          e.printStackTrace();
-          sendData(MessageType.JSON, "data", "ERROR parsing TDStatus JSON");
-      }
-    }
-}
+  }
