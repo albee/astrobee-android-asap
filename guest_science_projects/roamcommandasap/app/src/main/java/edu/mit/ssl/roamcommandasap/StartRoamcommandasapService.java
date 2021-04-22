@@ -341,10 +341,10 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                     roam_node.setISS();
                     break;
                 case "EnableRoamBagger":
-                    roam_node.setRoamBagger("true");
+                    roam_node.setRoamBagger("enabled");
                     break;
                 case "DisableRoamBagger":
-                    roam_node.setRoamBagger("false");
+                    roam_node.setRoamBagger("disabled");
                     break;
             }
 
