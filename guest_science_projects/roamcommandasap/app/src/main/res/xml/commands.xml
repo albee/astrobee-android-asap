@@ -176,5 +176,11 @@
         <command
             name="SetISS"
             syntax="{&quot;name&quot;: &quot;SetISS&quot;}" />
+        <command
+            name="EnableRoamBagger"
+            syntax="{&quot;name&quot;: &quot;EnableRoamBagger&quot;}" />
+        <command
+            name="DisableRoamBagger"
+            syntax="{&quot;name&quot;: &quot;DisableRoamBagger&quot;}" />
     </commands>
 </apkInfo>

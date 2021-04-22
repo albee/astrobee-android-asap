@@ -340,6 +340,12 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "SetISS":
                     roam_node.setISS();
                     break;
+                case "EnableRoamBagger":
+                    roam_node.setRoamBagger("true");
+                    break;
+                case "DisableRoamBagger":
+                    roam_node.setRoamBagger("false");
+                    break;
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.

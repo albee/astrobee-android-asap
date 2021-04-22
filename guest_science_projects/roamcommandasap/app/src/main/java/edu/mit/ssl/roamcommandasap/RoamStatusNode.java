@@ -145,15 +145,21 @@ public class RoamStatusNode extends AbstractNodeMain {
     }
 
     public void setGround(){
-      /* Send out a rosparam for the Astrobee's role.
+      /* Send out a rosparam for the Astrobee's ground status.
       */
       rosparam.set("/td/gds_ground", "true");
     }
 
     public void setISS(){
-      /* Send out a rosparam for the Astrobee's role.
+      /* Send out a rosparam for the Astrobee's world status.
       */
       rosparam.set("/td/gds_ground", "false");
+    }
+
+    public void setRoamBagger(java.lang.String enabled){
+      /* Send out a rosparam for the Astrobee's ROAM bag recording.
+      */
+      rosparam.set("/td/gds_roam_bagger", enabled);
     }
 
     public void sendStopped(){
