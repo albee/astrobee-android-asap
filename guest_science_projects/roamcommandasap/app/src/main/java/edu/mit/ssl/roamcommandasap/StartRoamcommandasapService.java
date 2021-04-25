@@ -184,24 +184,13 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
 
             // Handle incoming commands
             switch (sCommand) {
-                // Test commanding and unknown commands
-                default:
-                    // Note: test handling is performed on the Python/C++ side
-                    if (sCommand.startsWith("Test")) {
-                      java.lang.String str_test_code = sCommand.substring(4, sCommand.length());
-                      int test_code = Integer.parseInt(str_test_code);
-                      roam_node.sendCommand(test_code);
-                    }
-                    else {
-                      // Inform GS Manager and GDS, then stop execution.
-                      jResult.put("Summary", new JSONObject()
-                          .put("Status", "ERROR")
-                          .put("Message", "Unrecognized command"));
-                    }
-
                 // StopTest
                 case "StopTest":
                     roam_node.sendCommand(-1);
+                    break;
+
+                case "Debug":
+                    roam_node.sendCommand(1);
                     break;
 
                 // Role and Scenario Setting
@@ -226,6 +215,30 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 case "DisableRoamBagger":
                     roam_node.setRoamBagger("disabled");
                     break;
+
+                // Test commanding and unknown commands
+                default:
+                    // Note: test handling is performed on the Python/C++ side
+                    if (sCommand.startsWith("Test")) {
+                      java.lang.String str_test_code = sCommand.substring(4, sCommand.length());
+                      try {
+                        Integer test_code = Integer.valueOf(str_test_code);
+                        roam_node.sendCommand(test_code);
+                        Log.w("edu.mit.ssl.roamcommandasap", str_test_code);
+                      }
+                      catch (Exception ex) {
+                        // Inform GS Manager and GDS, then stop execution.
+                        jResult.put("Summary", new JSONObject()
+                            .put("Status", "ERROR")
+                            .put("Message", "Invalid test number"));
+                      }
+                    }
+                    else {
+                      // Inform GS Manager and GDS, then stop execution.
+                      jResult.put("Summary", new JSONObject()
+                          .put("Status", "ERROR")
+                          .put("Message", "Unrecognized command"));
+                    }
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.

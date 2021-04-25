@@ -15,7 +15,7 @@
             syntax="{&quot;name&quot;: &quot;StopTest&quot;}" />
         <command
             name="TestX"
-            syntax="{&quot;name&quot;: &quot;Test1&quot;}" />
+            syntax="{&quot;name&quot;: &quot;TestX&quot;}" />
         <command
             name="SetRoleChaser"
             syntax="{&quot;name&quot;: &quot;SetRoleChaser&quot;}" />

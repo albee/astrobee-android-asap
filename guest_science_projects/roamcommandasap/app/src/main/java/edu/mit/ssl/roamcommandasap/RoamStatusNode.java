@@ -65,7 +65,7 @@ public class RoamStatusNode extends AbstractNodeMain {
     public java.lang.String casadi_on_target=  "";
 
     // td/status subscriber
-    Subscriber<std_msgs.String> mSubscriber;
+    //Subscriber<std_msgs.String> mSubscriber;
 
     @Override
     public GraphName getDefaultNodeName() {
