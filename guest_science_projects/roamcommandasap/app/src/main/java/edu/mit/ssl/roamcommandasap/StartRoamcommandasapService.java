@@ -64,16 +64,36 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             roam_node.updateParams();
             try {
               JSONObject TDStatus = new JSONObject();
+              TDStatus.put("test_num", roam_node.test_num);
               TDStatus.put("td_flight_mode", roam_node.td_flight_mode);
               TDStatus.put("td_control_mode", roam_node.td_control_mode);
               TDStatus.put("slam_activate", roam_node.slam_activate);
-              TDStatus.put("chaser_regulate_finished", roam_node.chaser_regulate_finished);
               TDStatus.put("target_regulate_finished", roam_node.target_regulate_finished);
-              TDStatus.put("motion_plan_wait_time", roam_node.motion_plan_wait_time);
+              TDStatus.put("chaser_regulate_finished", roam_node.chaser_regulate_finished);
               TDStatus.put("motion_plan_finished", roam_node.motion_plan_finished);
+              TDStatus.put("motion_plan_wait_time", roam_node.motion_plan_wait_time);
               TDStatus.put("default_control", roam_node.default_control);
-              TDStatus.put("role", roam_node.role);
+              TDStatus.put("my_role", roam_node.my_role);
+              TDStatus.put("test_LUT", roam_node.test_LUT);
+              TDStatus.put("test_tumble_type", roam_node.test_tumble_type);
+              TDStatus.put("test_control_mode", roam_node.test_control_mode);
+              TDStatus.put("test_state_mode", roam_node.test_state_mode);
+              TDStatus.put("dlr_LUT_param", roam_node.dlr_LUT_param);
+              TDStatus.put("traj_gen_dlr_activate", roam_node.traj_gen_dlr_activate);
+              TDStatus.put("uc_bound_activate", roam_node.uc_bound_activate);
+              TDStatus.put("slam_converged", roam_node.slam_converged);
+              TDStatus.put("inertia_estimated", roam_node.inertia_estimated);
+              TDStatus.put("uc_bound_finished", roam_node.uc_bound_finished);
+              TDStatus.put("mrpi_finished", roam_node.mrpi_finished);
+              TDStatus.put("traj_finished", roam_node.traj_finished);
+              TDStatus.put("test_finished", roam_node.test_finished);
+              TDStatus.put("td_state_mode", roam_node.td_state_mode);
+              TDStatus.put("casadi_on_target", roam_node.casadi_on_target);
               sendData(MessageType.JSON, "TDStatus", TDStatus.toString());
+
+              JSONObject TelemID = new JSONObject();
+              TelemID.put("TelemID", roam_node.global_gds_param_count);
+              sendData(MessageType.JSON, "TelemID", TelemID.toString());
             } catch (JSONException e) {
               // Send an error message to the GSM and GDS
               e.printStackTrace();
@@ -162,166 +182,26 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             // JSON object that will contain the data we will send back to the GSM and GDS
             JSONObject jResult = new JSONObject();
 
+            // Handle incoming commands
             switch (sCommand) {
-                // You may handle your commands here
+                // Test commanding and unknown commands
                 default:
-                    // Inform GS Manager and GDS, then stop execution.
-                    jResult.put("Summary", new JSONObject()
-                        .put("Status", "ERROR")
-                        .put("Message", "Unrecognized command"));
+                    // Note: test handling is performed on the Python/C++ side
+                    if (sCommand.startsWith("Test")) {
+                      java.lang.String str_test_code = sCommand.substring(4, sCommand.length());
+                      int test_code = Integer.parseInt(str_test_code);
+                      roam_node.sendCommand(test_code);
+                    }
+                    else {
+                      // Inform GS Manager and GDS, then stop execution.
+                      jResult.put("Summary", new JSONObject()
+                          .put("Status", "ERROR")
+                          .put("Message", "Unrecognized command"));
+                    }
+
                 // StopTest
                 case "StopTest":
                     roam_node.sendCommand(-1);
-                    break;
-
-                // UnitTests
-                case "Test1":
-                    roam_node.sendCommand(1);
-                    break;
-                case "Test2":
-                    roam_node.sendCommand(2);
-                    break;
-                case "Test3":
-                    roam_node.sendCommand(3);
-                    break;
-                case "Test4":
-                    roam_node.sendCommand(4);
-                    break;
-                case "Test5":
-                    roam_node.sendCommand(5);
-                    break;
-                case "Test6":
-                    roam_node.sendCommand(6);
-                    break;
-                case "Test7":
-                    roam_node.sendCommand(7);
-                    break;
-                case "Test8":
-                    roam_node.sendCommand(8);
-                    break;
-                case "Test9":
-                    roam_node.sendCommand(9);
-                    break;
-                case "Test10":
-                    roam_node.sendCommand(10);
-                    break;
-                case "Test11":
-                    roam_node.sendCommand(11);
-                    break;
-                case "Test12":
-                    roam_node.sendCommand(12);
-                    break;
-
-                // StandardTests
-                case "Test111":
-                    roam_node.sendCommand(111);
-                    break;
-                case "Test112":
-                    roam_node.sendCommand(112);
-                    break;
-                case "Test113":
-                    roam_node.sendCommand(113);
-                    break;
-                case "Test121":
-                    roam_node.sendCommand(121);
-                    break;
-                case "Test122":
-                    roam_node.sendCommand(122);
-                    break;
-                case "Test123":
-                    roam_node.sendCommand(123);
-                    break;
-                case "Test131":
-                    roam_node.sendCommand(131);
-                    break;
-                case "Test132":
-                    roam_node.sendCommand(132);
-                    break;
-                case "Test133":
-                    roam_node.sendCommand(133);
-                    break;
-                case "Test141":
-                    roam_node.sendCommand(141);
-                    break;
-                case "Test142":
-                    roam_node.sendCommand(142);
-                    break;
-                case "Test143":
-                    roam_node.sendCommand(143);
-                    break;
-
-                case "Test211":
-                    roam_node.sendCommand(211);
-                    break;
-                case "Test212":
-                    roam_node.sendCommand(212);
-                    break;
-                case "Test213":
-                    roam_node.sendCommand(213);
-                    break;
-                case "Test221":
-                    roam_node.sendCommand(221);
-                    break;
-                case "Test222":
-                    roam_node.sendCommand(222);
-                    break;
-                case "Test223":
-                    roam_node.sendCommand(223);
-                    break;
-                case "Test231":
-                    roam_node.sendCommand(231);
-                    break;
-                case "Test232":
-                    roam_node.sendCommand(232);
-                    break;
-                case "Test233":
-                    roam_node.sendCommand(233);
-                    break;
-                case "Test241":
-                    roam_node.sendCommand(241);
-                    break;
-                case "Test242":
-                    roam_node.sendCommand(242);
-                    break;
-                case "Test243":
-                    roam_node.sendCommand(243);
-                    break;
-
-                case "Test311":
-                    roam_node.sendCommand(311);
-                    break;
-                case "Test312":
-                    roam_node.sendCommand(312);
-                    break;
-                case "Test313":
-                    roam_node.sendCommand(313);
-                    break;
-                case "Test321":
-                    roam_node.sendCommand(321);
-                    break;
-                case "Test322":
-                    roam_node.sendCommand(322);
-                    break;
-                case "Test323":
-                    roam_node.sendCommand(323);
-                    break;
-                case "Test331":
-                    roam_node.sendCommand(331);
-                    break;
-                case "Test332":
-                    roam_node.sendCommand(332);
-                    break;
-                case "Test333":
-                    roam_node.sendCommand(333);
-                    break;
-                case "Test341":
-                    roam_node.sendCommand(341);
-                    break;
-                case "Test342":
-                    roam_node.sendCommand(342);
-                    break;
-                case "Test343":
-                    roam_node.sendCommand(343);
                     break;
 
                 // Role and Scenario Setting
@@ -349,8 +229,8 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             }
 
             // Send data to the GS manager to be shown on the Ground Data System.
-            sendData(MessageType.JSON, "command", sCommand);
-            //sendData(MessageType.JSON, "data", jResult.toString());
+            jResult.put("command", sCommand);
+            sendData(MessageType.JSON, "data", jResult.toString());
         } catch (JSONException e) {
             // Send an error message to the GSM and GDS
             sendData(MessageType.JSON, "data", "ERROR parsing JSON");
