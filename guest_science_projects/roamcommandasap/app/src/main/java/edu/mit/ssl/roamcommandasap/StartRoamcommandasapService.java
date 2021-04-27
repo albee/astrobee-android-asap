@@ -162,16 +162,6 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
          * that this app received a command. */
         sendReceivedCustomCommand("info");
 
-        // while (true) {
-        //   sendStarted("info");
-        //   try {
-        //     Thread.sleep(2000);
-        //   }
-        //   catch (Exception e) {
-        //     e.printStackTrace();
-        //   }
-        // }
-
         try {
             // Transform the String command into a JSON object so we can read it.
             JSONObject jCommand = new JSONObject(command);
@@ -187,10 +177,6 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                 // StopTest
                 case "StopTest":
                     roam_node.sendCommand(-1);
-                    break;
-
-                case "Debug":
-                    roam_node.sendCommand(1);
                     break;
 
                 // Role and Scenario Setting
