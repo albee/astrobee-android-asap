@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package edu.mit.ssl.roamcommandasap;
+package edu.mit.ssl.commandasap;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

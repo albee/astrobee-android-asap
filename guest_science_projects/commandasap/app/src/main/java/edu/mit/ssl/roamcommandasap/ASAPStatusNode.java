@@ -1,4 +1,4 @@
-package edu.mit.ssl.roamcommandasap;
+package edu.mit.ssl.commandasap;
 
 import org.apache.commons.logging.Log;
 import org.ros.concurrent.CancellableLoop;
@@ -29,10 +29,10 @@ import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 import std_msgs.String;
 
-public class RoamStatusNode extends AbstractNodeMain {
+public class StatusNode extends AbstractNodeMain {
 
     private ParameterTree rosparam = null;
-    public static RoamStatusNode instance = null;
+    public static StatusNode instance = null;
     // // An example publisher, not currently needed
     // Publisher<JointState> mPublisher;
 
@@ -64,12 +64,12 @@ public class RoamStatusNode extends AbstractNodeMain {
     public java.lang.String td_state_mode=  "";
     public java.lang.String casadi_on_target=  "";
 
-    // td/status subscriber
+    // asap/status subscriber
     //Subscriber<std_msgs.String> mSubscriber;
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("roamcommandasap");
+        return GraphName.of("commandasap");
     }
 
     @Override
@@ -84,15 +84,15 @@ public class RoamStatusNode extends AbstractNodeMain {
       //initialize parameters
       ParameterTree my_param = connectedNode.getParameterTree();
       rosparam = my_param;  // need to do this, don't change...
-      rosparam.set("/td/gds_apk_status", "started");
-      rosparam.set("/td/gds_sim", "hardware");
-      rosparam.set("/td/gds_ground", "false");
+      rosparam.set("/asap/gds_apk_status", "started");
+      rosparam.set("/asap/gds_sim", "hardware");
+      rosparam.set("/asap/gds_ground", "false");
 
-      // rosparam.addParameterListener("/td/chaser/gds_telem", new ParameterListener() {
+      // rosparam.addParameterListener("/asap/chaser/gds_telem", new ParameterListener() {
       //   @Override
       //   public void onNewValue(Object value) {
       //     List<java.lang.String> gds_telem_string = (List<java.lang.String>)value;
-      //     rosparam.set("/td/gds/debug", gds_telem_string.get(0));
+      //     rosparam.set("/asap/debug", gds_telem_string.get(0));
       //     td_flight_mode = gds_telem_string.get(0);
       //     td_control_mode = gds_telem_string.get(1);
       //     slam_activate = gds_telem_string.get(2);
@@ -105,8 +105,8 @@ public class RoamStatusNode extends AbstractNodeMain {
       //   }
       // });
 
-      //creating the subscriber for the /td/status rostopic
-      // mSubscriber = connectedNode.newSubscriber("/td/test_sub", std_msgs.String._TYPE);
+      //creating the subscriber for the /asap/status rostopic
+      // mSubscriber = connectedNode.newSubscriber("/asap/test_sub", std_msgs.String._TYPE);
       // mSubscriber.addMessageListener(new MessageListener<std_msgs.String>() {
       //     @Override
       //     public void onNewMessage(std_msgs.String message) {
@@ -118,12 +118,12 @@ public class RoamStatusNode extends AbstractNodeMain {
       instance = this;
     }
 
-    public static RoamStatusNode getInstance(){
+    public static StatusNode getInstance(){
       return instance;
     }
 
     public void updateParams() {
-      List<?> gds_telem = rosparam.getList("/td/chaser/gds_telem");
+      List<?> gds_telem = rosparam.getList("/asap/gds_telem");
       List<java.lang.String> gds_telem_string = (List<java.lang.String>)gds_telem;
       global_gds_param_count= gds_telem_string.get(0);
       test_num= gds_telem_string.get(1);
@@ -168,36 +168,36 @@ public class RoamStatusNode extends AbstractNodeMain {
       // mPublisher.publish(msg);
 
       //java.lang.String cmd="Command"+Integer.toString(command_number);
-      rosparam.set("/td/gds_test_num", command_number);
+      rosparam.set("/asap/gds_test_num", command_number);
     }
 
     public void setRole(java.lang.String role){
       /* Send out a rosparam for the Astrobee's role.
       */
-      rosparam.set("/td/role_from_GDS", role);
+      rosparam.set("/asap/role_from_GDS", role);
     }
 
     public void setGround(){
       /* Send out a rosparam for the Astrobee's ground status.
       */
-      rosparam.set("/td/gds_ground", "true");
+      rosparam.set("/asap/gds_ground", "true");
     }
 
     public void setISS(){
       /* Send out a rosparam for the Astrobee's world status.
       */
-      rosparam.set("/td/gds_ground", "false");
+      rosparam.set("/asap/gds_ground", "false");
     }
 
     public void setRoamBagger(java.lang.String enabled){
       /* Send out a rosparam for the Astrobee's ROAM bag recording.
       */
-      rosparam.set("/td/gds_roam_bagger", enabled);
+      rosparam.set("/asap/gds_roam_bagger", enabled);
     }
 
     public void sendStopped(){
       /* Send when the APK is stopped.
       */
-      rosparam.set("/td/gds_apk_status", "stopped");
+      rosparam.set("/asap/gds_apk_status", "stopped");
     }
 }

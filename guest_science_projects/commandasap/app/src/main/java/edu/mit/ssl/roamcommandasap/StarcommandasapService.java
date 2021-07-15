@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package edu.mit.ssl.roamcommandasap;
+package edu.mit.ssl.commandasap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,11 +39,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee
  */
 
-public class StartRoamcommandasapService extends StartGuestScienceService {
+public class StartCommandAsapService extends StartGuestScienceService {
     // The API implementation
     private ApiCommandImplementation api = null;
 
-    private RoamStatusNode roam_node = null;
+    private StatusNode status_node = null;
     private boolean stop = false;
     private final AtomicBoolean running = new AtomicBoolean(true);
 
@@ -61,43 +61,43 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             catch(Exception ex){
             }
 
-            roam_node.updateParams();
+            status_node.updateParams();
             try {
-              JSONObject TDStatus = new JSONObject();
-              TDStatus.put("test_num", roam_node.test_num);
-              TDStatus.put("td_flight_mode", roam_node.td_flight_mode);
-              TDStatus.put("td_control_mode", roam_node.td_control_mode);
-              TDStatus.put("slam_activate", roam_node.slam_activate);
-              TDStatus.put("target_regulate_finished", roam_node.target_regulate_finished);
-              TDStatus.put("chaser_regulate_finished", roam_node.chaser_regulate_finished);
-              TDStatus.put("motion_plan_finished", roam_node.motion_plan_finished);
-              TDStatus.put("motion_plan_wait_time", roam_node.motion_plan_wait_time);
-              TDStatus.put("default_control", roam_node.default_control);
-              TDStatus.put("my_role", roam_node.my_role);
-              TDStatus.put("test_LUT", roam_node.test_LUT);
-              TDStatus.put("test_tumble_type", roam_node.test_tumble_type);
-              TDStatus.put("test_control_mode", roam_node.test_control_mode);
-              TDStatus.put("test_state_mode", roam_node.test_state_mode);
-              TDStatus.put("dlr_LUT_param", roam_node.dlr_LUT_param);
-              TDStatus.put("traj_gen_dlr_activate", roam_node.traj_gen_dlr_activate);
-              TDStatus.put("uc_bound_activate", roam_node.uc_bound_activate);
-              TDStatus.put("slam_converged", roam_node.slam_converged);
-              TDStatus.put("inertia_estimated", roam_node.inertia_estimated);
-              TDStatus.put("uc_bound_finished", roam_node.uc_bound_finished);
-              TDStatus.put("mrpi_finished", roam_node.mrpi_finished);
-              TDStatus.put("traj_finished", roam_node.traj_finished);
-              TDStatus.put("test_finished", roam_node.test_finished);
-              TDStatus.put("td_state_mode", roam_node.td_state_mode);
-              TDStatus.put("casadi_on_target", roam_node.casadi_on_target);
-              sendData(MessageType.JSON, "TDStatus", TDStatus.toString());
+              JSONObject ASAPStatus = new JSONObject();
+              ASAPStatus.put("test_num", status_node.test_num);
+              ASAPStatus.put("td_flight_mode", status_node.td_flight_mode);
+              ASAPStatus.put("td_control_mode", status_node.td_control_mode);
+              ASAPStatus.put("slam_activate", status_node.slam_activate);
+              ASAPStatus.put("target_regulate_finished", status_node.target_regulate_finished);
+              ASAPStatus.put("chaser_regulate_finished", status_node.chaser_regulate_finished);
+              ASAPStatus.put("motion_plan_finished", status_node.motion_plan_finished);
+              ASAPStatus.put("motion_plan_wait_time", status_node.motion_plan_wait_time);
+              ASAPStatus.put("default_control", status_node.default_control);
+              ASAPStatus.put("my_role", status_node.my_role);
+              ASAPStatus.put("test_LUT", status_node.test_LUT);
+              ASAPStatus.put("test_tumble_type", status_node.test_tumble_type);
+              ASAPStatus.put("test_control_mode", status_node.test_control_mode);
+              ASAPStatus.put("test_state_mode", status_node.test_state_mode);
+              ASAPStatus.put("dlr_LUT_param", status_node.dlr_LUT_param);
+              ASAPStatus.put("traj_gen_dlr_activate", status_node.traj_gen_dlr_activate);
+              ASAPStatus.put("uc_bound_activate", status_node.uc_bound_activate);
+              ASAPStatus.put("slam_converged", status_node.slam_converged);
+              ASAPStatus.put("inertia_estimated", status_node.inertia_estimated);
+              ASAPStatus.put("uc_bound_finished", status_node.uc_bound_finished);
+              ASAPStatus.put("mrpi_finished", status_node.mrpi_finished);
+              ASAPStatus.put("traj_finished", status_node.traj_finished);
+              ASAPStatus.put("test_finished", status_node.test_finished);
+              ASAPStatus.put("td_state_mode", status_node.td_state_mode);
+              ASAPStatus.put("casadi_on_target", status_node.casadi_on_target);
+              sendData(MessageType.JSON, "ReswarmStatus", ASAPStatus.toString());  // modify to your payload
 
               JSONObject TelemID = new JSONObject();
-              TelemID.put("TelemID", roam_node.global_gds_param_count);
+              TelemID.put("TelemID", status_node.global_gds_param_count);
               sendData(MessageType.JSON, "TelemID", TelemID.toString());
             } catch (JSONException e) {
               // Send an error message to the GSM and GDS
               e.printStackTrace();
-              sendData(MessageType.JSON, "data", "ERROR parsing TDStatus JSON");
+              sendData(MessageType.JSON, "data", "ERROR parsing ASAPStatus JSON");
             }
           }
         }
@@ -115,10 +115,10 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(ROS_HOSTNAME);
         nodeConfiguration.setMasterUri(ROS_MASTER_URI);
 
-        roam_node = new RoamStatusNode();  // this is the custom node used for commanding
+        status_node = new StatusNode();  // this is the custom node used for commanding
 
         nodeMainExecutor = DefaultNodeMainExecutor.newDefault();
-        nodeMainExecutor.execute(roam_node, nodeConfiguration);
+        nodeMainExecutor.execute(status_node, nodeConfiguration);
 
         // Inform the GS Manager and the GDS that the app has been started.
         sendStarted("info");
@@ -134,8 +134,8 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
      */
     @Override
     public void onGuestScienceStop() {
-        //set rosparam roamcommand to stopped
-        roam_node.sendStopped();
+        //set rosparam asapcommand to stopped
+        status_node.sendStopped();
 
         // stop the telemetry down
         running.set(false);
@@ -176,30 +176,30 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             switch (sCommand) {
                 // StopTest
                 case "StopTest":
-                    roam_node.sendCommand(-1);
+                    status_node.sendCommand(-1);
                     break;
 
                 // Role and Scenario Setting
                 case "SetRoleChaser":
-                    roam_node.setRole("chaser");
+                    status_node.setRole("chaser");
                     break;
                 case "SetRoleTarget":
-                    roam_node.setRole("target");
+                    status_node.setRole("target");
                     break;
                 case "SetRoleFromHardware":
-                    roam_node.setRole("robot_name");
+                    status_node.setRole("robot_name");
                     break;
                 case "SetGround":
-                    roam_node.setGround();
+                    status_node.setGround();
                     break;
                 case "SetISS":
-                    roam_node.setISS();
+                    status_node.setISS();
                     break;
                 case "EnableRoamBagger":
-                    roam_node.setRoamBagger("enabled");
+                    status_node.setRoamBagger("enabled");
                     break;
                 case "DisableRoamBagger":
-                    roam_node.setRoamBagger("disabled");
+                    status_node.setRoamBagger("disabled");
                     break;
 
                 // Test commanding and unknown commands
@@ -209,8 +209,8 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
                       java.lang.String str_test_code = sCommand.substring(4, sCommand.length());
                       try {
                         Integer test_code = Integer.valueOf(str_test_code);
-                        roam_node.sendCommand(test_code);
-                        Log.w("edu.mit.ssl.roamcommandasap", str_test_code);
+                        status_node.sendCommand(test_code);
+                        Log.w("edu.mit.ssl.commandasap", str_test_code);
                       }
                       catch (Exception ex) {
                         // Inform GS Manager and GDS, then stop execution.
@@ -235,7 +235,7 @@ public class StartRoamcommandasapService extends StartGuestScienceService {
             sendData(MessageType.JSON, "data", "ERROR parsing JSON");
         } catch (Exception ex) {
             // Send an error message to the GSM and GDS
-            Log.e("edu.mit.ssl.roamcommandasap", "exception", ex);
+            Log.e("edu.mit.ssl.commandasap", "exception", ex);
             sendData(MessageType.JSON, "data", "Unrecognized ERROR");
         }
     }

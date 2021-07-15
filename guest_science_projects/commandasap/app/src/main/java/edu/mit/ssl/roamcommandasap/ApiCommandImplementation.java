@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package edu.mit.ssl.roamcommandasap;
+package edu.mit.ssl.commandasap;
 
 import android.util.Log;
 
@@ -61,7 +61,7 @@ public class ApiCommandImplementation {
     private static final String EMULATOR_ROS_HOSTNAME = "hlp";
 
     // Set the name of the app as the node name
-    private static final String NODE_NAME = "roamcommandasap";
+    private static final String NODE_NAME = "commandasap";
 
     // The instance to access this class
     private static ApiCommandImplementation instance = null;
@@ -189,165 +189,10 @@ public class ApiCommandImplementation {
     }
 
     /**
-     * Get trusted data related to positioning and orientation for Astrobee
-     *
-     * @param timeout Number of seconds before canceling request
-     * @return Trusted Kinematics, null if an internal error occurred or request timeout
-     */
-    public Kinematics getTrustedRobotKinematics(int timeout) {
-        Log.e("LOG", "Waiting for robot to acquire position");
-
-        // Variable that will keep all data related to positioning and movement.
-        Kinematics k = null;
-
-        int count = 0;
-
-        // Waiting until we get a trusted kinematics
-        while (count <= timeout || timeout == -1) {
-            // Get kinematics
-            k = robot.getCurrentKinematics();
-
-            // Is it good?
-            if (k.getConfidence() == Kinematics.Confidence.GOOD)
-                // Don't wait anymore, move on.
-                break;
-            else
-                k = null;
-
-            // It's not good, wait a little bit and try again
-            try {
-                Thread.sleep(1000);
-                count++;
-            } catch (InterruptedException e) {
-                Log.e("LOG", "It was not possible to get a trusted kinematics. Sorry");
-                return null;
-            }
-        }
-
-        return k;
-    }
-
-    public Kinematics getTrustedRobotKinematics() {
-        return getTrustedRobotKinematics(-1);
-    }
-
-    /**
-     * It moves Astrobee to the given point and rotate it to the given orientation.
-     *
-     * @param goalPoint   Absolute cardinal point (xyz)
-     * @param orientation An instance of the Quaternion class.
-     *                    You may want to use CENTER_US_LAB or CENTER_JEM as an example depending
-     *                    on your initial position.
-     * @return A Result instance carrying data related to the execution.
-     * Returns null if the command was NOT execute as a result of an error
-     */
-    public Result moveTo(Point goalPoint, Quaternion orientation) {
-
-        // Intent to set planner trapezoidal
-        setPlanner(PlannerType.TRAPEZOIDAL);
-
-        // Stop all motion
-        Result result = stopAllMotion();
-
-        if (result.hasSucceeded()) {
-            // We stopped, do your stuff now
-            Log.i("LOG", "Planner is " + plannerType.toString());
-
-            Log.e("LOG", "Moving the bee");
-
-            // Setting a simple movement command using the end point and the end orientation.
-            PendingResult pending = robot.simpleMove6DOF(goalPoint, orientation);
-
-            // Get the command execution result and send it back to the requester.
-            result = getCommandResult(pending, true, -1);
-        }
-
-        return result;
-    }
-
-    /**
-     * It moves Astrobee to the given point using a relative reference
-     * and rotates it to the given orientation.
-     *
-     * @param goalPoint   The relative end point (relative to Astrobee)
-     * @param orientation The absolute orientation
-     * @return
-     */
-    public Result relativeMoveTo(Point goalPoint, Quaternion orientation) {
-
-        // Ger current position
-        Kinematics k = getTrustedRobotKinematics(5);
-        if (k == null) {
-            return null;
-        }
-
-        Point currPosition = k.getPosition();
-
-        Point endPoint = new Point(
-                currPosition.getX() + goalPoint.getX(),
-                currPosition.getY() + goalPoint.getY(),
-                currPosition.getZ() + goalPoint.getZ()
-        );
-
-        return moveTo(endPoint, orientation);
-    }
-
-    public Result relativeMoveInAxis(int axis, double nMeters, Quaternion orientation) {
-        Point endPoint = new Point(
-                axis == X_AXIS ? nMeters : 0,
-                axis == Y_AXIS ? nMeters : 0,
-                axis == Z_AXIS ? nMeters : 0
-        );
-
-        return relativeMoveTo(endPoint, orientation);
-    }
-
-    public Result stopAllMotion() {
-        PendingResult pendingResult = robot.stopAllMotion();
-        return getCommandResult(pendingResult, false, -1);
-    }
-
-    public Result dock() {
-        PendingResult pendingResult = robot.dock(1);
-        return getCommandResult(pendingResult, true, -1);
-    }
-
-    public Result undock() {
-        PendingResult pendingResult = robot.undock();
-        return getCommandResult(pendingResult, true, -1);
-    }
-
-    /**
-     * An optional method used to print command execution results on the Android log
-     * @param result
-     */
-    private void printLogCommandResult(Result result) {
-        Log.e("LOG", "Command status: " + result.getStatus().toString());
-
-        // In case command fails
-        if (!result.hasSucceeded()) {
-            Log.e("LOG", "Command message: " + result.getMessage());
-        }
-
-        Log.e("LOG", "Done");
-    }
-
-    /**
      * Method to get the robot from this API Implementation.
      * @return
      */
     public Robot getRobot() {
         return robot;
-    }
-
-    public boolean setPlanner(PlannerType plannerType) {
-        PendingResult pendingPlanner = robot.setPlanner(plannerType);
-        Result result = getCommandResult(pendingPlanner, false, 5);
-        if (result.hasSucceeded()) {
-            this.plannerType = plannerType;
-            Log.i("LOG", "Planner set to " + plannerType);
-        }
-
-        return result.hasSucceeded();
     }
 }
