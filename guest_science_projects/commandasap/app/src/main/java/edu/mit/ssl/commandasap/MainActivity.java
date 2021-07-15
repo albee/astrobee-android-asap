@@ -15,7 +15,6 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-
 package edu.mit.ssl.commandasap;
 
 import android.support.v7.app.AppCompatActivity;

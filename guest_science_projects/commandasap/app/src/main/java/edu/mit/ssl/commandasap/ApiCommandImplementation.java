@@ -1,21 +1,11 @@
+/*
+ApiCommandImplementation.java, a part of the ASAP commanding interface.
 
-/* Copyright (c) 2017, United States Government, as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- *
- * All rights reserved.
- *
- * The Astrobee platform is licensed under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
+Misc. node interfacing from Stanford ASL interface.
+TODO: needed for future releases?
 
+Keenan Albee, Charles Oestreich, Phillip Johnson, Abhi Cauligi
+*/
 package edu.mit.ssl.commandasap;
 
 import android.util.Log;
@@ -130,62 +120,6 @@ public class ApiCommandImplementation {
      */
     public void shutdownFactory() {
         factory.shutdown();
-    }
-
-    /**
-     * This method waits for a pending task and returns the result.
-     *
-     * @param pending Pending task being executed
-     * @param printRobotPosition Should it print robot kinematics while waiting for task to be
-     *                           completed?
-     * @param timeout Number of seconds before stopping to wait for result (-1 for no timeout,
-     *                0 will loop once).
-     * @return Pending task result. NULL if an internal error occurred or request timeout.
-     */
-    public Result getCommandResult(PendingResult pending, boolean printRobotPosition, int timeout) {
-
-        Result result = null;
-        int counter = 0;
-
-        try {
-            Kinematics k;
-
-            // Waiting until command is done.
-            while (!pending.isFinished()) {
-                if (timeout >= 0) {
-                    // There is a timeout setting
-                    if (counter > timeout)
-                        return null;
-                }
-
-                if (printRobotPosition) {
-                    // Meanwhile, let's get the positioning along the trajectory
-                    k = robot.getCurrentKinematics();
-                    Log.i("LOG", "Current Position: " + k.getPosition().toString());
-                    Log.i("LOG", "Current Orientation" + k.getOrientation().toString());
-                }
-
-                // Wait 1 second before retrying
-                pending.getResult(1000, TimeUnit.MILLISECONDS);
-                counter++;
-            }
-
-            // Getting final result
-            result = pending.getResult();
-
-            // Print result in the log.
-            printLogCommandResult(result);
-
-        } catch (AstrobeeException e) {
-            Log.e("LOG", "Error with Astrobee");
-        } catch (InterruptedException e) {
-            Log.e("LOG", "Connection Interrupted");
-        } catch (TimeoutException e) {
-            Log.e("LOG", "Timeout connection");
-        } finally {
-            // Return command execution result.
-            return result;
-        }
     }
 
     /**

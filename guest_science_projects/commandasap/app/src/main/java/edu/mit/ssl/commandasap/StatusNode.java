@@ -1,3 +1,10 @@
+/*
+StatusNode.java, a part of the ASAP commanding interface.
+
+Gets rosparam data for GDS telemetry and sets test numbers.
+
+Keenan Albee, Charles Oestreich, Phillip Johnson, Abhi Cauligi
+*/
 package edu.mit.ssl.commandasap;
 
 import org.apache.commons.logging.Log;
@@ -39,30 +46,26 @@ public class StatusNode extends AbstractNodeMain {
     //data instance field used in the sendData function
     public java.lang.String global_gds_param_count=  "";
     public java.lang.String test_num=  "";
-    public java.lang.String td_flight_mode=  "";
-    public java.lang.String td_control_mode=  "";
-    public java.lang.String slam_activate= "";
-    public java.lang.String target_regulate_finished= "";
-    public java.lang.String chaser_regulate_finished= "";
-    public java.lang.String motion_plan_finished=  "";
-    public java.lang.String motion_plan_wait_time=  "";
-    public java.lang.String default_control=  "";
-    public java.lang.String my_role=  "";
-    public java.lang.String test_LUT=  "";
-    public java.lang.String test_tumble_type=  "";
-    public java.lang.String test_control_mode=  "";
-    public java.lang.String test_state_mode=  "";
-    public java.lang.String dlr_LUT_param=  "";
-    public java.lang.String traj_gen_dlr_activate=  "";
-    public java.lang.String uc_bound_activate=  "";
-    public java.lang.String slam_converged=  "";
-    public java.lang.String inertia_estimated=  "";
-    public java.lang.String uc_bound_finished=  "";
-    public java.lang.String mrpi_finished=  "";
-    public java.lang.String traj_finished=  "";
-    public java.lang.String test_finished=  "";
-    public java.lang.String td_state_mode=  "";
-    public java.lang.String casadi_on_target=  "";
+    public java.lang.String flight_mode=  "";
+
+    public java.lang.String test_finished = "";
+    public java.lang.String coord_ok = "";
+
+    public java.lang.String control_mode = "";
+    public java.lang.String regulate_finished = "";
+    public java.lang.String uc_bound_activated = "";
+    public java.lang.String uc_bound_finished = "";
+    public java.lang.String mrpi_finished = "";
+    public java.lang.String traj_sent = "";
+    public java.lang.String traj_finished = "";
+    public java.lang.String gain_mode = "";
+    public java.lang.String lqrrrt_activated = "";
+    public java.lang.String lqrrrt_finished = "";
+    public java.lang.String info_traj_send = "";
+    public java.lang.String solver_status = "";
+    public java.lang.String cost_value = "";
+    public java.lang.String kkt_value = "";
+    public java.lang.String sol_time = "";
 
     // asap/status subscriber
     //Subscriber<std_msgs.String> mSubscriber;
@@ -125,32 +128,26 @@ public class StatusNode extends AbstractNodeMain {
     public void updateParams() {
       List<?> gds_telem = rosparam.getList("/asap/gds_telem");
       List<java.lang.String> gds_telem_string = (List<java.lang.String>)gds_telem;
-      global_gds_param_count= gds_telem_string.get(0);
-      test_num= gds_telem_string.get(1);
-      td_flight_mode= gds_telem_string.get(2);
-      td_control_mode= gds_telem_string.get(3);
-      slam_activate= gds_telem_string.get(4);
-      target_regulate_finished= gds_telem_string.get(5);
-      chaser_regulate_finished= gds_telem_string.get(6);
-      motion_plan_finished= gds_telem_string.get(7);
-      motion_plan_wait_time= gds_telem_string.get(8);
-      default_control= gds_telem_string.get(9);
-      my_role= gds_telem_string.get(10);
-      test_LUT= gds_telem_string.get(11);
-      test_tumble_type= gds_telem_string.get(12);
-      test_control_mode= gds_telem_string.get(13);
-      test_state_mode= gds_telem_string.get(14);
-      dlr_LUT_param= gds_telem_string.get(15);
-      traj_gen_dlr_activate= gds_telem_string.get(16);
-      uc_bound_activate= gds_telem_string.get(17);
-      slam_converged= gds_telem_string.get(18);
-      inertia_estimated= gds_telem_string.get(19);
-      uc_bound_finished= gds_telem_string.get(20);
-      mrpi_finished= gds_telem_string.get(21);
-      traj_finished= gds_telem_string.get(22);
-      test_finished= gds_telem_string.get(23);
-      td_state_mode= gds_telem_string.get(24);
-      casadi_on_target= gds_telem_string.get(25);
+      global_gds_param_count = gds_telem_string.get(0);
+      test_num = gds_telem_string.get(1);
+      flight_mode = gds_telem_string.get(2);
+      test_finished = gds_telem_string.get(3);
+      coord_ok = gds_telem_string.get(4);
+      control_mode = gds_telem_string.get(5);
+      regulate_finished = gds_telem_string.get(6);
+      uc_bound_activated = gds_telem_string.get(7);
+      uc_bound_finished = gds_telem_string.get(8);
+      mrpi_finished = gds_telem_string.get(9);
+      traj_sent = gds_telem_string.get(10);
+      traj_finished = gds_telem_string.get(11);
+      gain_mode = gds_telem_string.get(12);
+      lqrrrt_activated = gds_telem_string.get(13);
+      lqrrrt_finished = gds_telem_string.get(14);
+      info_traj_send = gds_telem_string.get(15);
+      solver_status = gds_telem_string.get(16);
+      cost_value = gds_telem_string.get(17);
+      kkt_value = gds_telem_string.get(18);
+      sol_time = gds_telem_string.get(19);
     }
 
     public void sendCommand(Integer command_number){
@@ -174,7 +171,7 @@ public class StatusNode extends AbstractNodeMain {
     public void setRole(java.lang.String role){
       /* Send out a rosparam for the Astrobee's role.
       */
-      rosparam.set("/asap/role_from_GDS", role);
+      rosparam.set("/asap/gds_role", role);
     }
 
     public void setGround(){

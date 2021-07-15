@@ -1,21 +1,10 @@
+/*
+StartcommandasapService.java, a part of the ASAP commanding interface.
 
-/* Copyright (c) 2017, United States Government, as represented by the
- * Administrator of the National Aeronautics and Space Administration.
- *
- * All rights reserved.
- *
- * The Astrobee platform is licensed under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
+Starts up HLP pass-through node.
 
+Keenan Albee, Charles Oestreich, Phillip Johnson, Abhi Cauligi
+*/
 package edu.mit.ssl.commandasap;
 
 import org.json.JSONException;
@@ -39,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee
  */
 
-public class StartCommandAsapService extends StartGuestScienceService {
+public class StartcommandasapService extends StartGuestScienceService {
     // The API implementation
     private ApiCommandImplementation api = null;
 
@@ -65,30 +54,24 @@ public class StartCommandAsapService extends StartGuestScienceService {
             try {
               JSONObject ASAPStatus = new JSONObject();
               ASAPStatus.put("test_num", status_node.test_num);
-              ASAPStatus.put("td_flight_mode", status_node.td_flight_mode);
-              ASAPStatus.put("td_control_mode", status_node.td_control_mode);
-              ASAPStatus.put("slam_activate", status_node.slam_activate);
-              ASAPStatus.put("target_regulate_finished", status_node.target_regulate_finished);
-              ASAPStatus.put("chaser_regulate_finished", status_node.chaser_regulate_finished);
-              ASAPStatus.put("motion_plan_finished", status_node.motion_plan_finished);
-              ASAPStatus.put("motion_plan_wait_time", status_node.motion_plan_wait_time);
-              ASAPStatus.put("default_control", status_node.default_control);
-              ASAPStatus.put("my_role", status_node.my_role);
-              ASAPStatus.put("test_LUT", status_node.test_LUT);
-              ASAPStatus.put("test_tumble_type", status_node.test_tumble_type);
-              ASAPStatus.put("test_control_mode", status_node.test_control_mode);
-              ASAPStatus.put("test_state_mode", status_node.test_state_mode);
-              ASAPStatus.put("dlr_LUT_param", status_node.dlr_LUT_param);
-              ASAPStatus.put("traj_gen_dlr_activate", status_node.traj_gen_dlr_activate);
-              ASAPStatus.put("uc_bound_activate", status_node.uc_bound_activate);
-              ASAPStatus.put("slam_converged", status_node.slam_converged);
-              ASAPStatus.put("inertia_estimated", status_node.inertia_estimated);
+              ASAPStatus.put("flight_mode", status_node.flight_mode);
+              ASAPStatus.put("test_finished", status_node.test_finished);
+              ASAPStatus.put("coord_ok", status_node.coord_ok);
+              ASAPStatus.put("control_mode", status_node.control_mode);
+              ASAPStatus.put("regulate_finished", status_node.regulate_finished);
+              ASAPStatus.put("uc_bound_activated", status_node.uc_bound_activated);
               ASAPStatus.put("uc_bound_finished", status_node.uc_bound_finished);
               ASAPStatus.put("mrpi_finished", status_node.mrpi_finished);
+              ASAPStatus.put("traj_sent", status_node.traj_sent);
               ASAPStatus.put("traj_finished", status_node.traj_finished);
-              ASAPStatus.put("test_finished", status_node.test_finished);
-              ASAPStatus.put("td_state_mode", status_node.td_state_mode);
-              ASAPStatus.put("casadi_on_target", status_node.casadi_on_target);
+              ASAPStatus.put("gain_mode", status_node.gain_mode);
+              ASAPStatus.put("lqrrrt_activated", status_node.lqrrrt_activated);
+              ASAPStatus.put("lqrrrt_finished", status_node.lqrrrt_finished);
+              ASAPStatus.put("info_traj_send", status_node.info_traj_send);
+              ASAPStatus.put("solver_status", status_node.solver_status);
+              ASAPStatus.put("cost_value", status_node.cost_value);
+              ASAPStatus.put("kkt_value", status_node.kkt_value);
+              ASAPStatus.put("sol_time", status_node.sol_time);
               sendData(MessageType.JSON, "ReswarmStatus", ASAPStatus.toString());  // modify to your payload
 
               JSONObject TelemID = new JSONObject();
