@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "edu.mit.ssl.roamcommandasap"
+        applicationId "edu.mit.ssl.commandasap"
         minSdkVersion 25
         targetSdkVersion 25
         versionCode 1

@@ -31,21 +31,6 @@ import gov.nasa.arc.astrobee.types.Quaternion;
  */
 
 public class ApiCommandImplementation {
-
-    // Constants that represent the axis in a 3D world
-    public static final int X_AXIS = 2;
-    public static final int Y_AXIS = 3;
-    public static final int Z_AXIS = 4;
-
-    // Center of US Lab
-    public static final Point CENTER_US_LAB = new Point(2, 0, 4.8);
-
-    // Default values for the Astrobee's arm
-    public static final float ARM_TILT_DEPLOYED_VALUE = 0f;
-    public static final float ARM_TILT_STOWED_VALUE = 180f;
-    public static final float ARM_PAN_DEPLOYED_VALUE = 0f;
-    public static final float ARM_PAN_STOWED_VALUE = 0f;
-
     // Constants needed to connect with ROS master
     private static final URI ROS_MASTER_URI = URI.create("http://llp:11311");
     private static final String EMULATOR_ROS_HOSTNAME = "hlp";
@@ -64,9 +49,6 @@ public class ApiCommandImplementation {
 
     // The robot itself
     private Robot robot;
-
-    // The planner to be used (QP, TRAPEZOIDAL)
-    private PlannerType plannerType = null;
 
     /**
      * Private constructor that prevents other objects from creating instances of this class.

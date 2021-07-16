@@ -7,7 +7,7 @@ Keenan Albee, Charles Oestreich, Phillip Johnson, Abhi Cauligi
 */
 package edu.mit.ssl.commandasap;
 
-import org.apache.commons.logging.Log;
+// import org.apache.commons.logging.Log;
 import org.ros.concurrent.CancellableLoop;
 import org.ros.namespace.GraphName;
 import org.ros.node.AbstractNodeMain;
@@ -35,6 +35,8 @@ import gov.nasa.arc.astrobee.android.gs.StartGuestScienceService;
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 import std_msgs.String;
+
+import android.util.Log;
 
 public class StatusNode extends AbstractNodeMain {
 
@@ -126,28 +128,34 @@ public class StatusNode extends AbstractNodeMain {
     }
 
     public void updateParams() {
-      List<?> gds_telem = rosparam.getList("/asap/gds_telem");
-      List<java.lang.String> gds_telem_string = (List<java.lang.String>)gds_telem;
-      global_gds_param_count = gds_telem_string.get(0);
-      test_num = gds_telem_string.get(1);
-      flight_mode = gds_telem_string.get(2);
-      test_finished = gds_telem_string.get(3);
-      coord_ok = gds_telem_string.get(4);
-      control_mode = gds_telem_string.get(5);
-      regulate_finished = gds_telem_string.get(6);
-      uc_bound_activated = gds_telem_string.get(7);
-      uc_bound_finished = gds_telem_string.get(8);
-      mrpi_finished = gds_telem_string.get(9);
-      traj_sent = gds_telem_string.get(10);
-      traj_finished = gds_telem_string.get(11);
-      gain_mode = gds_telem_string.get(12);
-      lqrrrt_activated = gds_telem_string.get(13);
-      lqrrrt_finished = gds_telem_string.get(14);
-      info_traj_send = gds_telem_string.get(15);
-      solver_status = gds_telem_string.get(16);
-      cost_value = gds_telem_string.get(17);
-      kkt_value = gds_telem_string.get(18);
-      sol_time = gds_telem_string.get(19);
+      try {
+        List<?> gds_telem = rosparam.getList("/asap/gds_telem");
+        List<java.lang.String> gds_telem_string = (List<java.lang.String>)gds_telem;
+        global_gds_param_count = gds_telem_string.get(0);
+        test_num = gds_telem_string.get(1);
+        flight_mode = gds_telem_string.get(2);
+        test_finished = gds_telem_string.get(3);
+        coord_ok = gds_telem_string.get(4);
+        control_mode = gds_telem_string.get(5);
+        regulate_finished = gds_telem_string.get(6);
+        uc_bound_activated = gds_telem_string.get(7);
+        uc_bound_finished = gds_telem_string.get(8);
+        mrpi_finished = gds_telem_string.get(9);
+        traj_sent = gds_telem_string.get(10);
+        traj_finished = gds_telem_string.get(11);
+        gain_mode = gds_telem_string.get(12);
+        lqrrrt_activated = gds_telem_string.get(13);
+        lqrrrt_finished = gds_telem_string.get(14);
+        info_traj_send = gds_telem_string.get(15);
+        solver_status = gds_telem_string.get(16);
+        cost_value = gds_telem_string.get(17);
+        kkt_value = gds_telem_string.get(18);
+        sol_time = gds_telem_string.get(19);
+      }
+      catch (Exception ex) {
+        Log.e("edu.mit.ssl.commandasap", "exception", ex);  // no data yet available, or telem vector wrong size
+        // sendData(MessageType.JSON, "data", "Unrecognized ERROR");
+      }
     }
 
     public void sendCommand(Integer command_number){

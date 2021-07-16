@@ -164,10 +164,10 @@ public class StartcommandasapService extends StartGuestScienceService {
 
                 // Role and Scenario Setting
                 case "SetRoleChaser":
-                    status_node.setRole("chaser");
+                    status_node.setRole("primary");
                     break;
                 case "SetRoleTarget":
-                    status_node.setRole("target");
+                    status_node.setRole("secondary");
                     break;
                 case "SetRoleFromHardware":
                     status_node.setRole("robot_name");
